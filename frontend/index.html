@@ -62,7 +62,7 @@
             <div class="panel-footer"><button class="text-button" type="button" hx-get="/fragments/guide" hx-target="#help-panel" hx-swap="innerHTML">HOW TO PLAY <span aria-hidden="true">↗</span></button><span class="footer-spark">✳</span></div>
           </aside>
         </section>
-        <div class="reward-panel" id="reward-panel" role="dialog" aria-modal="true" aria-labelledby="reward-title" hidden>
+        <dialog class="reward-panel" id="reward-panel" aria-labelledby="reward-title">
           <div class="reward-content">
             <p class="eyebrow">WAVE 10 CLEARED · BOSS BONUS</p>
             <h2 id="reward-title">THE CINDER TITAN<br /><em>HAS FALLEN!</em></h2>
@@ -73,7 +73,7 @@
               <div class="reward-option reward-twin"><span class="reward-icon">✦✦</span><strong>TWIN SHOT</strong><small>Choose one tower to fire two bullets.</small><div class="twin-choices"><button type="button" data-twin-tower="0">LEFT TOWER</button><button type="button" data-twin-tower="1">RIGHT TOWER</button></div></div>
             </div>
           </div>
-        </div>
+        </dialog>
         <div id="help-panel" aria-live="polite"></div>
         <p class="below-note">✦ BUILT FOR A LITTLE JOY, ONE WAVE AT A TIME. ✦</p>
       </main>

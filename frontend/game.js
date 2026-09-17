@@ -1,4 +1,5 @@
 /** A deliberately small Canvas game. All distances use canvas pixels. */
+import { advanceShot, fireInterval, MAX_ATTACK_SPEED_LEVEL } from "./combat.js";
 import { canTarget, segmentHitsCircle } from "./targeting.js";
 import { applyBossReward, createBoss, createTower } from "./progression.js";
 
@@ -58,9 +59,10 @@ function updateHud() {
 
   for (const name of Object.keys(upgrades)) {
     const cost = upgradeCost(name);
-    document.querySelector(`#${name}-cost`).textContent = `✦ ${cost}`;
+    const maxed = name === "rate" && game.levels.rate >= MAX_ATTACK_SPEED_LEVEL;
+    document.querySelector(`#${name}-cost`).textContent = maxed ? "MAX" : `✦ ${cost}`;
     document.querySelector(`#${name}-level`).textContent = `LV ${game.levels[name]}`;
-    document.querySelector(`[data-upgrade="${name}"]`).disabled = !game.running || game.choosingReward || game.sparks < cost;
+    document.querySelector(`[data-upgrade="${name}"]`).disabled = maxed || !game.running || game.choosingReward || game.sparks < cost;
   }
 }
 
@@ -75,7 +77,6 @@ function spawnEnemy() {
     speed: 33 + game.wave * 5 + Math.random() * 9,
     health: maxHealth,
     maxHealth,
-    phase: Math.random() * TAU,
   });
 }
 
@@ -103,7 +104,7 @@ function fireShot(tower) {
       x: tower.x - Math.sin(tower.aim) * offset,
       y: tower.y + Math.cos(tower.aim) * offset,
       target,
-      life: 1.4,
+      life: firingRange() / 460 + 1,
     });
   }
   burst(tower.x, tower.y, "#ffe075", 3);
@@ -141,17 +142,16 @@ function update(dt) {
     }
   }
 
-  const fireInterval = Math.max(0.16, 0.85 * Math.pow(0.83, game.levels.rate - 1));
+  const interval = fireInterval(game.levels.rate);
   for (const tower of game.towers) {
-    tower.fireClock = Math.min(fireInterval, tower.fireClock + dt);
-    if (tower.fireClock >= fireInterval && fireShot(tower)) tower.fireClock = 0;
+    tower.fireClock = Math.min(interval, tower.fireClock + dt);
+    if (tower.fireClock >= interval && fireShot(tower)) tower.fireClock = 0;
   }
 
   for (const enemy of game.enemies) {
     const direction = Math.atan2(center.y - enemy.y, center.x - enemy.x);
     enemy.x += Math.cos(direction) * enemy.speed * dt;
     enemy.y += Math.sin(direction) * enemy.speed * dt;
-    enemy.phase += dt * 4;
     if (Math.hypot(enemy.x - center.x, enemy.y - center.y) < 43 * FORGE_SCALE) {
       enemy.health = 0;
       game.shield = enemy.boss ? 0 : Math.max(0, game.shield - 1);
@@ -171,9 +171,7 @@ function update(dt) {
       continue;
     }
     const before = { x: shot.x, y: shot.y };
-    const direction = Math.atan2(shot.target.y - shot.y, shot.target.x - shot.x);
-    shot.x += Math.cos(direction) * 460 * dt;
-    shot.y += Math.sin(direction) * 460 * dt;
+    advanceShot(shot, dt);
     shot.life -= dt;
     if (shot.life <= 0) continue;
     if (segmentHitsCircle(before, shot, center, FORGE_RADIUS)) {
@@ -214,7 +212,7 @@ function showBossReward() {
   game.bossDefeated = true;
   game.choosingReward = true;
   game.shots = [];
-  rewardPanel.hidden = false;
+  rewardPanel.showModal();
   updateHud();
   rewardPanel.querySelector("[data-reward]").focus();
 }
@@ -341,7 +339,7 @@ function draw(time) {
 
 function endGame() {
   game.running = false;
-  rewardPanel.hidden = true;
+  if (rewardPanel.open) rewardPanel.close();
   document.querySelector("#overlay-title").innerHTML = "FORGE DOWN!<br />NICE TRY.";
   document.querySelector("#overlay-copy").textContent = `You reached wave ${game.wave}. The forge is ready for another shift.`;
   startButton.innerHTML = 'TRY AGAIN <span aria-hidden="true">↗</span>';
@@ -361,7 +359,7 @@ startButton.addEventListener("click", () => {
   game = createGame();
   game.running = true;
   overlay.hidden = true;
-  rewardPanel.hidden = true;
+  if (rewardPanel.open) rewardPanel.close();
   updateHud();
 });
 
@@ -370,6 +368,7 @@ document.querySelectorAll("[data-upgrade]").forEach((button) => {
     const name = button.dataset.upgrade;
     const cost = upgradeCost(name);
     if (!game.running || game.choosingReward || game.sparks < cost) return;
+    if (name === "rate" && game.levels.rate >= MAX_ATTACK_SPEED_LEVEL) return;
     game.sparks -= cost;
     game.levels[name] += 1;
     updateHud();
@@ -379,7 +378,7 @@ document.querySelectorAll("[data-upgrade]").forEach((button) => {
 function chooseReward(reward, towerIndex) {
   if (!game.choosingReward || !applyBossReward(game, reward, center, towerIndex)) return;
   game.choosingReward = false;
-  rewardPanel.hidden = true;
+  if (rewardPanel.open) rewardPanel.close();
   updateHud();
   document.querySelector("#screen").focus();
 }
@@ -390,6 +389,9 @@ rewardPanel.querySelectorAll("[data-reward]").forEach((button) => {
 rewardPanel.querySelectorAll("[data-twin-tower]").forEach((button) => {
   button.addEventListener("click", () => chooseReward("twin", Number(button.dataset.twinTower)));
 });
+
+// A reward must be chosen before the paused shift can continue.
+rewardPanel.addEventListener("cancel", (event) => event.preventDefault());
 
 document.addEventListener("visibilitychange", () => { previousTime = 0; });
 updateHud();

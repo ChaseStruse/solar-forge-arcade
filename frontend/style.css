@@ -526,10 +526,16 @@ canvas{
   font-size:29px;
   color:#714a60
 }
-.reward-panel[hidden]{
+.reward-panel:not([open]){
   display:none
 }
 .reward-panel{
+  width:100%;
+  height:100%;
+  max-width:none;
+  max-height:none;
+  margin:0;
+  border:0;
   position:fixed;
   inset:0;
   z-index:12;

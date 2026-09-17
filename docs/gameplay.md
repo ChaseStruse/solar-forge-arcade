@@ -10,7 +10,7 @@ Defeated enemies give **Sparks**. Spend them on:
 | Attack Speed | Less time between shots for both towers | 12 Sparks |
 | Firing Range | Larger targeting radius for both towers | 8 Sparks |
 
-Costs increase with each purchase. A new wave begins every 18 seconds, increasing enemy durability, speed, and frequency. The game pauses when its browser tab is hidden.
+Costs increase with each purchase. Attack Speed reaches its limit at level 10; the button then displays MAX and no longer spends Sparks. A new wave begins every 18 seconds, increasing enemy durability, speed, and frequency. The game pauses when its browser tab is hidden.
 
 ## Wave 10: Cinder Titan
 
