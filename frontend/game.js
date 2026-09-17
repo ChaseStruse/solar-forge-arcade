@@ -86,8 +86,7 @@ function fireShot() {
   }
 
   if (!target) return;
-  const direction = Math.atan2(target.y - from.y, target.x - from.x);
-  game.shots.push({ x: from.x, y: from.y, vx: Math.cos(direction) * 460, vy: Math.sin(direction) * 460, life: 1.4 });
+  game.shots.push({ x: from.x, y: from.y, target, life: 1.4 });
   burst(from.x, from.y, "#ffe075", 3);
 }
 
@@ -137,8 +136,13 @@ function update(dt) {
   }
 
   for (const shot of game.shots) {
-    shot.x += shot.vx * dt;
-    shot.y += shot.vy * dt;
+    if (shot.target.health <= 0) {
+      shot.life = 0;
+      continue;
+    }
+    const direction = Math.atan2(shot.target.y - shot.y, shot.target.x - shot.x);
+    shot.x += Math.cos(direction) * 460 * dt;
+    shot.y += Math.sin(direction) * 460 * dt;
     shot.life -= dt;
     if (shot.life <= 0) continue;
 

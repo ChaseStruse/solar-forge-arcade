@@ -7,7 +7,7 @@
     <meta name="description" content="Protect the Forge! A tiny, playful idle tower defense game at Solar Forge Arcade." />
     <title>Protect the Forge! · Solar Forge Arcade</title>
     <link rel="stylesheet" href="/assets/style.css" />
-    <script defer src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/htmx.min.js"></script>
+    <script defer src="/assets/htmx.min.js"></script>
     <script defer src="/assets/game.js"></script>
   </head>
   <body>
@@ -57,7 +57,7 @@
             <div class="upgrade-list">
               <button class="upgrade" type="button" data-upgrade="power"><span class="upgrade-icon">✹</span><span class="upgrade-info"><strong>ATTACK POWER</strong><small>Hit a little harder <span class="level" id="power-level">LV 1</span></small></span><span class="cost" id="power-cost">✦ 10</span></button>
               <button class="upgrade" type="button" data-upgrade="rate"><span class="upgrade-icon">❯❯</span><span class="upgrade-info"><strong>ATTACK SPEED</strong><small>More pew per second <span class="level" id="rate-level">LV 1</span></small></span><span class="cost" id="rate-cost">✦ 12</span></button>
-              <button class="upgrade" type="button" data-upgrade="orbit"><span class="upgrade-icon">◎</span><span class="upgrade-info"><strong>ORBIT SPEED</strong><small>Zip around the forge <span class="level" id="orbit-level">LV 1</span></small></span><span class="cost" id="orbit-cost">✦ 8</span></button>
+              <button class="upgrade" type="button" data-upgrade="orbit"><span class="upgrade-icon">◎</span><span class="upgrade-info"><strong>TOWER SPEED</strong><small>Zip around the forge <span class="level" id="orbit-level">LV 1</span></small></span><span class="cost" id="orbit-cost">✦ 8</span></button>
             </div>
             <div class="panel-footer"><button class="text-button" type="button" hx-get="/fragments/guide" hx-target="#help-panel" hx-swap="innerHTML">HOW TO PLAY <span aria-hidden="true">↗</span></button><span class="footer-spark">✳</span></div>
           </aside>

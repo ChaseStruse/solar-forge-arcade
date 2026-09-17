@@ -8,7 +8,7 @@ Defeated enemies give **Sparks**. Spend them on:
 | --- | --- | ---: |
 | Attack Power | More damage per shot | 10 Sparks |
 | Attack Speed | Less time between shots | 12 Sparks |
-| Orbit Speed | Faster tower rotation | 8 Sparks |
+| Tower Speed | Faster tower rotation | 8 Sparks |
 
 Costs increase with each purchase. A new wave begins every 18 seconds, increasing enemy durability, speed, and frequency. The game pauses when its browser tab is hidden.
 

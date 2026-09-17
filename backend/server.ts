@@ -5,6 +5,7 @@ const files: Record<string, { path: string; type: string }> = {
   "/": { path: "index.html", type: "text/html; charset=utf-8" },
   "/assets/style.css": { path: "style.css", type: "text/css; charset=utf-8" },
   "/assets/game.js": { path: "game.js", type: "text/javascript; charset=utf-8" },
+  "/assets/htmx.min.js": { path: "htmx.min.js", type: "text/javascript; charset=utf-8" },
 };
 
 const guide = `
