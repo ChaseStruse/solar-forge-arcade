@@ -1,10 +1,12 @@
 /** A deliberately small Canvas game. All distances use canvas pixels. */
 import { canTarget, segmentHitsCircle } from "./targeting.js";
+import { applyBossReward, createBoss, createTower } from "./progression.js";
 
 const canvas = document.querySelector("#game");
 const context = canvas.getContext("2d");
 const overlay = document.querySelector("#screen-overlay");
 const startButton = document.querySelector("#start-button");
+const rewardPanel = document.querySelector("#reward-panel");
 const center = { x: canvas.width / 2, y: canvas.height / 2 };
 const TAU = Math.PI * 2;
 const FORGE_SCALE = 0.9;
@@ -27,12 +29,16 @@ function createGame() {
     elapsed: 0,
     spawnClock: 0,
     towers: [
-      { x: center.x - TOWER_OFFSET, y: center.y, fireClock: 0, aim: Math.PI },
-      { x: center.x + TOWER_OFFSET, y: center.y, fireClock: 0, aim: 0 },
+      createTower(center.x - TOWER_OFFSET, center.y, Math.PI),
+      createTower(center.x + TOWER_OFFSET, center.y, 0),
     ],
     wave: 1,
     shield: 5,
+    maxShield: 5,
     sparks: 0,
+    bossSpawned: false,
+    bossDefeated: false,
+    choosingReward: false,
     levels: { power: 1, rate: 1, range: 1 },
     enemies: [],
     shots: [],
@@ -48,13 +54,13 @@ function upgradeCost(name) {
 function updateHud() {
   document.querySelector("#sparks").textContent = game.sparks;
   document.querySelector("#wave").textContent = String(game.wave).padStart(2, "0");
-  document.querySelector("#shield").textContent = "♥ ".repeat(game.shield).trim() || "EMPTY";
+  document.querySelector("#shield").textContent = `♥ ${game.shield} / ${game.maxShield}`;
 
   for (const name of Object.keys(upgrades)) {
     const cost = upgradeCost(name);
     document.querySelector(`#${name}-cost`).textContent = `✦ ${cost}`;
     document.querySelector(`#${name}-level`).textContent = `LV ${game.levels[name]}`;
-    document.querySelector(`[data-upgrade="${name}"]`).disabled = !game.running || game.sparks < cost;
+    document.querySelector(`[data-upgrade="${name}"]`).disabled = !game.running || game.choosingReward || game.sparks < cost;
   }
 }
 
@@ -91,7 +97,15 @@ function fireShot(tower) {
 
   if (!target) return false;
   tower.aim = Math.atan2(target.y - tower.y, target.x - tower.x);
-  game.shots.push({ x: tower.x, y: tower.y, target, life: 1.4 });
+  for (let index = 0; index < tower.bullets; index++) {
+    const offset = (index - (tower.bullets - 1) / 2) * 13;
+    game.shots.push({
+      x: tower.x - Math.sin(tower.aim) * offset,
+      y: tower.y + Math.cos(tower.aim) * offset,
+      target,
+      life: 1.4,
+    });
+  }
   burst(tower.x, tower.y, "#ffe075", 3);
   return true;
 }
@@ -105,19 +119,26 @@ function burst(x, y, color, count) {
 }
 
 function update(dt) {
-  game.elapsed += dt;
+  if (!game.bossSpawned || game.bossDefeated) game.elapsed += dt;
   const nextWave = Math.floor(game.elapsed / 18) + 1;
   if (nextWave !== game.wave) {
     game.wave = nextWave;
+    if (game.wave === 10 && !game.bossSpawned) {
+      game.bossSpawned = true;
+      game.enemies = [createBoss(center, Math.random() < 0.5 ? -1 : 1)];
+      game.shots = [];
+      game.spawnClock = 0;
+    }
     updateHud();
   }
 
-  game.spawnClock += dt;
-
-  const spawnInterval = Math.max(0.42, 1.55 - game.wave * 0.09);
-  while (game.spawnClock >= spawnInterval) {
-    game.spawnClock -= spawnInterval;
-    spawnEnemy();
+  if (!game.bossSpawned || game.bossDefeated) {
+    game.spawnClock += dt;
+    const spawnInterval = Math.max(0.42, 1.55 - game.wave * 0.09);
+    while (game.spawnClock >= spawnInterval) {
+      game.spawnClock -= spawnInterval;
+      spawnEnemy();
+    }
   }
 
   const fireInterval = Math.max(0.16, 0.85 * Math.pow(0.83, game.levels.rate - 1));
@@ -133,12 +154,13 @@ function update(dt) {
     enemy.phase += dt * 4;
     if (Math.hypot(enemy.x - center.x, enemy.y - center.y) < 43 * FORGE_SCALE) {
       enemy.health = 0;
-      game.shield = Math.max(0, game.shield - 1);
+      game.shield = enemy.boss ? 0 : Math.max(0, game.shield - 1);
       burst(enemy.x, enemy.y, "#ff688b", 12);
       updateHud();
     }
   }
 
+  let bossKilled = false;
   for (const shot of game.shots) {
     if (shot.target.health <= 0) {
       shot.life = 0;
@@ -165,8 +187,9 @@ function update(dt) {
         enemy.health -= game.levels.power;
         burst(shot.x, shot.y, "#8bf7e5", 4);
         if (enemy.health <= 0) {
-          game.sparks += 3 + Math.floor(game.wave / 3);
-          burst(enemy.x, enemy.y, "#ffe075", 10);
+          game.sparks += enemy.boss ? 30 : 3 + Math.floor(game.wave / 3);
+          bossKilled ||= Boolean(enemy.boss);
+          burst(enemy.x, enemy.y, "#ffe075", enemy.boss ? 36 : 10);
           updateHud();
         }
         break;
@@ -184,6 +207,16 @@ function update(dt) {
   game.particles = game.particles.filter((particle) => particle.life > 0);
 
   if (game.shield === 0) endGame();
+  else if (bossKilled) showBossReward();
+}
+
+function showBossReward() {
+  game.bossDefeated = true;
+  game.choosingReward = true;
+  game.shots = [];
+  rewardPanel.hidden = false;
+  updateHud();
+  rewardPanel.querySelector("[data-reward]").focus();
 }
 
 function draw(time) {
@@ -239,11 +272,35 @@ function draw(time) {
     context.save();
     context.translate(enemy.x, enemy.y);
     context.rotate(Math.atan2(center.y - enemy.y, center.x - enemy.x));
-    context.fillStyle = "#fd6a91";
-    context.beginPath(); context.moveTo(16, 0); context.lineTo(-9, -12); context.lineTo(-5, 0); context.lineTo(-9, 12); context.closePath(); context.fill();
-    context.fillStyle = "#ffcf92";
-    context.fillRect(-6, -3, 6, 6);
+    if (enemy.boss) {
+      context.fillStyle = "#ff9a5f33";
+      context.beginPath(); context.arc(0, 0, 43, 0, TAU); context.fill();
+      context.fillStyle = "#ff6a67";
+      context.beginPath(); context.moveTo(31, 0); context.lineTo(-10, -28); context.lineTo(-28, 0); context.lineTo(-10, 28); context.closePath(); context.fill();
+      context.fillStyle = "#582641";
+      context.beginPath(); context.arc(-2, 0, 16, 0, TAU); context.fill();
+      context.fillStyle = "#ffe187";
+      context.fillRect(0, -9, 9, 5);
+      context.fillRect(0, 4, 9, 5);
+    } else {
+      context.fillStyle = "#fd6a91";
+      context.beginPath(); context.moveTo(16, 0); context.lineTo(-9, -12); context.lineTo(-5, 0); context.lineTo(-9, 12); context.closePath(); context.fill();
+      context.fillStyle = "#ffcf92";
+      context.fillRect(-6, -3, 6, 6);
+    }
     context.restore();
+  }
+
+  const boss = game.enemies.find((enemy) => enemy.boss);
+  if (boss) {
+    context.fillStyle = "#f7e3c3";
+    context.font = "bold 17px monospace";
+    context.textAlign = "center";
+    context.fillText("✹  CINDER TITAN  ✹", center.x, 30);
+    context.fillStyle = "#422b4c";
+    context.fillRect(230, 42, 340, 12);
+    context.fillStyle = "#ff7775";
+    context.fillRect(230, 42, 340 * (boss.health / boss.maxHealth), 12);
   }
 
   for (const tower of game.towers) {
@@ -256,7 +313,12 @@ function draw(time) {
     context.beginPath(); context.arc(0, 0, 20, 0, TAU); context.stroke();
     context.rotate(tower.aim);
     context.fillStyle = "#7df1dc";
-    context.fillRect(2, -6, 25, 12);
+    if (tower.bullets === 2) {
+      context.fillRect(2, -10, 25, 7);
+      context.fillRect(2, 3, 25, 7);
+    } else {
+      context.fillRect(2, -6, 25, 12);
+    }
     context.fillStyle = "#fdf1c2";
     context.beginPath(); context.arc(0, 0, 8, 0, TAU); context.fill();
     context.restore();
@@ -279,6 +341,7 @@ function draw(time) {
 
 function endGame() {
   game.running = false;
+  rewardPanel.hidden = true;
   document.querySelector("#overlay-title").innerHTML = "FORGE DOWN!<br />NICE TRY.";
   document.querySelector("#overlay-copy").textContent = `You reached wave ${game.wave}. The forge is ready for another shift.`;
   startButton.innerHTML = 'TRY AGAIN <span aria-hidden="true">↗</span>';
@@ -289,7 +352,7 @@ function endGame() {
 function frame(time) {
   const dt = previousTime ? Math.min((time - previousTime) / 1000, 0.05) : 0;
   previousTime = time;
-  if (game.running && !document.hidden) update(dt);
+  if (game.running && !game.choosingReward && !document.hidden) update(dt);
   draw(time);
   requestAnimationFrame(frame);
 }
@@ -298,6 +361,7 @@ startButton.addEventListener("click", () => {
   game = createGame();
   game.running = true;
   overlay.hidden = true;
+  rewardPanel.hidden = true;
   updateHud();
 });
 
@@ -305,11 +369,26 @@ document.querySelectorAll("[data-upgrade]").forEach((button) => {
   button.addEventListener("click", () => {
     const name = button.dataset.upgrade;
     const cost = upgradeCost(name);
-    if (!game.running || game.sparks < cost) return;
+    if (!game.running || game.choosingReward || game.sparks < cost) return;
     game.sparks -= cost;
     game.levels[name] += 1;
     updateHud();
   });
+});
+
+function chooseReward(reward, towerIndex) {
+  if (!game.choosingReward || !applyBossReward(game, reward, center, towerIndex)) return;
+  game.choosingReward = false;
+  rewardPanel.hidden = true;
+  updateHud();
+  document.querySelector("#screen").focus();
+}
+
+rewardPanel.querySelectorAll("[data-reward]").forEach((button) => {
+  button.addEventListener("click", () => chooseReward(button.dataset.reward));
+});
+rewardPanel.querySelectorAll("[data-twin-tower]").forEach((button) => {
+  button.addEventListener("click", () => chooseReward("twin", Number(button.dataset.twinTower)));
 });
 
 document.addEventListener("visibilitychange", () => { previousTime = 0; });

@@ -6,6 +6,7 @@ const files: Record<string, { path: string; type: string }> = {
   "/assets/style.css": { path: "style.css", type: "text/css; charset=utf-8" },
   "/assets/game.js": { path: "game.js", type: "text/javascript; charset=utf-8" },
   "/assets/targeting.js": { path: "targeting.js", type: "text/javascript; charset=utf-8" },
+  "/assets/progression.js": { path: "progression.js", type: "text/javascript; charset=utf-8" },
   "/assets/htmx.min.js": { path: "htmx.min.js", type: "text/javascript; charset=utf-8" },
 };
 
@@ -16,6 +17,7 @@ const guide = `
     <h2>Keep the forge glowing.</h2>
     <p>Two towers guard the forge from opposite sides. They fire automatically at invaders in range, but the forge blocks their shots. Each enemy you melt drops <strong>Sparks</strong>.</p>
     <p>Spend Sparks on power, fire rate, and firing range for both towers. If an invader reaches the forge, the shield takes a hit. When it runs out, your shift is over.</p>
+    <p>Wave 10 brings the Cinder Titan. Defeat it to choose a permanent power-up for this shift.</p>
     <p class="help-tip">Tip: the game begins when you press <strong>Start shift</strong>. It pauses when this tab is hidden.</p>
   </div>`;
 

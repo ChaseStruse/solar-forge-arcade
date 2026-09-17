@@ -526,6 +526,75 @@ canvas{
   font-size:29px;
   color:#714a60
 }
+.reward-panel[hidden]{
+  display:none
+}
+.reward-panel{
+  position:fixed;
+  inset:0;
+  z-index:12;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:#0b0916d9;
+  overflow-y:auto
+}
+.reward-content{
+  width:min(850px,100%);
+  padding:32px;
+  border:4px solid #ffae78;
+  border-radius:18px;
+  background:#f2e9d7;
+  color:#30283a;
+  box-shadow:10px 10px 0 #613e63;
+  text-align:center
+}
+.reward-content .eyebrow{color:#b15e75}
+.reward-content h2{
+  margin:10px 0;
+  font-size:clamp(30px,5vw,54px);
+  line-height:.95;
+  letter-spacing:-.07em
+}
+.reward-content h2 em{font-style:normal;color:#d66079}
+.reward-content>p:not(.eyebrow){margin:0 0 22px;color:#6b5e6d}
+.reward-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.reward-option{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:9px;
+  min-height:190px;
+  padding:19px 12px;
+  border:2px solid #d1bdb5;
+  border-radius:10px;
+  background:#fffaf0;
+  color:#352d40;
+  box-shadow:4px 4px 0 #dbc8b9;
+  text-align:center
+}
+button.reward-option:hover,.twin-choices button:hover{
+  transform:translateY(-2px);
+  background:#f4ffe0
+}
+.reward-icon{font-size:34px;line-height:1;color:#d56881}
+.reward-option strong{font-size:14px;letter-spacing:.02em}
+.reward-option small{font-size:12px;line-height:1.3;color:#776b78}
+.twin-choices{display:flex;gap:6px;margin-top:auto}
+.twin-choices button{
+  border:1px solid #9c7992;
+  border-radius:5px;
+  padding:7px 8px;
+  background:#e6daf3;
+  color:#46334f;
+  font:700 10px ui-monospace,monospace
+}
+@media(max-width:650px){
+  .reward-content{padding:23px}
+  .reward-options{grid-template-columns:1fr}
+  .reward-option{min-height:0;padding:12px}
+  .reward-icon{font-size:25px}
+}
 @media(max-width:900px){
   .site-shell{
     width:min(700px,calc(100% - 36px))
