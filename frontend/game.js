@@ -1,15 +1,19 @@
-/** A deliberately small, self-contained Canvas game. All distances use canvas pixels. */
+/** A deliberately small Canvas game. All distances use canvas pixels. */
+import { canTarget, segmentHitsCircle } from "./targeting.js";
+
 const canvas = document.querySelector("#game");
 const context = canvas.getContext("2d");
 const overlay = document.querySelector("#screen-overlay");
 const startButton = document.querySelector("#start-button");
 const center = { x: canvas.width / 2, y: canvas.height / 2 };
 const TAU = Math.PI * 2;
+const FORGE_RADIUS = 44;
+const TOWER_OFFSET = 150;
 
 const upgrades = {
   power: { base: 10, step: 8 },
   rate: { base: 12, step: 10 },
-  orbit: { base: 8, step: 7 },
+  range: { base: 8, step: 7 },
 };
 
 let game = createGame();
@@ -20,12 +24,14 @@ function createGame() {
     running: false,
     elapsed: 0,
     spawnClock: 0,
-    fireClock: 0,
-    angle: -Math.PI / 2,
+    towers: [
+      { x: center.x - TOWER_OFFSET, y: center.y, fireClock: 0, aim: Math.PI },
+      { x: center.x + TOWER_OFFSET, y: center.y, fireClock: 0, aim: 0 },
+    ],
     wave: 1,
     shield: 5,
     sparks: 0,
-    levels: { power: 1, rate: 1, orbit: 1 },
+    levels: { power: 1, rate: 1, range: 1 },
     enemies: [],
     shots: [],
     particles: [],
@@ -65,29 +71,27 @@ function spawnEnemy() {
   });
 }
 
-function towerPosition() {
-  return {
-    x: center.x + Math.cos(game.angle) * 96,
-    y: center.y + Math.sin(game.angle) * 96,
-  };
+function firingRange() {
+  return 225 + (game.levels.range - 1) * 35;
 }
 
-function fireShot() {
-  const from = towerPosition();
+function fireShot(tower) {
   let target = null;
   let closest = Infinity;
 
   for (const enemy of game.enemies) {
-    const distance = Math.hypot(enemy.x - from.x, enemy.y - from.y);
-    if (distance < closest) {
+    const distance = Math.hypot(enemy.x - tower.x, enemy.y - tower.y);
+    if (distance < closest && canTarget(tower, enemy, center, FORGE_RADIUS, firingRange())) {
       closest = distance;
       target = enemy;
     }
   }
 
-  if (!target) return;
-  game.shots.push({ x: from.x, y: from.y, target, life: 1.4 });
-  burst(from.x, from.y, "#ffe075", 3);
+  if (!target) return false;
+  tower.aim = Math.atan2(target.y - tower.y, target.x - tower.x);
+  game.shots.push({ x: tower.x, y: tower.y, target, life: 1.4 });
+  burst(tower.x, tower.y, "#ffe075", 3);
+  return true;
 }
 
 function burst(x, y, color, count) {
@@ -106,9 +110,7 @@ function update(dt) {
     updateHud();
   }
 
-  game.angle += dt * (0.82 + (game.levels.orbit - 1) * 0.2);
   game.spawnClock += dt;
-  game.fireClock += dt;
 
   const spawnInterval = Math.max(0.42, 1.55 - game.wave * 0.09);
   while (game.spawnClock >= spawnInterval) {
@@ -117,9 +119,9 @@ function update(dt) {
   }
 
   const fireInterval = Math.max(0.16, 0.85 * Math.pow(0.83, game.levels.rate - 1));
-  if (game.fireClock >= fireInterval) {
-    game.fireClock = 0;
-    fireShot();
+  for (const tower of game.towers) {
+    tower.fireClock = Math.min(fireInterval, tower.fireClock + dt);
+    if (tower.fireClock >= fireInterval && fireShot(tower)) tower.fireClock = 0;
   }
 
   for (const enemy of game.enemies) {
@@ -140,14 +142,23 @@ function update(dt) {
       shot.life = 0;
       continue;
     }
+    if (segmentHitsCircle(shot, shot.target, center, FORGE_RADIUS)) {
+      shot.life = 0;
+      continue;
+    }
+    const before = { x: shot.x, y: shot.y };
     const direction = Math.atan2(shot.target.y - shot.y, shot.target.x - shot.x);
     shot.x += Math.cos(direction) * 460 * dt;
     shot.y += Math.sin(direction) * 460 * dt;
     shot.life -= dt;
     if (shot.life <= 0) continue;
+    if (segmentHitsCircle(before, shot, center, FORGE_RADIUS)) {
+      shot.life = 0;
+      continue;
+    }
 
     for (const enemy of game.enemies) {
-      if (enemy.health > 0 && Math.hypot(shot.x - enemy.x, shot.y - enemy.y) < enemy.radius + 5) {
+      if (enemy.health > 0 && segmentHitsCircle(before, shot, enemy, enemy.radius + 5)) {
         shot.life = 0;
         enemy.health -= game.levels.power;
         burst(shot.x, shot.y, "#8bf7e5", 4);
@@ -194,13 +205,17 @@ function draw(time) {
     context.fillRect(x, y, index % 5 === 0 ? 3 : 2, index % 5 === 0 ? 3 : 2);
   }
 
+  // Each dashed circle shows exactly how far that tower can currently fire.
+  context.setLineDash([5, 8]);
+  context.strokeStyle = "#79e8d54d";
+  context.lineWidth = 1.5;
+  for (const tower of game.towers) {
+    context.beginPath(); context.arc(tower.x, tower.y, firingRange(), 0, TAU); context.stroke();
+  }
+  context.setLineDash([]);
+
   context.save();
   context.translate(center.x, center.y);
-  context.setLineDash([5, 10]);
-  context.strokeStyle = "#466080";
-  context.lineWidth = 2;
-  context.beginPath(); context.arc(0, 0, 96, 0, TAU); context.stroke();
-  context.setLineDash([]);
   const pulse = Math.sin(time * 0.002) * 3;
   context.fillStyle = "#ff8b5b22";
   context.beginPath(); context.arc(0, 0, 69 + pulse, 0, TAU); context.fill();
@@ -228,15 +243,21 @@ function draw(time) {
     context.restore();
   }
 
-  const tower = towerPosition();
-  context.save();
-  context.translate(tower.x, tower.y);
-  context.rotate(game.angle + Math.PI / 2);
-  context.fillStyle = "#7df1dc";
-  context.beginPath(); context.moveTo(0, -21); context.lineTo(17, 12); context.lineTo(0, 7); context.lineTo(-17, 12); context.closePath(); context.fill();
-  context.fillStyle = "#fdf1c2";
-  context.fillRect(-4, -5, 8, 8);
-  context.restore();
+  for (const tower of game.towers) {
+    context.save();
+    context.translate(tower.x, tower.y);
+    context.fillStyle = "#254d60";
+    context.beginPath(); context.arc(0, 0, 20, 0, TAU); context.fill();
+    context.strokeStyle = "#7df1dc";
+    context.lineWidth = 3;
+    context.beginPath(); context.arc(0, 0, 20, 0, TAU); context.stroke();
+    context.rotate(tower.aim);
+    context.fillStyle = "#7df1dc";
+    context.fillRect(2, -6, 25, 12);
+    context.fillStyle = "#fdf1c2";
+    context.beginPath(); context.arc(0, 0, 8, 0, TAU); context.fill();
+    context.restore();
+  }
 
   for (const shot of game.shots) {
     context.fillStyle = "#ffe887";

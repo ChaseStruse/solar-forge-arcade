@@ -8,7 +8,7 @@
     <title>Protect the Forge! · Solar Forge Arcade</title>
     <link rel="stylesheet" href="/assets/style.css" />
     <script defer src="/assets/htmx.min.js"></script>
-    <script defer src="/assets/game.js"></script>
+    <script type="module" src="/assets/game.js"></script>
   </head>
   <body>
     <div class="page-glow" aria-hidden="true"></div>
@@ -41,12 +41,12 @@
                   <span class="overlay-star">✳</span>
                   <p class="eyebrow">READY, PLAYER?</p>
                   <h2 id="overlay-title">YOUR SHIFT<br />STARTS HERE</h2>
-                  <p id="overlay-copy">Your tower is armed. Your forge is warm. Let's make some Sparks.</p>
+                  <p id="overlay-copy">Two towers are armed. Your forge is warm. Let's make some Sparks.</p>
                   <button class="primary-button" id="start-button" type="button">START SHIFT <span aria-hidden="true">↗</span></button>
                 </div>
               </div>
             </div>
-            <div class="cabinet-bottom"><span>◉ &nbsp; AUTO FIRE ENGAGED</span><span>MADE FOR SHORT BREAKS & BIG GRINS</span></div>
+            <div class="cabinet-bottom"><span>◉ &nbsp; DUAL AUTO FIRE ENGAGED</span><span>MADE FOR SHORT BREAKS & BIG GRINS</span></div>
           </div>
 
           <aside class="control-panel" aria-label="Game status and upgrades">
@@ -57,7 +57,7 @@
             <div class="upgrade-list">
               <button class="upgrade" type="button" data-upgrade="power"><span class="upgrade-icon">✹</span><span class="upgrade-info"><strong>ATTACK POWER</strong><small>Hit a little harder <span class="level" id="power-level">LV 1</span></small></span><span class="cost" id="power-cost">✦ 10</span></button>
               <button class="upgrade" type="button" data-upgrade="rate"><span class="upgrade-icon">❯❯</span><span class="upgrade-info"><strong>ATTACK SPEED</strong><small>More pew per second <span class="level" id="rate-level">LV 1</span></small></span><span class="cost" id="rate-cost">✦ 12</span></button>
-              <button class="upgrade" type="button" data-upgrade="orbit"><span class="upgrade-icon">◎</span><span class="upgrade-info"><strong>TOWER SPEED</strong><small>Zip around the forge <span class="level" id="orbit-level">LV 1</span></small></span><span class="cost" id="orbit-cost">✦ 8</span></button>
+              <button class="upgrade" type="button" data-upgrade="range"><span class="upgrade-icon">◎</span><span class="upgrade-info"><strong>FIRING RANGE</strong><small>Reach farther out <span class="level" id="range-level">LV 1</span></small></span><span class="cost" id="range-cost">✦ 8</span></button>
             </div>
             <div class="panel-footer"><button class="text-button" type="button" hx-get="/fragments/guide" hx-target="#help-panel" hx-swap="innerHTML">HOW TO PLAY <span aria-hidden="true">↗</span></button><span class="footer-spark">✳</span></div>
           </aside>
