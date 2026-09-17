@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#151026" />
+    <meta name="description" content="Protect the Forge! A tiny, playful idle tower defense game at Solar Forge Arcade." />
+    <title>Protect the Forge! · Solar Forge Arcade</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script defer src="/assets/htmx.min.js"></script>
+    <script type="module" src="/assets/game.js"></script>
+  </head>
+  <body>
+    <div class="page-glow" aria-hidden="true"></div>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Solar Forge Arcade home">
+          <span class="brand-icon" aria-hidden="true">✳</span>
+          <span>SOLAR<span class="brand-accent">FORGE</span><small>ARCADE</small></span>
+        </a>
+        <span class="header-tag"><span class="status-dot"></span> INSERT IMAGINATION</span>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="game-title">
+          <div>
+            <p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 001</p>
+            <h1 id="game-title">PROTECT<br /><em>THE FORGE!</em></h1>
+            <p class="intro-copy">Two little towers. A whole lot of trouble. Keep the heart of the arcade burning bright.</p>
+          </div>
+          <div class="intro-sticker" aria-hidden="true"><span>100%</span><small>PIXEL<br />POWER</small></div>
+        </section>
+
+        <section class="game-layout" aria-label="Protect the Forge game">
+          <div class="cabinet">
+            <div class="cabinet-top"><span class="cabinet-light"></span><span>FORGE-VISION <b>9000</b></span><span class="cabinet-channel">CH 01 / LIVE</span></div>
+            <div class="screen-frame">
+              <div class="screen" id="screen" tabindex="-1">
+                <canvas id="game" width="800" height="560" aria-label="Tower defense playfield: defend the forge from incoming enemies"></canvas>
+                <div class="screen-overlay" id="screen-overlay">
+                  <span class="overlay-star">✳</span>
+                  <p class="eyebrow">READY, PLAYER?</p>
+                  <h2 id="overlay-title">YOUR SHIFT<br />STARTS HERE</h2>
+                  <p id="overlay-copy">Two towers are armed. Your forge is warm. Let's make some Sparks.</p>
+                  <button class="primary-button" id="start-button" type="button">START SHIFT <span aria-hidden="true">↗</span></button>
+                </div>
+              </div>
+            </div>
+            <div class="cabinet-bottom"><span>◉ &nbsp; DUAL AUTO FIRE ENGAGED</span><span>MADE FOR SHORT BREAKS & BIG GRINS</span></div>
+          </div>
+
+          <aside class="control-panel" aria-label="Game status and upgrades">
+            <div class="panel-header"><span>◈ CONTROL DECK</span><span class="panel-number">01—03</span></div>
+            <div class="score-card"><span class="card-label">SPARKS IN YOUR POCKET</span><strong><span class="spark-symbol">✦</span> <span id="sparks">0</span></strong><span class="score-caption">Melt invaders. Collect Sparks. Repeat.</span></div>
+            <div class="stats-row"><div><span class="card-label">WAVE</span><strong id="wave">01</strong></div><div><span class="card-label">SHIELD</span><strong id="shield">♥ 5 / 5</strong></div></div>
+            <div class="upgrade-heading"><div><p class="eyebrow">MAKE IT SHINE</p><h2>UPGRADES</h2></div><span>↘</span></div>
+            <div class="upgrade-list">
+              <button class="upgrade" type="button" data-upgrade="power"><span class="upgrade-icon">✹</span><span class="upgrade-info"><strong>ATTACK POWER</strong><small>Hit a little harder <span class="level" id="power-level">LV 1</span></small></span><span class="cost" id="power-cost">✦ 10</span></button>
+              <button class="upgrade" type="button" data-upgrade="rate"><span class="upgrade-icon">❯❯</span><span class="upgrade-info"><strong>ATTACK SPEED</strong><small>More pew per second <span class="level" id="rate-level">LV 1</span></small></span><span class="cost" id="rate-cost">✦ 12</span></button>
+              <button class="upgrade" type="button" data-upgrade="range"><span class="upgrade-icon">◎</span><span class="upgrade-info"><strong>FIRING RANGE</strong><small>Reach farther out <span class="level" id="range-level">LV 1</span></small></span><span class="cost" id="range-cost">✦ 8</span></button>
+            </div>
+            <div class="panel-footer"><button class="text-button" type="button" hx-get="/fragments/guide" hx-target="#help-panel" hx-swap="innerHTML">HOW TO PLAY <span aria-hidden="true">↗</span></button><span class="footer-spark">✳</span></div>
+          </aside>
+        </section>
+        <dialog class="reward-panel" id="reward-panel" aria-labelledby="reward-title">
+          <div class="reward-content">
+            <p class="eyebrow">WAVE 10 CLEARED · BOSS BONUS</p>
+            <h2 id="reward-title">THE CINDER TITAN<br /><em>HAS FALLEN!</em></h2>
+            <p>Pick one permanent power-up for this shift.</p>
+            <div class="reward-options">
+              <button class="reward-option" type="button" data-reward="turret"><span class="reward-icon">✹</span><strong>ADD A TURRET</strong><small>A third guardian joins above the forge.</small></button>
+              <button class="reward-option" type="button" data-reward="health"><span class="reward-icon">♥</span><strong>FORGE HEARTS</strong><small>Gain 3 maximum shield and heal 3.</small></button>
+              <div class="reward-option reward-twin"><span class="reward-icon">✦✦</span><strong>TWIN SHOT</strong><small>Choose one tower to fire two bullets.</small><div class="twin-choices"><button type="button" data-twin-tower="0">LEFT TOWER</button><button type="button" data-twin-tower="1">RIGHT TOWER</button></div></div>
+            </div>
+          </div>
+        </dialog>
+        <div id="help-panel" aria-live="polite"></div>
+        <p class="below-note">✦ BUILT FOR A LITTLE JOY, ONE WAVE AT A TIME. ✦</p>
+      </main>
+      <footer class="site-footer"><span>© SOLAR FORGE ARCADE</span><span>ENDLESS WAVES. ZERO PRESSURE.</span></footer>
+    </div>
+  </body>
+</html>
