@@ -7,7 +7,9 @@ const overlay = document.querySelector("#screen-overlay");
 const startButton = document.querySelector("#start-button");
 const center = { x: canvas.width / 2, y: canvas.height / 2 };
 const TAU = Math.PI * 2;
-const FORGE_RADIUS = 44;
+const FORGE_SCALE = 0.9;
+const FORGE_RADIUS = 44 * FORGE_SCALE;
+const RANGE_SCALE = 0.75;
 const TOWER_OFFSET = 150;
 
 const upgrades = {
@@ -72,7 +74,7 @@ function spawnEnemy() {
 }
 
 function firingRange() {
-  return 225 + (game.levels.range - 1) * 35;
+  return (225 + (game.levels.range - 1) * 35) * RANGE_SCALE;
 }
 
 function fireShot(tower) {
@@ -129,7 +131,7 @@ function update(dt) {
     enemy.x += Math.cos(direction) * enemy.speed * dt;
     enemy.y += Math.sin(direction) * enemy.speed * dt;
     enemy.phase += dt * 4;
-    if (Math.hypot(enemy.x - center.x, enemy.y - center.y) < 43) {
+    if (Math.hypot(enemy.x - center.x, enemy.y - center.y) < 43 * FORGE_SCALE) {
       enemy.health = 0;
       game.shield = Math.max(0, game.shield - 1);
       burst(enemy.x, enemy.y, "#ff688b", 12);
@@ -216,6 +218,7 @@ function draw(time) {
 
   context.save();
   context.translate(center.x, center.y);
+  context.scale(FORGE_SCALE, FORGE_SCALE);
   const pulse = Math.sin(time * 0.002) * 3;
   context.fillStyle = "#ff8b5b22";
   context.beginPath(); context.arc(0, 0, 69 + pulse, 0, TAU); context.fill();
