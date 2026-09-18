@@ -1,6 +1,6 @@
 # Solar Forge Arcade
 
-A tiny retro arcade, beginning with **Protect the Forge!**, an idle tower defense game. A Bun server serves the page and small HTML fragments. The game itself runs in the browser with Canvas.
+A tiny retro arcade with **Protect the Forge!**, an idle tower defense game, and **Brick Breaker**, a keyboard controlled paddle game. A Bun server serves the pages and small HTML fragments. Both games run in the browser with Canvas.
 
 ## Run with Docker
 
@@ -8,7 +8,7 @@ A tiny retro arcade, beginning with **Protect the Forge!**, an idle tower defens
 docker compose -f docker/compose.yml up --build -d
 ```
 
-Open <http://localhost:3000>. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
+Open <http://localhost:3000> and use the game links in the header, or go directly to <http://localhost:3000/brick-breaker>. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
 
 ## Run with Bun
 
@@ -16,7 +16,7 @@ Open <http://localhost:3000>. Check the container with `docker compose -f docker
 bun run backend/server.ts
 ```
 
-Open <http://localhost:3000>. Set `PORT` to use another port.
+Open <http://localhost:3000> for Protect the Forge or <http://localhost:3000/brick-breaker> for Brick Breaker. Set `PORT` to use another port.
 
 The game uses no package dependencies. A local copy of htmx 4 powers the **How to Play** panel.
 
