@@ -8,7 +8,7 @@ A tiny retro arcade with **Protect the Forge!**, an idle tower defense game, and
 docker compose -f docker/compose.yml up --build -d
 ```
 
-Open <http://localhost:3000> and use the game links in the header, or go directly to <http://localhost:3000/brick-breaker>. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
+Open <http://localhost:3000> to select a game. Protect the Forge is at <http://localhost:3000/protect-the-forge> and Brick Breaker is at <http://localhost:3000/brick-breaker>. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
 
 ## Run with Bun
 
@@ -16,7 +16,7 @@ Open <http://localhost:3000> and use the game links in the header, or go directl
 bun run backend/server.ts
 ```
 
-Open <http://localhost:3000> for Protect the Forge or <http://localhost:3000/brick-breaker> for Brick Breaker. Set `PORT` to use another port.
+Open <http://localhost:3000> to select a game. Set `PORT` to use another port.
 
 The game uses no package dependencies. A local copy of htmx 4 powers the **How to Play** panel.
 

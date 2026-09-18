@@ -3,9 +3,12 @@ const root = new URL("../frontend/", import.meta.url);
 
 const files: Record<string, { path: string; type: string }> = {
   "/": { path: "index.html", type: "text/html; charset=utf-8" },
+  "/protect-the-forge": { path: "protect-the-forge.html", type: "text/html; charset=utf-8" },
+  "/protect-the-forge/": { path: "protect-the-forge.html", type: "text/html; charset=utf-8" },
   "/brick-breaker": { path: "brick-breaker.html", type: "text/html; charset=utf-8" },
   "/brick-breaker/": { path: "brick-breaker.html", type: "text/html; charset=utf-8" },
   "/assets/style.css": { path: "style.css", type: "text/css; charset=utf-8" },
+  "/assets/selector.css": { path: "selector.css", type: "text/css; charset=utf-8" },
   "/assets/combat.js": { path: "combat.js", type: "text/javascript; charset=utf-8" },
   "/assets/game.js": { path: "game.js", type: "text/javascript; charset=utf-8" },
   "/assets/brick-breaker.js": { path: "brick-breaker.js", type: "text/javascript; charset=utf-8" },
