@@ -182,3 +182,13 @@ test("pass leading follows a receiver's cut instead of always throwing straight 
   assert.equal(run("flight.targetY"), run("predicted.y"));
   assert.equal(run("players[1].route.index"), 0, 'prediction must not advance the real receiver');
 });
+
+test("Nova receivers can catch route-led passes on every route type", () => {
+  for (const name of rules.ROUTE_NAMES) {
+    const run = game();
+    run(`setup(1, 640, true); delay = 0; players[4].route = createRoute('${name}', players[4].x, players[4].y, -1); for (const p of players.filter(p => p.team === 0)) { p.x = 50; p.y = 455; } pass(1); for (let i = 0; i < 300 && flight; i++) update(1/60)`);
+    assert.equal(run("carrier?.number"), 1, name);
+    assert.equal(run("offense"), 1, name);
+    assert.equal(run("delay"), 0, name);
+  }
+});

@@ -7,7 +7,7 @@ const panel = document.querySelector(".control-panel");
 const help = document.createElement("p");
 help.className = "cabinet-help";
 help.textContent = neon ? "Move with A/D. W jumps. J punches; L shoots. Hold Shift for bullet time; release when empty. P pauses; Escape exits."
-  : blitz ? "Arrows move. X/C pass. Space dashes on offense. Nova throws trigger slow motion: Z switches to a defender near the pass destination; move into the ball to intercept. First to 3 TDs."
+  : blitz ? "Arrows move. X/C pass. Space dashes on offense. Nova throws trigger slow motion: Z switches to a defender near the pass destination; move into the ball to intercept. AI teammates stay in man coverage. Routes change each play. First to 3 TDs."
   : basketball ? "Move with ← →. Double jump with Space. Press X at the top of your jump for your most accurate shot! Aim right. First to five!"
   : breaker
   ? "Move with ← → or the buttons below. Keep the ball bouncing!"
