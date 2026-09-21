@@ -6,7 +6,7 @@ help.className = "cabinet-help";
 help.textContent = breaker
   ? "Move with ← → or the buttons below. Keep the ball bouncing!"
   : volley
-    ? "Move with ← → and jump to block or return the ball. First to five wins!"
+    ? "Move with ← →. Tap jump twice for an aerial block! Landing restores both jumps. First to five wins."
     : "Your towers fire automatically. Spend Sparks on upgrades to keep the forge alive.";
 panel.append(help);
 if (breaker || volley) {

@@ -145,59 +145,80 @@ function rect(x, y, width, height, color) {
 
 function drawCourt() {
   ctx.imageSmoothingEnabled = false;
-  rect(0, 0, COURT_WIDTH, COURT_HEIGHT, "#151633");
-  rect(0, 0, COURT_WIDTH, 285, "#25204a");
-  rect(0, 285, COURT_WIDTH, 203, "#d46f68");
-  for (let y = 0; y < 285; y += 32) rect(0, y, COURT_WIDTH, 2, "#6f5d7d44");
-  for (let x = 0; x < COURT_WIDTH; x += 64) rect(x, 285, 3, 203, "#ab555c55");
-  rect(0, FLOOR_Y, COURT_WIDTH, 72, "#30203f");
-  rect(0, FLOOR_Y, COURT_WIDTH, 7, "#ffd27f");
-  rect(32, 453, 330, 4, "#f4b278");
-  rect(438, 453, 330, 4, "#f4b278");
-  rect(NET_X - 6, NET_TOP, 12, FLOOR_Y - NET_TOP, "#f7e7c2");
-  rect(NET_X - 12, NET_TOP - 7, 24, 9, "#dafa78");
-  ctx.strokeStyle = "#876c83";
-  ctx.lineWidth = 2;
-  for (let y = NET_TOP + 12; y < FLOOR_Y; y += 16) { ctx.beginPath(); ctx.moveTo(NET_X - 5, y); ctx.lineTo(NET_X + 5, y + 8); ctx.stroke(); }
-  ctx.font = "700 12px ui-monospace, monospace";
-  ctx.textAlign = "center";
-  ctx.fillStyle = "#f8dbc8";
-  ctx.fillText("SOL", 200, 526);
-  ctx.fillText("NOVA", 600, 526);
-  const sunX = 690;
-  const sunY = 78;
-  rect(sunX - 18, sunY - 18, 36, 36, "#ffd37d");
-  rect(sunX - 6, sunY - 27, 12, 54, "#ffd37d");
-  rect(sunX - 27, sunY - 6, 54, 12, "#ffd37d");
+  rect(0, 0, 800, 560, "#090b24");
+  for (let i = 0; i < 55; i++) rect((i * 137) % 800, 65 + (i * 47) % 220, 2, 2, i % 3 ? "#535080" : "#ffd67b");
+  for (let row = 0; row < 18; row++) {
+    const y = 108 + row * 7;
+    const half = Math.sqrt(Math.max(0, 64 * 64 - (y - 168) ** 2));
+    rect(400 - half, y, half * 2, row < 9 ? 7 : 4, row < 6 ? "#ffcf72" : row < 12 ? "#ff7888" : "#d74caa");
+  }
+  for (let i = 0; i < 25; i++) {
+    const h = 20 + (i * 37) % 73;
+    rect(i * 34, 282 - h, 28, h, "#181635");
+    for (let j = 0; j < h - 10; j += 14) rect(i * 34 + 8, 282 - h + j + 6, 4, 4, "#765289");
+  }
+  rect(0, 282, 800, 206, "#171233");
+  ctx.strokeStyle = "#683679"; ctx.lineWidth = 2;
+  for (let x = -800; x <= 1600; x += 100) {
+    ctx.beginPath(); ctx.moveTo(400 + (x - 400) * .12, 282); ctx.lineTo(x, 488); ctx.stroke();
+  }
+  for (const y of [282, 300, 324, 355, 396, 448, 487]) rect(0, y, 800, 2, "#683679");
+  rect(0, FLOOR_Y, 800, 72, "#0b1028");
+  rect(0, FLOOR_Y, 400, 4, "#63f5ef");
+  rect(400, FLOOR_Y, 400, 4, "#ff70b7");
+  rect(0, FLOOR_Y + 8, 800, 2, "#533064");
+  rect(NET_X - 8, NET_TOP, 16, FLOOR_Y - NET_TOP, "#232348");
+  for (let y = NET_TOP; y < FLOOR_Y; y += 12) rect(NET_X - 7, y, 14, 2, "#a6b6ca");
+  rect(NET_X - 9, NET_TOP, 3, FLOOR_Y - NET_TOP, "#e2e9ea");
+  rect(NET_X + 6, NET_TOP, 3, FLOOR_Y - NET_TOP, "#7698ad");
+  rect(NET_X - 12, NET_TOP - 5, 24, 6, "#fff2bd");
+  ctx.font = "bold 14px monospace"; ctx.textAlign = "center";
+  ctx.fillStyle = "#74f4e4"; ctx.fillText("1P  SOL", 160, 530);
+  ctx.fillStyle = "#ff8abc"; ctx.fillText("CPU  NOVA", 640, 530);
+  ctx.fillStyle = "#fff0ac"; ctx.fillText("FIRST TO 5", 400, 530);
 }
 
+
 function drawPlayer(player, label) {
-  const stretch = player.onGround ? 1 - player.squash * .12 : 1.07;
-  const width = 54 * (player.onGround ? 1 + player.squash * .15 : .94);
-  const height = 62 * stretch;
-  const x = Math.round(player.x - width / 2);
-  const y = Math.round(player.y - height / 2);
-  rect(x + 5, y + 7, width, height, "#17152b");
-  rect(x, y, width, height, player.color);
-  rect(x + 8, y + 8, width - 16, 13, player.accent);
-  rect(x + 11, y + 28, 9, 9, "#1d2540");
-  rect(x + width - 20, y + 28, 9, 9, "#1d2540");
-  rect(x + 17, y + 46, width - 34, 5, "#1d2540");
+  const x = Math.round(player.x - 24);
+  const y = Math.round(player.y - 31);
+  const step = player.onGround && Math.abs(player.vx) > 30 ? Math.round(Math.sin(state.time * 18)) * 4 : 0;
+  const skin = "#ffd0a0";
+  rect(player.x - 24, FLOOR_Y - 3, 48, 3, "#080b22");
+  rect(x + 12, y, 24, 8, "#262044");
+  rect(x + 8, y + 8, 32, 5, player.accent);
+  rect(x + 12, y + 13, 24, 13, skin);
+  rect(x + (player === state.player ? 29 : 15), y + 15, 4, 4, "#161529");
+  rect(x + 8, y + 26, 32, 20, player.color);
+  rect(x + 22, y + 30, 4, 10, "#ffffff");
+  rect(x + 8, y + 46, 32, 6, "#322754");
+  rect(x + 8, y + 52, 10, 7 + step, skin);
+  rect(x + 30, y + 52, 10, 7 - step, skin);
+  rect(x + 4, y + 59 + step, 14, 4, "#fff5d8");
+  rect(x + 30, y + 59 - step, 14, 4, "#fff5d8");
+  const armsY = player.onGround ? y + 28 : y + 6;
+  rect(x, armsY, 8, 24, skin);
+  rect(x + 40, armsY, 8, 24, skin);
   ctx.fillStyle = player.accent;
   ctx.font = "700 10px ui-monospace, monospace";
   ctx.textAlign = "center";
   ctx.fillText(label, player.x, y - 10);
+  if (player === state.player) {
+    for (let i = 0; i < 2; i++) rect(player.x - 11 + i * 13, y - 22, 9, 4, i < 2 - player.jumpsUsed ? "#7ffff0" : "#444064");
+  }
 }
 
 function drawBall() {
   const ball = state.ball;
   ctx.save();
   ctx.translate(Math.round(ball.x), Math.round(ball.y));
-  ctx.rotate(state.time * 3);
-  rect(-BALL_RADIUS, -BALL_RADIUS, BALL_RADIUS * 2, BALL_RADIUS * 2, "#fff0b2");
-  rect(-BALL_RADIUS, -4, BALL_RADIUS * 2, 8, "#ff817b");
-  rect(-4, -BALL_RADIUS, 8, BALL_RADIUS * 2, "#73ead3");
-  rect(-4, -4, 8, 8, "#fff0b2");
+  for (let y = -14; y < 14; y += 4) {
+    for (let x = -14; x < 14; x += 4) {
+      if (Math.hypot(x + 2, y + 2) > 14) continue;
+      const seam = (x + y + Math.floor(state.time * 8) * 4) % 16;
+      rect(x, y, 4, 4, seam === 0 ? "#ef768e" : seam === 4 ? "#76dfec" : "#fff4d6");
+    }
+  }
   ctx.restore();
 }
 
@@ -214,7 +235,10 @@ function draw() {
   ctx.fillStyle = "#f9e2bd";
   ctx.font = "700 13px ui-monospace, monospace";
   ctx.textAlign = "center";
-  ctx.fillText(`${state.score.player}  SOLAR VOLLEY  ${state.score.rival}`, COURT_WIDTH / 2, 32);
+  ctx.fillText("S O L A R   V O L L E Y", COURT_WIDTH / 2, 26);
+  ctx.font = "bold 28px monospace";
+  ctx.fillStyle = "#76ffee"; ctx.fillText(String(state.score.player).padStart(2, "0"), 65, 42);
+  ctx.fillStyle = "#ff82bb"; ctx.fillText(String(state.score.rival).padStart(2, "0"), 735, 42);
 }
 
 function frame(time) {
