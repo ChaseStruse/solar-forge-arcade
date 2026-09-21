@@ -21,13 +21,14 @@ function setup(team, x, newPossession = false) {
   for (let t = 0; t < 2; t++) for (let i = 0; i < 3; i++) {
     const attacking = t === offense;
     players.push({ team: t, number: i, x: clamp(spot + (attacking ? (i ? 24 : -12) : 105) * dir, 78, 722),
-      y: [280, 150, 410][i], cooldown: 0, dash: 0, vx: 0, vy: 0 });
+      y: [280, 150, 410][i], cooldown: 0, dash: 0, vx: 0, vy: 0, coverageAim: null, coverageTimer: 0 });
   }
   carrier = players[team * 3]; flight = null; controlled = team === 0 ? carrier : players[0];
   assignRoutes();
   delay = 1.1; clock = 0; aiPass = 0; reactionTime = 0;
 }
 function assignRoutes() {
+  for (const p of players) { p.coverageAim = null; p.coverageTimer = 0; }
   const choices = [...ROUTE_NAMES];
   for (const p of players.filter(p => p.team === offense && p !== carrier)) {
     const name = choices.splice(Math.floor(Math.random() * choices.length), 1)[0];
@@ -97,8 +98,9 @@ function action(key) {
 function move(p, dx, dy, dt) {
   const norm = Math.hypot(dx, dy) || 1;
   const defending = p.team !== offense;
+  const markingReceiver = defending && p.number > 0 && carrier?.number !== p.number;
   const speed = p.dash > 0 ? 280
-    : p === controlled ? 175 : p === carrier ? 165 : !defending ? 130 : p.team === 0 ? 145 : 100;
+    : p === controlled ? 175 : p === carrier ? 165 : !defending ? 130 : p.team === 0 ? (markingReceiver ? 126 : 145) : 100;
   const oldX = p.x, oldY = p.y;
   p.x = clamp(p.x + dx / norm * speed * dt, 30, 770);
   p.y = clamp(p.y + dy / norm * speed * dt, 105, 455);
@@ -117,6 +119,16 @@ function coverageTarget(p) {
   // if their own man has it. Manual control can intentionally leave coverage.
   return { x: clamp(assigned.x + (assigned === carrier ? 0 : offense === 0 ? 22 : -22), 30, 770), y: assigned.y };
 }
+function trackedCoverageTarget(p, dt) {
+  // A marker reacts in discrete reads instead of mirroring every route cut.
+  // Keep the assignment; only the observed position lags behind the receiver.
+  p.coverageTimer -= dt;
+  if (!p.coverageAim || p.coverageTimer <= 0) {
+    p.coverageAim = coverageTarget(p);
+    p.coverageTimer = .22 + p.number * .06;
+  }
+  return p.coverageAim;
+}
 function update(dt) {
   if (delay > 0) { delay -= dt; return; }
   // The reaction window uses real seconds; the play clock and world use game time.
@@ -132,6 +144,7 @@ function update(dt) {
     const moveDt = p === controlled ? playerDt : worldDt;
     p.cooldown = Math.max(0, p.cooldown - moveDt); p.dash = Math.max(0, p.dash - moveDt);
     if (p === controlled) {
+      p.coverageAim = null; p.coverageTimer = 0;
       const dx = Number(keys.has("ArrowRight") || keys.has("d")) - Number(keys.has("ArrowLeft") || keys.has("a"));
       const dy = Number(keys.has("ArrowDown") || keys.has("s")) - Number(keys.has("ArrowUp") || keys.has("w"));
       if (dx || dy) move(p, dx, dy, moveDt);
@@ -149,16 +162,16 @@ function update(dt) {
     } else {
       const covering = p.number > 0 && carrier?.number === 0
         && (offense === 0 ? carrier.x <= startSpot + 35 : carrier.x >= startSpot - 35);
-      const target = p.team === 0 || covering ? coverageTarget(p) : ball;
+      const target = p.team === 0 ? trackedCoverageTarget(p, worldDt) : covering ? coverageTarget(p) : ball;
       if (distance(p, target) > 5) move(p, target.x - p.x, target.y - p.y, moveDt);
       else { p.vx = 0; p.vy = 0; }
     }
   }
-  if (offense === 1 && carrier && aiPass > .25 && carrier.number === 0) {
+  if (offense === 1 && carrier && aiPass > .65 && carrier.number === 0) {
     const receivers = players.filter(p => p.team === 1 && p !== carrier);
     const openness = p => Math.min(...players.filter(q => q.team === 0).map(q => distance(p,q)));
     receivers.sort((a,b) => openness(b)-openness(a));
-    const target = receivers.find(p => openness(p) > 85 && passingLaneClear(p));
+    const target = receivers.find(p => openness(p) > 34 && passingLaneClear(p));
     if (target) { pass(target.number); aiPass = 0; }
   }
   if (flight) {

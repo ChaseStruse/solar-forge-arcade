@@ -52,10 +52,11 @@ test("AI can advance and score against an idle player", () => {
   assert.ok(run("scores[1]") > 0);
 });
 
-test("player teammates keep up with receivers and anticipate a moving carrier", () => {
+test("cover defenders run slightly slower than receivers while manual pursuit still leads the carrier", () => {
   const run = game();
   run("setup(1, 640, true); delay = 0; update(.025)");
-  assert.ok(run("Math.hypot(players[1].vx, players[1].vy)") > 130);
+  const coverageSpeed = run("Math.hypot(players[1].vx, players[1].vy)");
+  assert.ok(coverageSpeed >= 120 && coverageSpeed < 130);
   run("carrier.vx = -165; carrier.vy = 50");
   assert.ok(run("defensiveTarget().x") < run("carrier.x"));
   assert.ok(run("defensiveTarget().y") > run("carrier.y"));
@@ -191,4 +192,32 @@ test("Nova receivers can catch route-led passes on every route type", () => {
     assert.equal(run("offense"), 1, name);
     assert.equal(run("delay"), 0, name);
   }
+});
+
+
+test("man coverage reacts late to cuts without switching assignments", () => {
+  const run = game();
+  run("setup(1, 640, true); delay = 0; const observed = trackedCoverageTarget(players[1], 0); players[4].y = 240; carrier.y = 400; const delayed = trackedCoverageTarget(players[1], .1)");
+  assert.equal(run("delayed.y"), 150);
+  run("const reacted = trackedCoverageTarget(players[1], .2)");
+  assert.equal(run("reacted.y"), 240);
+  assert.notEqual(run("reacted.y"), run("carrier.y"));
+  run("controlled = players[1]; update(.025)");
+  assert.equal(run("controlled.coverageAim"), null, 'manual control discards stale tracking');
+  run("setup(1, 640, true)");
+  assert.equal(run("players[1].coverageAim"), null, 'new plays reset the observation');
+});
+
+test("Nova regularly attempts passes against normal man coverage across randomized plays", () => {
+  let passingPlays = 0;
+  for (let seed = 1; seed <= 60; seed++) {
+    const run = game(seed);
+    run("setup(1, 640, true); delay = 0; let thrownAt = null; const originalPass = pass; pass = function(number) { originalPass(number); if (flight && offense === 1) thrownAt = clock; }; for (let i = 0; i < 1500 && offense === 1 && down === 1 && delay === 0 && thrownAt === null; i++) update(1/60)");
+    const thrownAt = run("thrownAt");
+    if (thrownAt !== null) {
+      passingPlays++;
+      assert.ok(thrownAt >= .65, 'give routes time to develop before the first read');
+    }
+  }
+  assert.ok(passingPlays >= 36, `expected passing opportunities in most plays, got ${passingPlays}/60`);
 });
