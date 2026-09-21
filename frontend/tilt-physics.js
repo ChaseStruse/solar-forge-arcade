@@ -21,7 +21,8 @@ export function platformTopAt(rider, platforms) {
 
 export function clashResult(player, rival) {
   const dx = Math.abs(player.x - rival.x);
-  const wrappedDx = Math.min(dx, ARENA_WIDTH - dx);
+  const normalizedDx = dx % ARENA_WIDTH;
+  const wrappedDx = Math.min(normalizedDx, ARENA_WIDTH - normalizedDx);
   const dy = player.y - rival.y;
   if (wrappedDx > RIDER_RADIUS * 1.75 || Math.abs(dy) > RIDER_RADIUS * 1.35) return null;
   if (Math.abs(dy) < 8) return "draw";
