@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#151026" />
+    <meta name="description" content="Play Solar Volley at Solar Forge Arcade. Jump, block, and spike your way to five points." />
+    <title>Solar Volley · Solar Forge Arcade</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script type="module" src="/assets/solar-volley.js"></script>
+  </head>
+  <body>
+    <div class="page-glow" aria-hidden="true"></div>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-icon" aria-hidden="true">✳</span><span>SOLAR<span class="brand-accent">FORGE</span><small>ARCADE</small></span></a>
+        <nav class="arcade-nav" aria-label="Games"><a href="/">GAME SELECT</a><a href="/protect-the-forge">PROTECT THE FORGE</a><a href="/brick-breaker">BRICK BREAKER</a><a href="/solar-volley" aria-current="page">SOLAR VOLLEY</a></nav>
+      </header>
+      <main>
+        <section class="intro" aria-labelledby="game-title"><div><p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 003</p><h1 id="game-title">SOLAR<br /><em>VOLLEY!</em></h1><p class="intro-copy">Jump high. Guard the net. Send the sun crashing down.</p></div><div class="intro-sticker volley-sticker" aria-hidden="true"><span>5</span><small>POINTS<br />TO WIN</small></div></section>
+        <section class="game-layout" aria-label="Solar Volley game">
+          <div class="cabinet"><div class="cabinet-top"><span class="cabinet-light"></span><span>FORGE-VISION <b>9000</b></span><span class="cabinet-channel">CH 03 / LIVE</span></div><div class="screen-frame"><div class="screen"><canvas id="volley-game" width="800" height="560" aria-label="Solar Volley court"></canvas><div class="screen-overlay" id="volley-overlay"><span class="overlay-star">☀</span><p class="eyebrow">COURT SYSTEM ONLINE</p><h2 id="volley-overlay-title">SERVE UP<br />SOME SUNSHINE</h2><p id="volley-overlay-copy">Move with ← → and jump with Space, W, or ↑. Get the ball over the net and onto Nova's court. First to five wins.</p><button class="primary-button" id="volley-start" type="button">START MATCH <span aria-hidden="true">↗</span></button></div></div></div><div class="cabinet-bottom"><span>◉ &nbsp; ARROWS TO MOVE / SPACE TO JUMP</span><span>FIRST TO FIVE WINS</span></div></div>
+          <aside class="control-panel volley-panel" aria-label="Solar Volley score and controls"><div class="panel-header"><span>◈ MATCH BOARD</span><span class="panel-number">03—03</span></div><div class="volley-scoreboard"><div class="team-score player-score"><span class="card-label">YOU / SOL</span><strong id="volley-player-score">0</strong></div><span class="versus-mark">—</span><div class="team-score rival-score"><span class="card-label">AI / NOVA</span><strong id="volley-rival-score">0</strong></div></div><div class="serve-status"><span class="card-label">COURT CALL</span><strong id="volley-status">READY TO SERVE</strong></div><div class="breaker-instructions volley-instructions"><p class="eyebrow">HOW TO PLAY</p><h2>JUMP. BLOCK. SPIKE.</h2><p>Use <kbd>←</kbd> and <kbd>→</kbd> to patrol your side. Press <kbd>SPACE</kbd>, <kbd>W</kbd>, or <kbd>↑</kbd> to jump.</p><p>Keep the ball off your floor and send it over the net. Land it on Nova's side to score.</p></div><div class="panel-footer"><span>✦ KEEP THE SUN IN THE SKY.</span><span class="footer-spark">✳</span></div></aside>
+        </section>
+        <p class="below-note">✦ ONE NET. TWO PLAYERS. FIVE POINTS FOR GLORY. ✦</p>
+      </main>
+      <footer class="site-footer"><span>© SOLAR FORGE ARCADE</span><span>SERVE BRIGHT. BLOCK BOLD.</span></footer>
+    </div>
+  </body>
+</html>
