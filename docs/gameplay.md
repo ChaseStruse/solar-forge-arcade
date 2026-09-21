@@ -25,3 +25,9 @@ Defeating it grants 30 Sparks and pauses the game for one permanent reward choic
 The game resumes after a reward is chosen. This boss and reward are offered once per shift.
 
 The current prototype is intentionally hands off: it asks the player to choose upgrades, not steer the tower. Balancing and additional enemy types can follow after playtesting.
+
+## Solar Blitz: defensive assist
+
+On offense, Space keeps its directional dash. On defense, **Space — Stop the Ball** selects the defender nearest the projected ball position and automatically bursts toward it for 0.35 seconds. The burst has a slightly larger tackle and interception radius, and a shared 2.5-second cooldown so switching players cannot bypass the recharge. Use it when a runner or pass is close, rather than from across the field. Z selects the best-positioned defender without spending the burst.
+
+A SPACE marker shows who will burst; the field HUD shows readiness and recharge time. The cabinet's touch BURST button uses the same action. Teammates now cover at 145 pixels per second (receivers run at 130) and lead runners instead of chasing their old position. Manual defense still matters: carriers run at 165, and opponents can score if the player stays idle.

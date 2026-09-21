@@ -161,6 +161,7 @@ function draw() {
   }
   box(25,95,750,3,"#82f7e3"); box(25,463,750,3,"#ff81b9");
   box(startSpot,95,2,370,"#eac67b");
+  const suggested = offense === 1 && tackleCooldown <= 0 ? bestDefender() : null;
   for(const p of players) {
     if (p.team === 0 && offense === 1 && p.dash > 0) {
       ctx.strokeStyle="#75ffe2"; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(p.x,p.y,32,0,Math.PI*2); ctx.stroke();
@@ -170,6 +171,7 @@ function draw() {
     box(p.x-10,p.y-15,20,11,colors[p.team]); box(p.x-7,p.y-7,14,6,"#ffd3a1");
     box(p.x-12,p.y,24,15,colors[p.team]); box(p.x-10,p.y+15,7,5,"#d9edee");box(p.x+3,p.y+15,7,5,"#d9edee");
     ctx.font="bold 10px monospace";ctx.textAlign="center";ctx.fillStyle="#10152b";ctx.fillText(p.number+1,p.x,p.y+11);
+    if (p === suggested) { ctx.font="bold 10px monospace";ctx.fillStyle="#75ffe2";ctx.fillText("SPACE",p.x,p.y-27); }
     if(p.team===0 && p!==carrier && offense===0 && p.number) {ctx.fillStyle="#fff4b5";ctx.fillText(p.number===1?"X":"C",p.x,p.y-23);}
   }
   const b=carrier?{x:carrier.x+12,y:carrier.y}:flight;
@@ -185,7 +187,7 @@ function draw() {
   ctx.fillText(offense===1?"SPACE: AUTO SWITCH + TACKLE BURST   Z: BEST DEFENDER":"MOVE: ARROWS / WASD   PASS: X / C   DASH: SPACE",400,537);
   document.querySelector("#blitz-player-score").textContent=scores[0];
   document.querySelector("#blitz-rival-score").textContent=scores[1];
-  document.querySelector("#blitz-status").textContent=(offense===0?"OFFENSE":"DEFENSE")+" / DOWN "+down;
+  document.querySelector("#blitz-status").textContent=(offense===0?"OFFENSE":"DEFENSE")+" / DOWN "+down+(offense===1?(tackleCooldown>0?" / BURST RECHARGING":" / SPACE TO TACKLE"):"");
 }
 function frame(t) {
   const dt=previous?Math.min((t-previous)/1000,.025):0;previous=t;
