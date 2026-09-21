@@ -17,6 +17,7 @@ function mountOnScreen(object, depth = 0) {
   object.quaternion.copy(screenRotation);
 }
 const games = {
+  blitz: { name: "Solar Blitz", title: "SOLAR<br />BLITZ", description: "THREE A SIDE. FOUR DOWNS. ALL ACTION.", channel: "05", url: "/games/solar-blitz" },
   basketball: { name: "Solar Basketball", title: "SOLAR<br />BASKETBALL", description: "OWN THE COURT. SHOOT FOR THE SUN.", channel: "04", url: "/games/solar-basketball" },
   forge: { name: "Protect the Forge", title: "PROTECT<br />THE FORGE", description: "KEEP THE HEART OF THE ARCADE BURNING.", channel: "01", url: "/games/protect-the-forge" },
   breaker: { name: "Brick Breaker", title: "BRICK<br />BREAKER", description: "ONE PADDLE. INFINITE POSSIBILITIES.", channel: "02", url: "/games/brick-breaker" },
