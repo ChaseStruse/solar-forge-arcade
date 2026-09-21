@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#171322" />
+  <title>Solar Forge Arcade · Good times, on repeat.</title>
+  <link rel="stylesheet" href="/experiment.css" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+  <script type="module" src="/experiment.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-symbol">✳</span><span>SOLAR FORGE<small>THE GOOD-TIME MACHINE</small></span></a>
+    <span class="header-note">EST. IN ANOTHER DIMENSION</span>
+    <span class="open-sign"><i></i> ALWAYS OPEN</span>
+  </header>
+  <main>
+    <section class="intro">
+      <p class="eyebrow"><span></span> A LITTLE ESCAPE FROM REAL LIFE</p>
+      <h1>GOOD TIMES.<br /><em>ON REPEAT.</em><span class="title-spark" aria-hidden="true">✳</span></h1>
+      <p class="lede">Meet your new favorite corner of the internet.<br />Two games. One cosmic cabinet. All yours.</p>
+      <button class="primary-action" id="play-button" type="button" disabled>POWERING UP… <span>↗</span></button>
+      <p class="free-play">NO COINS. NO DOWNLOADS. JUST ONE MORE ROUND.</p>
+      <div class="mini-note"><span aria-hidden="true">✦</span><p>Built for short breaks.<br /><b>And accidentally long ones.</b></p></div>
+    </section>
+    <section class="showroom" aria-label="Interactive 3D arcade cabinet">
+      <div class="room-halo" aria-hidden="true"></div>
+      <div class="room-label" aria-hidden="true">THE ORIGINAL<br /><b>FORGE-VISION 9000</b></div>
+      <div id="scene" aria-label="Solar Forge cabinet. Drag to turn the machine."></div>
+      <div class="free-sticker" aria-hidden="true">100%<small>FREE PLAY</small><span>★ ★ ★</span></div>
+      <div class="view-controls"><span><i></i> <span id="view-hint">DRAG TO LOOK AROUND</span></span><button id="reset-view" type="button" aria-label="Reset cabinet camera">↺ RESET VIEW</button></div>
+      <p id="load-status" role="status">Warming up the phosphors…</p>
+    </section>
+    <section class="cartridges" aria-label="Choose your game">
+      <div class="cartridge-label"><span>CHOOSE YOUR</span><strong>NEXT OBSESSION.</strong><small>02 GAMES / ENDLESS REPLAYS</small></div>
+      <button class="game-choice active" data-game="forge" aria-pressed="true" type="button"><span class="game-art forge-art" aria-hidden="true">✹</span><span class="game-copy"><small>01 / IDLE TOWER DEFENSE</small><strong>Protect the Forge</strong><span>Defend the glow. Grow your power.</span></span><span class="choice-mark">↗</span></button>
+      <button class="game-choice" data-game="breaker" aria-pressed="false" type="button"><span class="game-art breaker-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><b></b></span><span class="game-copy"><small>02 / ARCADE CLASSIC</small><strong>Brick Breaker</strong><span>Chase the bounce. Clear the wall.</span></span><span class="choice-mark">↗</span></button>
+    </section>
+  </main>
+  <footer><span>✳ &nbsp; SOLAR FORGE ARCADE</span><span>LESS SCROLLING. MORE HIGH SCORES.</span><span>MADE FOR THE JOY OF IT. ↗</span></footer>
+  <div class="play-toolbar" hidden><button id="exit-game" type="button">← BACK TO THE ARCADE</button><span id="playing-title">PROTECT THE FORGE</span><span>ESC TO EXIT</span></div>
+  <div id="monitor" class="monitor" hidden>
+    <div id="attract-screen"><div class="crt-grid"></div><div class="screen-topline"><span>SOLAR FORGE SYSTEMS</span><span>● READY</span></div><div class="pixel-sun" aria-hidden="true">✳</div><p class="screen-kicker">NOW LOADED / 01</p><h2 id="loaded-title">PROTECT<br />THE FORGE</h2><p class="screen-description">KEEP THE HEART OF THE ARCADE BURNING.</p><button id="screen-play" type="button">PRESS START <span>▶</span></button><div class="screen-footer"><span>1 PLAYER</span><span>FREE PLAY ∞</span></div></div>
+    <iframe id="game-screen" title="Playable arcade game" hidden></iframe>
+  </div>
+  <noscript>This arcade needs JavaScript to power its cabinet and games.</noscript>
+</body>
+</html>
