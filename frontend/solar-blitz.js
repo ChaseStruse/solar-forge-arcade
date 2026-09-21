@@ -19,7 +19,7 @@ function setup(team, x, newPossession = false) {
   for (let t = 0; t < 2; t++) for (let i = 0; i < 3; i++) {
     const attacking = t === offense;
     players.push({ team: t, number: i, x: clamp(spot + (attacking ? (i ? 24 : -12) : 105) * dir, 78, 722),
-      y: (attacking ? [280, 150, 410] : [280, 240, 320])[i], cooldown: 0, dash: 0 });
+      y: [280, 150, 410][i], cooldown: 0, dash: 0 });
   }
   carrier = players[team * 3]; flight = null; controlled = team === 0 ? carrier : players[0];
   delay = 1.1; clock = 0; aiPass = 0;
@@ -82,13 +82,23 @@ function update(dt) {
         const y = p.number === 1 ? 155 : 405;
         move(p, dir * 100, (y - p.y) * 2, dt);
       }
-    } else move(p, ball.x - p.x, ball.y - p.y, dt);
+    } else {
+      // One rusher; two defenders stay with their assigned receivers until
+      // the ball is thrown or a runner crosses the line of scrimmage.
+      const covering = p.number > 0 && carrier?.number === 0
+        && (offense === 0 ? carrier.x <= startSpot + 35 : carrier.x >= startSpot - 35);
+      const receiver = players.find(q => q.team === offense && q.number === p.number);
+      const target = covering
+        ? { x: receiver.x + (offense === 0 ? 22 : -22), y: receiver.y }
+        : ball;
+      if (distance(p, target) > 5) move(p, target.x - p.x, target.y - p.y, dt);
+    }
   }
   if (offense === 1 && carrier && aiPass > .25 && carrier.number === 0) {
     const receivers = players.filter(p => p.team === 1 && p !== carrier);
     const openness = p => Math.min(...players.filter(q => q.team === 0).map(q => distance(p,q)));
     receivers.sort((a,b) => openness(b)-openness(a));
-    pass(receivers[0].number); aiPass = 0;
+    if (openness(receivers[0]) > 85) { pass(receivers[0].number); aiPass = 0; }
   }
   if (flight) {
     flight.age += dt; flight.x += flight.vx * dt; flight.y += flight.vy * dt;

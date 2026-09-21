@@ -34,6 +34,16 @@ test("passes switch player control and a defender can intercept", () => {
   assert.equal(run("down"), 1);
 });
 
+test("defenders line up with receivers and hold coverage while one rushes", () => {
+  const run = game();
+  assert.equal(run("players[4].y"), run("players[1].y"));
+  assert.equal(run("players[5].y"), run("players[2].y"));
+  run("update(.1)");
+  assert.ok(run("Math.abs(players[4].y - players[1].y)") < 2);
+  assert.ok(run("Math.abs(players[5].y - players[2].y)") < 2);
+  assert.ok(run("players[3].x") < 265);
+});
+
 test("AI can advance and score against an idle player", () => {
   const run = game();
   run("setup(1, 640, true); for(let i=0; i<30000 && !scores[1]; i++) update(1/60)");
