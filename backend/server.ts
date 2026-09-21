@@ -1,12 +1,18 @@
 const port = Number(Bun.env.PORT ?? 3000);
 const root = new URL("../frontend/", import.meta.url);
 
-const files: Record<string, { path: string; type: string }> = {
+const files: Record<string, { path: string; type: string; embedded?: boolean }> = {
   "/": { path: "index.html", type: "text/html; charset=utf-8" },
   "/protect-the-forge": { path: "protect-the-forge.html", type: "text/html; charset=utf-8" },
   "/protect-the-forge/": { path: "protect-the-forge.html", type: "text/html; charset=utf-8" },
   "/brick-breaker": { path: "brick-breaker.html", type: "text/html; charset=utf-8" },
   "/brick-breaker/": { path: "brick-breaker.html", type: "text/html; charset=utf-8" },
+  "/games/protect-the-forge": { path: "protect-the-forge.html", type: "text/html; charset=utf-8", embedded: true },
+  "/games/brick-breaker": { path: "brick-breaker.html", type: "text/html; charset=utf-8", embedded: true },
+  "/experiment.css": { path: "experiment.css", type: "text/css; charset=utf-8" },
+  "/experiment.js": { path: "experiment.js", type: "text/javascript; charset=utf-8" },
+  "/embed.css": { path: "embed.css", type: "text/css; charset=utf-8" },
+  "/embed.js": { path: "embed.js", type: "text/javascript; charset=utf-8" },
   "/assets/style.css": { path: "style.css", type: "text/css; charset=utf-8" },
   "/assets/selector.css": { path: "selector.css", type: "text/css; charset=utf-8" },
   "/assets/combat.js": { path: "combat.js", type: "text/javascript; charset=utf-8" },
@@ -30,7 +36,7 @@ const guide = `
 
 Bun.serve({
   port,
-  fetch(request) {
+  async fetch(request) {
     const url = new URL(request.url);
 
     if (request.method !== "GET") {
@@ -47,6 +53,14 @@ Bun.serve({
 
     const asset = files[url.pathname];
     if (!asset) return new Response("Not found", { status: 404 });
+
+    if (asset.embedded) {
+      const html = await Bun.file(new URL(asset.path, root)).text();
+      return new Response(
+        html.replace("</head>", '<link rel="stylesheet" href="/embed.css"><script type="module" src="/embed.js"></script></head>'),
+        { headers: { "Content-Type": asset.type, "Cache-Control": "no-cache" } },
+      );
+    }
 
     return new Response(Bun.file(new URL(asset.path, root)), {
       headers: { "Content-Type": asset.type, "Cache-Control": "no-cache" },
