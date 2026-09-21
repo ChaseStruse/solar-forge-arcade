@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#151026" />
+    <meta name="description" content="Play Brick Breaker at Solar Forge Arcade. Clear the wall with your arrow keys." />
+    <title>Brick Breaker · Solar Forge Arcade</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script type="module" src="/assets/brick-breaker.js"></script>
+  </head>
+  <body>
+    <div class="page-glow" aria-hidden="true"></div>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-icon" aria-hidden="true">✳</span><span>SOLAR<span class="brand-accent">FORGE</span><small>ARCADE</small></span></a>
+        <nav class="arcade-nav" aria-label="Games"><a href="/">GAME SELECT</a><a href="/protect-the-forge">PROTECT THE FORGE</a><a href="/brick-breaker" aria-current="page">BRICK BREAKER</a></nav>
+      </header>
+      <main>
+        <section class="intro" aria-labelledby="game-title"><div><p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 002</p><h1 id="game-title">BRICK<br /><em>BREAKER!</em></h1><p class="intro-copy">One paddle. One bouncing ball. A whole wall to bring down.</p></div><div class="intro-sticker" aria-hidden="true"><span>↔</span><small>ARROW<br />POWER</small></div></section>
+        <section class="game-layout" aria-label="Brick Breaker game">
+          <div class="cabinet"><div class="cabinet-top"><span class="cabinet-light"></span><span>FORGE-VISION <b>9000</b></span><span class="cabinet-channel">CH 02 / LIVE</span></div><div class="screen-frame"><div class="screen"><canvas id="breaker-game" width="800" height="560" aria-label="Brick Breaker playfield"></canvas><div class="screen-overlay" id="breaker-overlay"><span class="overlay-star">✳</span><p class="eyebrow">READY, PLAYER?</p><h2 id="breaker-overlay-title">LET'S BREAK<br />SOME BRICKS</h2><p id="breaker-overlay-copy">Move with ← and →. Keep the ball in play and clear every brick.</p><button class="primary-button" id="breaker-start" type="button">START GAME <span aria-hidden="true">↗</span></button></div></div></div><div class="cabinet-bottom"><span>◉ &nbsp; LEFT / RIGHT ARROW KEYS</span><span>KEEP YOUR EYE ON THE BALL</span></div></div>
+          <aside class="control-panel" aria-label="Brick Breaker status"><div class="panel-header"><span>◈ CONTROL DECK</span><span class="panel-number">02—03</span></div><div class="score-card"><span class="card-label">POINTS ON THE BOARD</span><strong id="breaker-score">0</strong><span class="score-caption">Each broken brick adds 10 points.</span></div><div class="stats-row"><div><span class="card-label">LEVEL</span><strong id="breaker-level">01</strong></div><div><span class="card-label">LIVES</span><strong id="breaker-lives">♥ ♥ ♥</strong></div></div><div class="breaker-instructions"><p class="eyebrow">HOW TO PLAY</p><h2>MAKE IT BOUNCE</h2><p>Use the <kbd>←</kbd> and <kbd>→</kbd> arrow keys to move the paddle. Bounce the ball into the bricks. Clear them all to reach the next level.</p><p>Miss the ball and you lose a life. You have three.</p></div><div class="panel-footer"><span>✦ ONE MORE ROUND?</span><span class="footer-spark">✳</span></div></aside>
+        </section>
+        <p class="below-note">✦ BUILT FOR A LITTLE JOY, ONE BRICK AT A TIME. ✦</p>
+      </main>
+      <footer class="site-footer"><span>© SOLAR FORGE ARCADE</span><span>ENDLESS BOUNCES. ZERO PRESSURE.</span></footer>
+    </div>
+  </body>
+</html>

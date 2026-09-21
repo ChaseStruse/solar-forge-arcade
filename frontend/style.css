@@ -96,6 +96,13 @@ a{
   margin-right:8px;
   box-shadow:0 0 10px #81f5d5
 }
+.arcade-nav{display:flex;gap:9px;align-items:center;font:700 11px ui-monospace,monospace;letter-spacing:.06em}
+.arcade-nav a{padding:10px 12px;border:1px solid #655274;border-radius:20px;color:#cbbcd3}
+.arcade-nav a:hover,.arcade-nav a[aria-current="page"]{color:#1d2830;background:#dafa78;border-color:#dafa78}
+.breaker-instructions{padding:25px 3px;color:#635768;font-size:14px;line-height:1.55}
+.breaker-instructions h2{margin:4px 0 13px;color:#392e45;font-size:24px;letter-spacing:-.06em}
+.breaker-instructions .eyebrow{color:#af5b72;font-size:9px}
+.breaker-instructions kbd{display:inline-block;min-width:25px;padding:0 4px;text-align:center;border:1px solid #b5a6ae;border-radius:4px;background:#fffaf0;color:#392e45}
 .intro{
   display:flex;
   align-items:center;
@@ -633,6 +640,8 @@ button.reward-option:hover,.twin-choices button:hover{
   }
 }
 @media(max-width:520px){
+  .arcade-nav{gap:4px;font-size:8px;letter-spacing:0}
+  .arcade-nav a{padding:7px 5px}
   .site-shell{
     width:calc(100% - 24px)
   }

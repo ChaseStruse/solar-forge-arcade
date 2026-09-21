@@ -1,0 +1,14 @@
+services:
+  three-arcade:
+    build:
+      context: ../..
+      dockerfile: experiments/three-arcade/Dockerfile
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3100/health').then(r => { if (!r.ok) process.exit(1) })"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
