@@ -55,3 +55,23 @@ test('waves spawn the expected enemies and clear into a healing break', () => {
   g.player.hp = 50; g.remaining = 0; g.enemies = []; step(g, .04);
   assert.equal(g.player.hp, 68); assert.equal(g.intermission, 2);
 });
+
+test('a complete run can clear all five waves using normal combat actions', () => {
+  const g = createGame();
+  for (let frame = 0; frame < 18000 && g.status === 'playing'; frame++) {
+    const p = g.player;
+    const target = g.enemies.filter(e => e.hp > 0).sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
+    const dx = target ? target.x - p.x : 0;
+    if (target) {
+      if (Math.abs(dx) < 42) action(g, 'kick');
+      else if (Math.abs(dx) > 60 && p.ammo >= 2) action(g, 'shoot');
+      if (target.windup > 0 && Math.abs(dx) < 35) action(g, 'jump');
+    }
+    step(g, 1 / 60, { move: Math.abs(dx) > 25 ? Math.sign(dx) : 0,
+      slow: g.enemies.some(e => e.windup > 0) && p.focus > 15 });
+    g.events = [];
+  }
+  assert.equal(g.status, 'won');
+  assert.equal(g.wave, 5);
+  assert.ok(g.score > 2500);
+});

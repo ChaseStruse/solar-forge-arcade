@@ -18,7 +18,7 @@
       <nav class="arcade-nav" aria-label="Games"><a href="/">GAME SELECT</a><a href="/neon-bullet" aria-current="page">NEON BULLET</a></nav>
     </header>
     <main>
-      <section class="intro" aria-labelledby="game-title"><div><p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 006</p><h1 id="game-title">NEON<br /><em>BULLET!</em></h1><p class="intro-copy">Own the rooftop. Bend the seconds. Make every hit count.</p></div><div class="intro-sticker volley-sticker" aria-hidden="true"><span>⅛</span><small>PIXELS.<br />FULL POWER.</small></div></section>
+      <section class="intro" aria-labelledby="game-title"><div><p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 006</p><h1 id="game-title">NEON<br /><em>BULLET!</em></h1><p class="intro-copy">Own the rooftop. Bend the seconds. Make every hit count.</p></div><div class="intro-sticker volley-sticker" aria-hidden="true"><span>8</span><small>BIT STYLE.<br />FULL POWER.</small></div></section>
       <section class="game-layout" aria-label="Neon Bullet game">
         <div class="cabinet">
           <div class="cabinet-top"><span class="cabinet-light"></span><span>FORGE-VISION <b>9000</b></span><span class="cabinet-channel">CH 06 / LIVE</span></div>
@@ -30,6 +30,10 @@
               <button class="primary-button" id="neon-start" type="button">ENTER THE ROOFTOP ↗</button>
             </div>
           </div></div>
+          <div class="neon-touch" aria-label="Touch game controls">
+            <button data-key="a" aria-label="Move left">◀</button><button data-key="d" aria-label="Move right">▶</button><button data-key="w">JUMP</button><button data-key="s">ROLL</button>
+            <button data-key="j">PUNCH</button><button data-key="k">KICK</button><button data-key="l">SHOOT</button><button data-key="Shift">SLOW</button>
+          </div>
           <div class="cabinet-bottom"><span>◉ &nbsp; J / K / L — FIGHT</span><span>SHIFT — BEND TIME</span></div>
         </div>
         <aside class="control-panel" aria-label="Score and controls">
@@ -38,10 +42,6 @@
           <p class="neon-status" id="neon-status" role="status">READY TO DROP IN</p>
           <div class="breaker-instructions neon-instructions"><p class="eyebrow">FIELD MANUAL</p><h2>HIT. DODGE. REPEAT.</h2><dl><dt>← → / A D</dt><dd>Move / face target</dd><dt>↑ / W / SPACE</dt><dd>Double jump</dd><dt>J / K / L</dt><dd>Punch / kick / shoot</dd><dt>↓ / S</dt><dd>Dodge roll</dd><dt>HOLD SHIFT</dt><dd>Bullet time</dd></dl><p>Watch for yellow attack tells. Kills refill focus. Ammo recharges. Clear a wave to recover health.</p></div>
           <div class="neon-actions"><button id="neon-pause" type="button" disabled>PAUSE [P]</button><button id="neon-sound" type="button" aria-pressed="false">SOUND OFF [M]</button></div>
-          <div class="neon-touch" aria-label="Touch game controls">
-            <button data-key="a" aria-label="Move left">◀</button><button data-key="d" aria-label="Move right">▶</button><button data-key="w">JUMP</button><button data-key="s">ROLL</button>
-            <button data-key="j">PUNCH</button><button data-key="k">KICK</button><button data-key="l">SHOOT</button><button data-key="Shift">SLOW</button>
-          </div>
           <div class="panel-footer"><span>✦ TIME IS ON YOUR SIDE.</span><span class="footer-spark">✳</span></div>
         </aside>
       </section>

@@ -15,6 +15,7 @@ help.textContent = neon ? "Move with A/D. W jumps. J/K/L fight. Hold Shift for b
     ? "Move with ← →. Tap jump twice for an aerial block! Landing restores both jumps. First to five wins."
     : "Your towers fire automatically. Spend Sparks on upgrades to keep the forge alive.";
 panel.append(help);
+if (neon) panel.append(document.querySelector(".neon-touch"));
 if (breaker || volley || basketball || blitz) {
   const controls = document.createElement("div");
   controls.className = "touch-controls";

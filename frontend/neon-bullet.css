@@ -10,5 +10,5 @@
 .neon-actions{display:flex;gap:8px}.neon-actions button,.neon-touch button{border:1px solid #527082;background:#1a2941;color:#bff9e8;font:700 10px/1.4 monospace;padding:10px 5px;border-radius:3px}
 .neon-actions button{flex:1}.neon-actions button:disabled{opacity:.45;cursor:default}.neon-actions button[aria-pressed=true]{border-color:#7fffea}
 .neon-touch{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.neon-touch button{touch-action:none;user-select:none;min-height:42px}.neon-touch button:active,.neon-touch button.held{background:#7fffea;color:#10152a}
-.neon-bullet .cabinet-help{display:none}
+.neon-bullet .cabinet>.neon-touch{margin:14px 8px 4px}.neon-bullet .cabinet-help{font-size:11px;line-height:1.6}
 @media(max-width:600px){.neon-bullet .screen-overlay{padding:12px}.neon-bullet .screen-overlay h2{font-size:32px;margin:6px}.neon-bullet .screen-overlay .eyebrow{font-size:8px}.neon-bullet .screen-overlay p:not(.eyebrow){font-size:11px;margin-bottom:12px}.neon-bullet .primary-button{font-size:11px;padding:10px}.neon-touch button{min-height:48px}}
