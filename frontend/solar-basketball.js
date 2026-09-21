@@ -1,4 +1,5 @@
 import { BALL_RADIUS, COURT_HEIGHT, COURT_WIDTH, FLOOR_Y, NET_TOP, NET_X, PLAYER_RADIUS, hitNet, hitPlayer, matchWinner, pointWinner, rivalControls, tryJump } from "./volley-physics.js";
+import { shotAccuracy, shotOffset } from "./basketball-shooting.js";
 
 const canvas = document.querySelector("#basketball-game");
 const ctx = canvas.getContext("2d");
@@ -48,17 +49,17 @@ function resetRally(server) {
 function shoot(side) {
   if (!state.running || state.serveDelay > 0 || owner !== side) return;
   const p = state[side];
-  const target = side === "player" ? 714 : 86;
+  const target = (side === "player" ? 714 : 86) + shotOffset(p);
   const flight = .95;
   state.ball = { x: p.x, y: p.y - 42, vx: (target - p.x) / flight,
     vy: (260 - (p.y - 42) - .5 * 630 * flight * flight) / flight };
   owner = null;
   pickupDelay = .25;
-  state.status = "SHOT UP!";
+  state.status = shotAccuracy(p) > .75 ? "APEX RELEASE!" : "SHOT UP / AIM FOR THE APEX";
 }
 
 function jump(player) {
-  if (!state.running || state.serveDelay > 0) return;
+  if (!state.running) return;
   if (tryJump(player) && player.jumpsUsed === 2) burst(player.x, player.y + PLAYER_RADIUS, 12);
 }
 

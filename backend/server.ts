@@ -2,6 +2,7 @@ const port = Number(Bun.env.PORT ?? 3000);
 const root = new URL("../frontend/", import.meta.url);
 
 const files: Record<string, { path: string; type: string; embedded?: boolean }> = {
+  "/assets/basketball-shooting.js": { path: "basketball-shooting.js", type: "text/javascript; charset=utf-8" },
   "/solar-basketball": { path: "solar-basketball.html", type: "text/html; charset=utf-8" },
   "/games/solar-basketball": { path: "solar-basketball.html", type: "text/html; charset=utf-8", embedded: true },
   "/assets/solar-basketball.js": { path: "solar-basketball.js", type: "text/javascript; charset=utf-8" },
