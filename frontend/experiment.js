@@ -19,6 +19,7 @@ function mountOnScreen(object, depth = 0) {
 const games = {
   forge: { name: "Protect the Forge", title: "PROTECT<br />THE FORGE", description: "KEEP THE HEART OF THE ARCADE BURNING.", channel: "01", url: "/games/protect-the-forge" },
   breaker: { name: "Brick Breaker", title: "BRICK<br />BREAKER", description: "ONE PADDLE. INFINITE POSSIBILITIES.", channel: "02", url: "/games/brick-breaker" },
+  tilt: { name: "Comet Tilt", title: "COMET<br />TILT", description: "RIDE HIGH. STRIKE TRUE. RULE THE COMET SKY.", channel: "03", url: "/games/comet-tilt" },
 };
 let selected = "forge";
 let playing = false;
