@@ -62,13 +62,13 @@ Bun.serve({
     if (asset.embedded) {
       const html = await Bun.file(new URL(asset.path, root)).text();
       return new Response(
-        html.replace("</head>", '<link rel="stylesheet" href="/embed.css"><script type="module" src="/embed.js"></script></head>'),
-        { headers: { "Content-Type": asset.type, "Cache-Control": "no-cache" } },
+        html.replace("</head>", '<link rel="stylesheet" href="/embed.css?v=3"><script type="module" src="/embed.js?v=3"></script></head>'),
+        { headers: { "Content-Type": asset.type, "Cache-Control": "no-store" } },
       );
     }
 
     return new Response(Bun.file(new URL(asset.path, root)), {
-      headers: { "Content-Type": asset.type, "Cache-Control": "no-cache" },
+      headers: { "Content-Type": asset.type, "Cache-Control": "no-store" },
     });
   },
 });
