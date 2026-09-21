@@ -1,6 +1,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { hitNet, hitPlayer, matchWinner, pointWinner, rivalControls } from "../frontend/volley-physics.js";
+import { hitNet, hitPlayer, matchWinner, pointWinner, rivalControls, tryJump } from "../frontend/volley-physics.js";
+
+test("double jump boosts a falling player, rejects a third jump, and resets on landing", () => {
+  const player = { onGround: true, jumpsUsed: 0, vy: 0 };
+  assert.equal(tryJump(player), true);
+  player.vy = 100;
+  assert.equal(tryJump(player), true);
+  assert.equal(player.vy, -455);
+  assert.equal(player.jumpsUsed, 2);
+  assert.equal(tryJump(player), false);
+  player.onGround = true;
+  assert.equal(tryJump(player), true);
+  assert.equal(player.jumpsUsed, 1);
+});
 
 test("a landing awards the point to the opposite side", () => {
   assert.equal(pointWinner(190), "rival");

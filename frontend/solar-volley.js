@@ -1,4 +1,4 @@
-import { BALL_RADIUS, COURT_HEIGHT, COURT_WIDTH, FLOOR_Y, NET_TOP, NET_X, PLAYER_RADIUS, hitNet, hitPlayer, matchWinner, pointWinner, rivalControls } from "./volley-physics.js";
+import { BALL_RADIUS, COURT_HEIGHT, COURT_WIDTH, FLOOR_Y, NET_TOP, NET_X, PLAYER_RADIUS, hitNet, hitPlayer, matchWinner, pointWinner, rivalControls, tryJump } from "./volley-physics.js";
 
 const canvas = document.querySelector("#volley-game");
 const ctx = canvas.getContext("2d");
@@ -13,7 +13,7 @@ let previousTime = 0;
 let state = createMatch();
 
 function createPlayer(x, color, accent) {
-  return { x, y: FLOOR_Y - PLAYER_RADIUS, vx: 0, vy: 0, color, accent, onGround: true, squash: 0 };
+  return { x, y: FLOOR_Y - PLAYER_RADIUS, vx: 0, vy: 0, color, accent, onGround: true, jumpsUsed: 0, squash: 0 };
 }
 
 function createMatch() {
@@ -46,10 +46,8 @@ function resetRally(server) {
 }
 
 function jump(player) {
-  if (!state.running || state.serveDelay > 0 || !player.onGround) return;
-  player.vy = -455;
-  player.onGround = false;
-  player.squash = 1;
+  if (!state.running || state.serveDelay > 0) return;
+  if (tryJump(player) && player.jumpsUsed === 2) burst(player.x, player.y + PLAYER_RADIUS, 12);
 }
 
 function updatePlayer(player, direction, minX, maxX, dt) {
@@ -64,6 +62,7 @@ function updatePlayer(player, direction, minX, maxX, dt) {
     player.y = FLOOR_Y - PLAYER_RADIUS;
     player.vy = 0;
     player.onGround = true;
+    player.jumpsUsed = 0;
   } else {
     player.onGround = false;
   }

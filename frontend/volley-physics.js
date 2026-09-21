@@ -6,6 +6,16 @@ export const NET_TOP = 285;
 export const BALL_RADIUS = 14;
 export const PLAYER_RADIUS = 31;
 
+export function tryJump(player) {
+  const used = player.onGround ? 0 : player.jumpsUsed;
+  if (used >= 2) return false;
+  player.jumpsUsed = used + 1;
+  player.vy = -455;
+  player.onGround = false;
+  player.squash = 1;
+  return true;
+}
+
 export function pointWinner(ballX) {
   return ballX < NET_X ? "rival" : "player";
 }
