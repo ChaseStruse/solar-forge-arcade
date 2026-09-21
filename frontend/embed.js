@@ -1,17 +1,32 @@
 const breaker = document.querySelector("#breaker-game");
+const volley = document.querySelector("#volley-game");
+const basketball = document.querySelector("#basketball-game");
+const blitz = document.querySelector("#blitz-game");
 const panel = document.querySelector(".control-panel");
 const help = document.createElement("p");
 help.className = "cabinet-help";
-help.textContent = breaker
+help.textContent = blitz ? "Arrows move. X/C pass. Space dashes. Z switches defenders. Attack right! Four downs; first to 3 touchdowns."
+  : basketball ? "Move with ← →. Double jump with Space. Press X at the top of your jump for your most accurate shot! Aim right. First to five!"
+  : breaker
   ? "Move with ← → or the buttons below. Keep the ball bouncing!"
-  : "Your towers fire automatically. Spend Sparks on upgrades to keep the forge alive.";
+  : volley
+    ? "Move with ← →. Tap jump twice for an aerial block! Landing restores both jumps. First to five wins."
+    : "Your towers fire automatically. Spend Sparks on upgrades to keep the forge alive.";
 panel.append(help);
-if (breaker) {
+if (breaker || volley || basketball || blitz) {
   const controls = document.createElement("div");
   controls.className = "touch-controls";
-  for (const [key,label] of [["ArrowLeft","Move left"],["ArrowRight","Move right"]]) {
+  const buttons = [["ArrowLeft","Move left","◀"],["ArrowRight","Move right","▶"]];
+  if (volley) buttons.splice(1, 0, [" ","Jump","JUMP"]);
+  if (basketball) buttons.push([" ","Jump","↑"], ["x","Shoot","X"]);
+  if (blitz) {
+    controls.style.cssText = "display:grid;grid-template-columns:repeat(3,1fr);gap:5px";
+    buttons.push(["ArrowUp","Move up","↑"],["ArrowDown","Move down","↓"],["x","Pass to X","X"],["c","Pass to C","C"],["z","Switch defender","Z"],[" ","Dash","DASH"]);
+  }
+  for (const [key,label,copy] of buttons) {
     const button = document.createElement("button");
-    button.type="button";button.textContent=key==="ArrowLeft"?"◀":"▶";button.setAttribute("aria-label",label);
+    button.type="button";button.textContent=copy;button.setAttribute("aria-label",label);
+    if (blitz) button.style.cssText = "padding:12px 4px;font-size:16px";
     const release=()=>window.dispatchEvent(new KeyboardEvent("keyup",{key}));
     button.addEventListener("pointerdown",event=>{
       event.preventDefault();button.setPointerCapture(event.pointerId);

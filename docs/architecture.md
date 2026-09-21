@@ -3,9 +3,10 @@
 The prototype has three small parts:
 
 - `backend/server.ts` is a Bun HTTP server. It serves explicit static routes, a health endpoint, and the HTML help fragment.
-- `frontend/index.html` and `frontend/selector.css` render the arcade selector. `frontend/protect-the-forge.html`, `frontend/brick-breaker.html`, and `frontend/style.css` render the two arcade cabinets and their controls. htmx 4 loads the tower defense help fragment on demand.
+- `frontend/index.html`, `frontend/experiment.css`, and `frontend/experiment.js` render the 3D arcade cabinet and game picker. The three game HTML files and `frontend/style.css` render standalone and embedded play views. htmx 4 loads the tower defense help fragment on demand.
 - `frontend/game.js` owns one local game session. Canvas renders the playfield and `requestAnimationFrame` advances simulation. `frontend/combat.js` supplies projectile movement and firing limits; `frontend/targeting.js` supplies range and line-of-sight rules; `frontend/progression.js` supplies boss and reward rules. No game update makes a network request.
 - `frontend/brick-breaker.js` owns the Brick Breaker session, keyboard input, collisions, scoring, and level progression.
+- `frontend/solar-volley.js` owns the Solar Volley canvas, input, match flow, effects, and AI opponent. `frontend/volley-physics.js` keeps its collisions, net rebounds, scoring, and AI positioning rules testable without the DOM.
 
 The game runs entirely in memory. Reloading resets it, and Sparks are not shared between players. This keeps the first prototype fast and deployable as one container. A future leaderboard would need persistent storage and server side score validation.
 
@@ -18,10 +19,13 @@ The artwork is drawn with Canvas and CSS, with no image downloads. htmx 4 is ven
 | `/` | Arcade game selector |
 | `/protect-the-forge` | Protect the Forge page |
 | `/brick-breaker` | Brick Breaker page |
+| `/solar-volley` | Solar Volley page |
 | `/assets/selector.css` | Selector stylesheet |
 | `/assets/style.css` | Stylesheet |
 | `/assets/game.js` | Game code |
 | `/assets/brick-breaker.js` | Brick Breaker game code |
+| `/assets/solar-volley.js` | Solar Volley game and AI code |
+| `/assets/volley-physics.js` | Solar Volley physics and match rules |
 | `/assets/combat.js` | Projectile movement and firing limits |
 | `/assets/targeting.js` | Range and line-of-sight geometry |
 | `/assets/progression.js` | Boss and reward rules |

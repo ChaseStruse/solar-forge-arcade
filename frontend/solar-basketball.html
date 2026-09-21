@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#151026" />
+    <meta name="description" content="Play Solar Basketball at Solar Forge Arcade. Dribble, jump, and shoot your way to five points." />
+    <title>Solar Basketball · Solar Forge Arcade</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script type="module" src="/assets/solar-basketball.js"></script>
+  </head>
+  <body class="solar-volley">
+    <div class="page-glow" aria-hidden="true"></div>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-icon" aria-hidden="true">✳</span><span>SOLAR<span class="brand-accent">FORGE</span><small>ARCADE</small></span></a>
+        <nav class="arcade-nav" aria-label="Games"><a href="/">GAME SELECT</a><a href="/protect-the-forge">PROTECT THE FORGE</a><a href="/brick-breaker">BRICK BREAKER</a><a href="/solar-basketball" aria-current="page">SOLAR BASKETBALL</a></nav>
+      </header>
+      <main>
+        <section class="intro" aria-labelledby="game-title"><div><p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 004</p><h1 id="game-title">SOLAR<br /><em>BASKETBALL!</em></h1><p class="intro-copy">Own the court. Rise above. Shoot for the sun.</p></div><div class="intro-sticker volley-sticker" aria-hidden="true"><span>5</span><small>POINTS<br />TO WIN</small></div></section>
+        <section class="game-layout" aria-label="Solar Basketball game">
+          <div class="cabinet"><div class="cabinet-top"><span class="cabinet-light"></span><span>FORGE-VISION <b>9000</b></span><span class="cabinet-channel">CH 04 / LIVE</span></div><div class="screen-frame"><div class="screen"><canvas id="basketball-game" width="800" height="560" aria-label="Solar Basketball court"></canvas><div class="screen-overlay" id="basketball-overlay"><span class="overlay-star">☀</span><p class="eyebrow">COURT SYSTEM ONLINE</p><h2 id="basketball-overlay-title">LIGHT UP<br />THE COURT</h2><p id="basketball-overlay-copy">Move with ← →. Tap Space twice to double jump. Press X to shoot at the right basket. First to five wins.</p><button class="primary-button" id="basketball-start" type="button">START MATCH <span aria-hidden="true">↗</span></button></div></div></div><div class="cabinet-bottom"><span>◉ &nbsp; ARROWS / SPACE TO JUMP / X TO SHOOT</span><span>FIRST TO FIVE WINS</span></div></div>
+          <aside class="control-panel volley-panel" aria-label="Solar Basketball score and controls"><div class="panel-header"><span>◈ MATCH BOARD</span><span class="panel-number">03—03</span></div><div class="volley-scoreboard"><div class="team-score player-score"><span class="card-label">YOU / SOL</span><strong id="basketball-player-score">0</strong></div><span class="versus-mark">—</span><div class="team-score rival-score"><span class="card-label">AI / NOVA</span><strong id="basketball-rival-score">0</strong></div></div><div class="serve-status"><span class="card-label">COURT CALL</span><strong id="basketball-status">READY TO SERVE</strong></div><div class="breaker-instructions volley-instructions"><p class="eyebrow">HOW TO PLAY</p><h2>JUMP. SHOOT. SCORE.</h2><p>Use <kbd>←</kbd> and <kbd>→</kbd> to patrol your side. Press <kbd>SPACE</kbd>, <kbd>W</kbd>, or <kbd>↑</kbd> to jump.</p><p>Pick up the ball, then press X to shoot at the right hoop. Jump into an opponent’s shot to intercept it. Each basket earns one point.</p></div><div class="panel-footer"><span>✦ SHOOT FOR THE SUN.</span><span class="footer-spark">✳</span></div></aside>
+        </section>
+        <p class="below-note">✦ TWO HOOPS. TWO PLAYERS. FIVE POINTS FOR GLORY. ✦</p>
+      </main>
+      <footer class="site-footer"><span>© SOLAR FORGE ARCADE</span><span>PLAY BRIGHT. SHOOT BOLD.</span></footer>
+    </div>
+  </body>
+</html>

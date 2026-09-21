@@ -4,6 +4,19 @@
   background:#151026;
   font-synthesis:none
 }
+.solar-volley .screen canvas{image-rendering:pixelated}
+.solar-volley .screen-overlay{background:#080d29b8;backdrop-filter:none}
+.solar-volley .screen-overlay h2{font-family:monospace;letter-spacing:-2px;text-shadow:3px 3px #b43287;color:#fff0bb}
+.solar-volley .screen-overlay .overlay-star{color:#ff80b9;text-shadow:4px 4px #652752}
+.solar-volley .control-panel{background:#11172e;color:#e9f9ff;border-color:#547488;box-shadow:5px 5px #281638}
+.solar-volley .volley-scoreboard{background:#080e22;border:2px solid #74eee1;box-shadow:4px 4px #572657}
+.solar-volley .team-score strong{font-family:monospace;text-shadow:3px 3px #25304b}
+.solar-volley .player-score strong{color:#7ffff0}
+.solar-volley .rival-score strong{color:#ff86bd}
+.solar-volley .card-label,.solar-volley .serve-status strong{color:#c4d8ec}
+.solar-volley .volley-instructions,.solar-volley .volley-instructions h2{color:#c4d8ec}
+.solar-volley .volley-instructions .eyebrow{color:#ff86bd}
+.solar-volley .primary-button{border-radius:0;background:#77f7e4;color:#11172e;box-shadow:4px 4px #337882;font-family:monospace}
 *{
   box-sizing:border-box
 }
@@ -99,6 +112,10 @@ a{
 .arcade-nav{display:flex;gap:9px;align-items:center;font:700 11px ui-monospace,monospace;letter-spacing:.06em}
 .arcade-nav a{padding:10px 12px;border:1px solid #655274;border-radius:20px;color:#cbbcd3}
 .arcade-nav a:hover,.arcade-nav a[aria-current="page"]{color:#1d2830;background:#dafa78;border-color:#dafa78}
+.intro-sticker.volley-sticker{background:#73ead3;box-shadow:7px 7px 0 #398477,0 0 0 8px #73ead330;color:#25253d}
+.volley-scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px;margin:7px 0;padding:20px 12px;border:1px solid #e5c77f;background:#fff6dc;color:#392e45;box-shadow:5px 5px 0 #7e5871}
+.team-score{display:flex;flex-direction:column;gap:5px;text-align:center}.team-score strong{font-size:52px;line-height:1}.player-score strong{color:#308d82}.rival-score strong{color:#ce5e69}.versus-mark{align-self:center;font:700 16px ui-monospace,monospace;color:#8f788c}
+.serve-status{padding:18px 4px;border-bottom:1px solid #cbb9bd}.serve-status strong{display:block;margin-top:8px;color:#755e74;font:700 13px ui-monospace,monospace}.volley-instructions{padding-top:18px}
 .breaker-instructions{padding:25px 3px;color:#635768;font-size:14px;line-height:1.55}
 .breaker-instructions h2{margin:4px 0 13px;color:#392e45;font-size:24px;letter-spacing:-.06em}
 .breaker-instructions .eyebrow{color:#af5b72;font-size:9px}
