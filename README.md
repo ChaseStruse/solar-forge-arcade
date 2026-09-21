@@ -1,6 +1,6 @@
 # Solar Forge Arcade
 
-A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, and **Solar Volley**, and **Solar Basketball**—neon player-versus-AI sports games. A Bun server serves the cabinet, games, and small HTML fragments. The games run in the browser with Canvas, while Three.js renders the cabinet.
+A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, and **Solar Volley**, and **Solar Basketball**, and **Solar Blitz**, quick 3v3 football. A Bun server serves the cabinet, games, and small HTML fragments. The games run in the browser with Canvas, while Three.js renders the cabinet.
 
 ## Run with Docker
 
@@ -8,7 +8,7 @@ A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, and **
 docker compose -f docker/compose.yml up --build -d
 ```
 
-Open <http://localhost:3000> to choose a game and play it in the 3D cabinet. Each game is also available directly at `/protect-the-forge`, `/brick-breaker`, `/solar-volley`, or `/solar-basketball`. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
+Open <http://localhost:3000> to choose a game and play it in the 3D cabinet. Each game is also available directly at `/protect-the-forge`, `/brick-breaker`, `/solar-volley`, `/solar-basketball`, or `/solar-blitz`. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
 
 ## Run with Bun
 

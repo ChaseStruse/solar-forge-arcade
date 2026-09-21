@@ -19,7 +19,7 @@ function setup(team, x, newPossession = false) {
   for (let t = 0; t < 2; t++) for (let i = 0; i < 3; i++) {
     const attacking = t === offense;
     players.push({ team: t, number: i, x: clamp(spot + (attacking ? (i ? 24 : -12) : 105) * dir, 78, 722),
-      y: [280, 170, 390][i], cooldown: 0, dash: 0 });
+      y: (attacking ? [280, 150, 410] : [280, 240, 320])[i], cooldown: 0, dash: 0 });
   }
   carrier = players[team * 3]; flight = null; controlled = team === 0 ? carrier : players[0];
   delay = 1.1; clock = 0; aiPass = 0;
@@ -39,8 +39,9 @@ function pass(number) {
   if (!running || delay > 0 || flight || !carrier) return;
   const target = players.find(p => p.team === offense && p.number === number && p !== carrier);
   if (!target) return;
-  const length = distance(carrier, target);
-  flight = { x: carrier.x, y: carrier.y, vx: (target.x - carrier.x) / Math.max(.1, length) * 440,
+  const targetX = clamp(target.x + (offense === 0 ? 1 : -1) * distance(carrier, target) / 440 * 130, 30, 770);
+  const length = Math.hypot(targetX - carrier.x, target.y - carrier.y);
+  flight = { x: carrier.x, y: carrier.y, vx: (targetX - carrier.x) / Math.max(.1, length) * 440,
     vy: (target.y - carrier.y) / Math.max(.1, length) * 440, age: 0, thrower: carrier };
   carrier = null;
   if (offense === 0) controlled = target;
@@ -58,7 +59,7 @@ function action(key) {
 }
 function move(p, dx, dy, dt) {
   const norm = Math.hypot(dx, dy) || 1;
-  const speed = p.dash > 0 ? 280 : p === controlled ? 155 : p === carrier ? 118 : 132;
+  const speed = p.dash > 0 ? 280 : p === controlled ? 175 : p === carrier ? 165 : p.team === offense ? 130 : 100;
   p.x = clamp(p.x + dx / norm * speed * dt, 30, 770);
   p.y = clamp(p.y + dy / norm * speed * dt, 105, 455);
 }
@@ -83,7 +84,7 @@ function update(dt) {
       }
     } else move(p, ball.x - p.x, ball.y - p.y, dt);
   }
-  if (offense === 1 && carrier && aiPass > 1.4 && carrier.number === 0) {
+  if (offense === 1 && carrier && aiPass > .25 && carrier.number === 0) {
     const receivers = players.filter(p => p.team === 1 && p !== carrier);
     const openness = p => Math.min(...players.filter(q => q.team === 0).map(q => distance(p,q)));
     receivers.sort((a,b) => openness(b)-openness(a));
