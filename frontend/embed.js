@@ -7,7 +7,7 @@ const panel = document.querySelector(".control-panel");
 const help = document.createElement("p");
 help.className = "cabinet-help";
 help.textContent = neon ? "Move with A/D. W jumps. J punches; L shoots. Hold Shift for bullet time; release when empty. P pauses; Escape exits."
-  : blitz ? "Arrows move. X/C pass. Space dashes on offense; on defense it auto-switches and bursts toward the ball! Z selects your best defender. First to 3 TDs."
+  : blitz ? "Arrows move. X/C pass. Space dashes on offense. Nova throws trigger slow motion: Z switches to a defender near the pass destination; move into the ball to intercept. First to 3 TDs."
   : basketball ? "Move with ← →. Double jump with Space. Press X at the top of your jump for your most accurate shot! Aim right. First to five!"
   : breaker
   ? "Move with ← → or the buttons below. Keep the ball bouncing!"
@@ -24,7 +24,7 @@ if (breaker || volley || basketball || blitz) {
   if (basketball) buttons.push([" ","Jump","↑"], ["x","Shoot","X"]);
   if (blitz) {
     controls.style.cssText = "display:grid;grid-template-columns:repeat(3,1fr);gap:5px";
-    buttons.push(["ArrowUp","Move up","↑"],["ArrowDown","Move down","↓"],["x","Pass to X","X"],["c","Pass to C","C"],["z","Switch defender","Z"],[" ","Dash on offense or assist tackle on defense","BURST"]);
+    buttons.push(["ArrowUp","Move up","↑"],["ArrowDown","Move down","↓"],["x","Pass to X","X"],["c","Pass to C","C"],["z","Select defender nearest the pass destination","Z"],[" ","Dash on offense","DASH"]);
   }
   for (const [key,label,copy] of buttons) {
     const button = document.createElement("button");
