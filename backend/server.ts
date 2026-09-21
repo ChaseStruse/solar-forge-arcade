@@ -7,11 +7,11 @@ const files: Record<string, { path: string; type: string; embedded?: boolean }> 
   "/protect-the-forge/": { path: "protect-the-forge.html", type: "text/html; charset=utf-8" },
   "/brick-breaker": { path: "brick-breaker.html", type: "text/html; charset=utf-8" },
   "/brick-breaker/": { path: "brick-breaker.html", type: "text/html; charset=utf-8" },
-  "/comet-tilt": { path: "comet-tilt.html", type: "text/html; charset=utf-8" },
-  "/comet-tilt/": { path: "comet-tilt.html", type: "text/html; charset=utf-8" },
+  "/solar-volley": { path: "solar-volley.html", type: "text/html; charset=utf-8" },
+  "/solar-volley/": { path: "solar-volley.html", type: "text/html; charset=utf-8" },
   "/games/protect-the-forge": { path: "protect-the-forge.html", type: "text/html; charset=utf-8", embedded: true },
   "/games/brick-breaker": { path: "brick-breaker.html", type: "text/html; charset=utf-8", embedded: true },
-  "/games/comet-tilt": { path: "comet-tilt.html", type: "text/html; charset=utf-8", embedded: true },
+  "/games/solar-volley": { path: "solar-volley.html", type: "text/html; charset=utf-8", embedded: true },
   "/experiment.css": { path: "experiment.css", type: "text/css; charset=utf-8" },
   "/experiment.js": { path: "experiment.js", type: "text/javascript; charset=utf-8" },
   "/embed.css": { path: "embed.css", type: "text/css; charset=utf-8" },
@@ -21,8 +21,8 @@ const files: Record<string, { path: string; type: string; embedded?: boolean }> 
   "/assets/combat.js": { path: "combat.js", type: "text/javascript; charset=utf-8" },
   "/assets/game.js": { path: "game.js", type: "text/javascript; charset=utf-8" },
   "/assets/brick-breaker.js": { path: "brick-breaker.js", type: "text/javascript; charset=utf-8" },
-  "/assets/comet-tilt.js": { path: "comet-tilt.js", type: "text/javascript; charset=utf-8" },
-  "/assets/tilt-physics.js": { path: "tilt-physics.js", type: "text/javascript; charset=utf-8" },
+  "/assets/solar-volley.js": { path: "solar-volley.js", type: "text/javascript; charset=utf-8" },
+  "/assets/volley-physics.js": { path: "volley-physics.js", type: "text/javascript; charset=utf-8" },
   "/assets/targeting.js": { path: "targeting.js", type: "text/javascript; charset=utf-8" },
   "/assets/progression.js": { path: "progression.js", type: "text/javascript; charset=utf-8" },
   "/assets/htmx.min.js": { path: "htmx.min.js", type: "text/javascript; charset=utf-8" },
@@ -62,7 +62,7 @@ Bun.serve({
     if (asset.embedded) {
       const html = await Bun.file(new URL(asset.path, root)).text();
       return new Response(
-        html.replace("</head>", '<link rel="stylesheet" href="/embed.css?v=3"><script type="module" src="/embed.js?v=3"></script></head>'),
+        html.replace("</head>", '<link rel="stylesheet" href="/embed.css?v=4"><script type="module" src="/embed.js?v=4"></script></head>'),
         { headers: { "Content-Type": asset.type, "Cache-Control": "no-store" } },
       );
     }
