@@ -99,7 +99,7 @@ a{
 .arcade-nav{display:flex;gap:9px;align-items:center;font:700 11px ui-monospace,monospace;letter-spacing:.06em}
 .arcade-nav a{padding:10px 12px;border:1px solid #655274;border-radius:20px;color:#cbbcd3}
 .arcade-nav a:hover,.arcade-nav a[aria-current="page"]{color:#1d2830;background:#dafa78;border-color:#dafa78}
-.tilt-sticker{background:#ff9a7f;box-shadow:7px 7px 0 #8b4c69,0 0 0 8px #ff9a7f30;color:#33223c}
+.intro-sticker.tilt-sticker{background:#ff9a7f;box-shadow:7px 7px 0 #8b4c69,0 0 0 8px #ff9a7f30;color:#33223c}
 .tilt-scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px;margin:7px 0;padding:20px 12px;border:1px solid #e5c77f;background:#fff6dc;color:#392e45;box-shadow:5px 5px 0 #7e5871}
 .pilot-score{display:flex;flex-direction:column;gap:5px;text-align:center}.pilot-score strong{font-size:52px;line-height:1}.player-score strong{color:#308d82}.rival-score strong{color:#ce5e69}.versus-mark{align-self:center;font:700 11px ui-monospace,monospace;color:#8f788c}
 .altitude-meter{padding:18px 4px}.meter-track{height:9px;margin:11px 0 8px;border:1px solid #9c899b;border-radius:10px;background:linear-gradient(90deg,#ff887e 0 50%,#8cf1d8 50%);overflow:hidden}.meter-track i{display:block;height:100%;width:50%;border-right:3px solid #fff;background:#ffffff55;transition:width .12s}.altitude-meter>strong{font:700 10px ui-monospace,monospace;color:#755e74}.tilt-instructions{padding-top:12px}
