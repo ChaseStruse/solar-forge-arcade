@@ -1,47 +1,49 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#100c1e" />
-    <meta name="description" content="Pick a game at Solar Forge Arcade: Protect the Forge or Brick Breaker." />
-    <title>Choose a Game · Solar Forge Arcade</title>
-    <link rel="stylesheet" href="/assets/selector.css" />
-  </head>
-  <body>
-    <div class="ambient ambient-one" aria-hidden="true"></div>
-    <div class="ambient ambient-two" aria-hidden="true"></div>
-    <div class="arcade-shell">
-      <header class="selector-header">
-        <a class="wordmark" href="/" aria-label="Solar Forge Arcade home"><span class="wordmark-icon" aria-hidden="true">✳</span><span>SOLAR<span class="warm">FORGE</span><small>ARCADE</small></span></a>
-        <span class="open-sign"><span class="open-light"></span> OPEN FOR PLAY</span>
-      </header>
-      <main>
-        <section class="selector-hero" aria-labelledby="selector-title">
-          <div class="hero-kicker"><span>✦</span> WELCOME TO THE ARCADE <span>✦</span></div>
-          <h1 id="selector-title">PICK YOUR<br /><em>ADVENTURE.</em></h1>
-          <p>Two games. Infinite chances to say “one more round.” Step up to a cabinet and make your mark.</p>
-          <div class="hero-decoration" aria-hidden="true"><span>★</span><span>✳</span><span>◆</span></div>
-        </section>
-        <section class="selector-games" aria-labelledby="games-title">
-          <div class="section-heading"><div><span class="section-index">01 / SELECT A CABINET</span><h2 id="games-title">THE GAME FLOOR</h2></div><span class="section-side">INSERT IMAGINATION&nbsp; ↘</span></div>
-          <div class="game-grid">
-            <a class="game-card forge-card" href="/protect-the-forge" aria-label="Play Protect the Forge">
-              <div class="card-topline"><span class="card-number">GAME 001</span><span class="live-mark"><span></span> READY TO PLAY</span></div>
-              <div class="card-art forge-art" aria-hidden="true"><div class="art-grid"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="enemy enemy-one">◆</div><div class="enemy enemy-two">◆</div><div class="enemy enemy-three">◆</div><div class="tower tower-left">✹</div><div class="tower tower-right">✹</div><div class="forge-core">✦</div><span class="art-caption">DEFEND THE CORE</span></div>
-              <div class="card-copy"><div><span class="game-type">IDLE TOWER DEFENSE</span><h3>PROTECT<br />THE FORGE<span>!</span></h3><p>Hold the line, upgrade your towers, and keep the forge glowing.</p></div><span class="play-arrow" aria-hidden="true">↗</span></div>
-              <div class="card-foot"><span>◉ &nbsp; AUTO FIRE</span><span>PLAY NOW&nbsp; →</span></div>
-            </a>
-            <a class="game-card breaker-card" href="/brick-breaker" aria-label="Play Brick Breaker">
-              <div class="card-topline"><span class="card-number">GAME 002</span><span class="live-mark"><span></span> READY TO PLAY</span></div>
-              <div class="card-art breaker-art" aria-hidden="true"><div class="art-grid"></div><div class="brick-wall"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="breaker-ball"></div><div class="ball-trail"></div><div class="art-paddle"></div><span class="art-caption">BREAK THE WALL</span></div>
-              <div class="card-copy"><div><span class="game-type">ARCADE CLASSIC</span><h3>BRICK<br />BREAKER<span>!</span></h3><p>Move the paddle, chase the bounce, and clear every brick.</p></div><span class="play-arrow" aria-hidden="true">↗</span></div>
-              <div class="card-foot"><span>◀ &nbsp; ARROW KEYS &nbsp; ▶</span><span>PLAY NOW&nbsp; →</span></div>
-            </a>
-          </div>
-        </section>
-      </main>
-      <footer class="selector-footer"><span>© SOLAR FORGE ARCADE</span><span>MADE FOR SHORT BREAKS &amp; BIG GRINS</span><span>✳ &nbsp; SEE YOU NEXT ROUND</span></footer>
-    </div>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#171322" />
+  <title>Solar Forge Arcade · Good times, on repeat.</title>
+  <link rel="stylesheet" href="/experiment.css" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+  <script type="module" src="/experiment.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-symbol">✳</span><span>SOLAR FORGE<small>THE GOOD-TIME MACHINE</small></span></a>
+    <span class="header-note">EST. IN ANOTHER DIMENSION</span>
+    <span class="open-sign"><i></i> ALWAYS OPEN</span>
+  </header>
+  <main>
+    <section class="intro">
+      <p class="eyebrow"><span></span> A LITTLE ESCAPE FROM REAL LIFE</p>
+      <h1>GOOD TIMES.<br /><em>ON REPEAT.</em><span class="title-spark" aria-hidden="true">✳</span></h1>
+      <p class="lede">Meet your new favorite corner of the internet.<br />Two games. One cosmic cabinet. All yours.</p>
+      <button class="primary-action" id="play-button" type="button" disabled>POWERING UP… <span>↗</span></button>
+      <p class="free-play">NO COINS. NO DOWNLOADS. JUST ONE MORE ROUND.</p>
+      <div class="mini-note"><span aria-hidden="true">✦</span><p>Built for short breaks.<br /><b>And accidentally long ones.</b></p></div>
+    </section>
+    <section class="showroom" aria-label="Interactive 3D arcade cabinet">
+      <div class="room-halo" aria-hidden="true"></div>
+      <div class="room-label" aria-hidden="true">THE ORIGINAL<br /><b>FORGE-VISION 9000</b></div>
+      <div id="scene" aria-label="Solar Forge cabinet. Drag to turn the machine."></div>
+      <div class="free-sticker" aria-hidden="true">100%<small>FREE PLAY</small><span>★ ★ ★</span></div>
+      <div class="view-controls"><span><i></i> <span id="view-hint">DRAG TO LOOK AROUND</span></span><button id="reset-view" type="button" aria-label="Reset cabinet camera">↺ RESET VIEW</button></div>
+      <p id="load-status" role="status">Warming up the phosphors…</p>
+    </section>
+    <section class="cartridges" aria-label="Choose your game">
+      <div class="cartridge-label"><span>CHOOSE YOUR</span><strong>NEXT OBSESSION.</strong><small>02 GAMES / ENDLESS REPLAYS</small></div>
+      <button class="game-choice active" data-game="forge" aria-pressed="true" type="button"><span class="game-art forge-art" aria-hidden="true">✹</span><span class="game-copy"><small>01 / IDLE TOWER DEFENSE</small><strong>Protect the Forge</strong><span>Defend the glow. Grow your power.</span></span><span class="choice-mark">↗</span></button>
+      <button class="game-choice" data-game="breaker" aria-pressed="false" type="button"><span class="game-art breaker-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><b></b></span><span class="game-copy"><small>02 / ARCADE CLASSIC</small><strong>Brick Breaker</strong><span>Chase the bounce. Clear the wall.</span></span><span class="choice-mark">↗</span></button>
+    </section>
+  </main>
+  <footer><span>✳ &nbsp; SOLAR FORGE ARCADE</span><span>LESS SCROLLING. MORE HIGH SCORES.</span><span>MADE FOR THE JOY OF IT. ↗</span></footer>
+  <div class="play-toolbar" hidden><button id="exit-game" type="button">← BACK TO THE ARCADE</button><span id="playing-title">PROTECT THE FORGE</span><span>ESC TO EXIT</span></div>
+  <div id="monitor" class="monitor" hidden>
+    <div id="attract-screen"><div class="crt-grid"></div><div class="screen-topline"><span>SOLAR FORGE SYSTEMS</span><span>● READY</span></div><div class="pixel-sun" aria-hidden="true">✳</div><p class="screen-kicker">NOW LOADED / 01</p><h2 id="loaded-title">PROTECT<br />THE FORGE</h2><p class="screen-description">KEEP THE HEART OF THE ARCADE BURNING.</p><button id="screen-play" type="button">PRESS START <span>▶</span></button><div class="screen-footer"><span>1 PLAYER</span><span>FREE PLAY ∞</span></div></div>
+    <iframe id="game-screen" title="Playable arcade game" hidden></iframe>
+  </div>
+  <noscript>This arcade needs JavaScript to power its cabinet and games.</noscript>
+</body>
 </html>
