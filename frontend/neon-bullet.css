@@ -9,6 +9,6 @@
 .neon-instructions dl{display:grid;grid-template-columns:1fr 1fr;font:11px/1.8 monospace;gap:5px}.neon-instructions dt{color:#7fffea}.neon-instructions dd{margin:0;color:#c4d8ec}.neon-instructions>p:last-child{font-size:12px;line-height:1.6;color:#b8c4d7}
 .neon-actions{display:flex;gap:8px}.neon-actions button,.neon-touch button{border:1px solid #527082;background:#1a2941;color:#bff9e8;font:700 10px/1.4 monospace;padding:10px 5px;border-radius:3px}
 .neon-actions button{flex:1}.neon-actions button:disabled{opacity:.45;cursor:default}.neon-actions button[aria-pressed=true]{border-color:#7fffea}
-.neon-touch{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.neon-touch button{touch-action:none;user-select:none;min-height:42px}.neon-touch button:active,.neon-touch button.held{background:#7fffea;color:#10152a}
+.neon-touch{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.neon-touch button{touch-action:none;user-select:none;min-height:42px}.neon-touch button[data-key="Shift"]{grid-column:span 2}.neon-touch button:active,.neon-touch button.held{background:#7fffea;color:#10152a}
 .neon-bullet .cabinet>.neon-touch{margin:14px 8px 4px}.neon-bullet .cabinet-help{font-size:11px;line-height:1.6}
 @media(max-width:600px){.neon-bullet .screen-overlay{padding:12px}.neon-bullet .screen-overlay h2{font-size:32px;margin:6px}.neon-bullet .screen-overlay .eyebrow{font-size:8px}.neon-bullet .screen-overlay p:not(.eyebrow){font-size:11px;margin-bottom:12px}.neon-bullet .primary-button{font-size:11px;padding:10px}.neon-touch button{min-height:48px}}

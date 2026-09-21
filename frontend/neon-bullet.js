@@ -14,7 +14,7 @@ const statusLabel = document.querySelector('#neon-status');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const keys = new Set();
 const touchKeys = new Map();
-const bindings = { w: 'jump', ArrowUp: 'jump', ' ': 'jump', s: 'dodge', ArrowDown: 'dodge', j: 'punch', k: 'kick', l: 'shoot' };
+const bindings = { w: 'jump', ArrowUp: 'jump', ' ': 'jump', s: 'dodge', ArrowDown: 'dodge', j: 'punch', l: 'shoot' };
 let game = createGame(), mode = 'ready', previous = 0, best = 0, sound = false, audio, shake = 0;
 try { best = Number(localStorage.getItem('neon-bullet-best')) || 0; } catch { /* Storage is optional. */ }
 bestLabel.textContent = best;
@@ -94,31 +94,42 @@ function skyline() {
   text('SECTOR 06', 16, 269, '#6b6888', 7); text('SOLAR FORGE SYSTEMS', 385, 269, '#6b6888', 7, 'right');
 }
 function fighter(p, isPlayer = false, ghost = false) {
-  const x = Math.round(p.x), y = Math.round(p.y), dir = p.facing;
-  const suit = isPlayer ? '#6debd5' : p.kind === 'gunner' ? '#c286ee' : '#ed7598';
-  if (!ghost) rect(x - 10, FLOOR + 2, 20, 2, '#090d1f');
+  const x = Math.round(p.x), y = Math.round(p.y);
+  const color = isPlayer ? '#7fffea' : p.kind === 'gunner' ? '#c798ff' : '#ff83a5';
+  if (!ghost) rect(x - 8, FLOOR + 2, 16, 2, '#090d1f');
   if (isPlayer && p.invulnerable > 0 && Math.floor(game.time * 18) % 2 && !ghost) return;
-  ctx.save(); ctx.translate(x, y); ctx.scale(dir, 1);
+  ctx.save(); ctx.translate(x, y); ctx.scale(p.facing, 1);
+  // Tiny, single-color silhouettes on a two-pixel grid: head, body, limbs.
+  // A dark eye slit gives facing direction without clothing or facial detail.
   if (isPlayer && p.dodge > 0) {
-    rect(-10, -12, 17, 9, suit); rect(6, -10, 6, 6, '#fbe2c2'); rect(-13, -5, 8, 4, '#22344a');
+    rect(-6, -10, 12, 8, color); rect(-8, -8, 16, 4, color);
+    rect(2, -8, 4, 2, '#11172e');
   } else {
-    const walk = (isPlayer ? held('a') || held('d') || held('ArrowLeft') || held('ArrowRight') : p.windup <= 0) && p.y === FLOOR;
-    const stride = walk ? Math.round(Math.sin(game.time * 15) * 3) : 0;
-    rect(-5, -12, 4, 10 + stride, '#31435b'); rect(2, -12, 4, 10 - stride, '#31435b');
-    rect(-7, -3 + stride, 7, 3, suit); rect(2, -3 - stride, 8, 3, suit);
-    rect(-6, -23, 13, 12, suit); rect(-4, -23, 6, 13, isPlayer ? '#284659' : '#412d54');
-    rect(-4, -31, 10, 9, '#f9c5aa'); rect(-5, -33, 12, 4, '#111b32'); rect(1, -28, 6, 2, isPlayer ? '#d7fff0' : '#1b2336');
-    rect(-8, -21, 4, 10, suit);
+    const moving = isPlayer
+      ? held('a') || held('d') || held('ArrowLeft') || held('ArrowRight')
+      : p.windup <= 0 && p.stun <= 0 && Math.abs(game.player.x - p.x) > (p.kind === 'gunner' ? 150 : 22);
+    const stride = moving && p.y === FLOOR ? (Math.floor(game.time * 10) % 2 ? 2 : -2) : 0;
+    rect(-4, -28, 8, 8, color);
+    rect(0, -26, 4, 2, '#11172e');
+    rect(-4, -18, 8, 10, color);
+    rect(-4, -8, 2, 8 - Math.max(0, stride), color);
+    rect(2, -8, 2, 8 + Math.min(0, stride), color);
+    rect(-6, -2 - Math.max(0, stride), 4, 2, color);
+    rect(2, -2 + Math.min(0, stride), 4, 2, color);
+    rect(-8, -18, 2, 8, color);
     const attack = isPlayer && p.poseTime > 0 ? p.pose : p.windup > 0 ? p.attack : '';
-    if (attack === 'kick') { rect(3, -13, 23, 5, suit); rect(23, -14, 5, 7, '#f4e3ca'); }
-    if (attack === 'punch') { rect(5, -23, 17, 4, suit); rect(20, -24, 5, 6, '#f9c5aa'); }
-    else if (attack === 'shoot' || p.kind === 'gunner') { rect(5, -22, 10, 4, suit); rect(12, -23, 10, 4, '#c6d8dc'); rect(13, -19, 3, 4, '#506078'); }
-    else rect(6, -21, 4, 9, suit);
+    if (attack === 'punch') {
+      rect(4, -18, 12, 2, color); rect(14, -20, 4, 6, color);
+    } else if (attack === 'shoot' || p.kind === 'gunner') {
+      rect(4, -18, 6, 2, color); rect(10, -20, 8, 4, '#e4e4e8');
+    } else {
+      rect(6, -18, 2, 8, color);
+    }
   }
   ctx.restore();
   if (!isPlayer && !ghost) {
-    rect(x - 10, y - 39, 20, 2, '#35253e'); rect(x - 10, y - 39, Math.ceil(20 * p.hp / p.maxHp), 2, suit);
-    if (p.windup > 0) text('!', x, y - 44, '#ffe58e', 12, 'center');
+    rect(x - 8, y - 34, 16, 2, '#35253e'); rect(x - 8, y - 34, Math.ceil(16 * p.hp / p.maxHp), 2, color);
+    if (p.windup > 0) text('!', x, y - 39, '#ffe58e', 12, 'center');
   }
 }
 function bar(x, y, width, amount, color, label) {
@@ -151,7 +162,7 @@ function draw() {
   ctx.restore();
   rect(0, 0, 400, 34, '#090f23');
   bar(12, 22, 92, game.player.hp / 100, '#ff86a4', 'HEALTH');
-  bar(119, 22, 92, game.player.focus / 100, '#7fffea', 'FOCUS / SHIFT');
+  bar(119, 22, 92, game.player.focus / 100, '#7fffea', game.slowNeedsRelease ? 'RELEASE SHIFT / SLOW' : 'FOCUS / SHIFT');
   text('AMMO', 228, 18, '#ffdc88', 6);
   for (let i = 0; i < 6; i++) rect(228 + i * 7, 22, 4, 5, i < Math.floor(game.player.ammo) ? '#ffdc88' : '#34324b');
   text(`WAVE ${Math.max(1, game.wave)}/5`, 385, 23, '#f3e3ca', 9, 'right');
@@ -167,7 +178,7 @@ function frame(now) {
   if (mode === 'playing') {
     step(game, dt, { move: Number(held('d') || held('ArrowRight')) - Number(held('a') || held('ArrowLeft')), slow: held('Shift') });
     // Holding an attack repeats at its own cooldown, useful on touch screens.
-    for (const [key, name] of [['j', 'punch'], ['k', 'kick'], ['l', 'shoot']]) if (held(key)) action(game, name);
+    for (const [key, name] of [['j', 'punch'], ['l', 'shoot']]) if (held(key)) action(game, name);
     if (game.status !== 'playing') finish();
     const message = game.status === 'won' ? 'ROOFTOP SECURED' : game.status === 'lost' ? 'RUN COMPLETE' : game.intermission > 0 ? 'NEXT WAVE INCOMING' : `WAVE ${game.wave} / ${game.remaining + game.enemies.length} HOSTILES`;
     if (statusLabel.textContent !== message) statusLabel.textContent = message;

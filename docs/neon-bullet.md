@@ -6,9 +6,9 @@ An original pixel-art rooftop brawler inspired by the rooftop combat and slow-mo
 
 - A/D or left/right: move and face a target.
 - W, up, or Space: jump (press again for a double jump).
-- J: punch; K: kick; L: fire your pistol in the direction you face.
+- J: punch; L: fire your pistol in the direction you face.
 - S/down: dodge roll, briefly avoiding damage.
-- Hold Shift: bullet time. Enemies and projectiles slow more than your fighter.
+- Hold Shift: bullet time. Enemies and projectiles slow more than your fighter. Activation needs 20 focus. When focus empties, release Shift (or the touch SLOW button) before activating again.
 - P: pause; M: toggle sound. Escape pauses standalone play and returns to game selection inside the cabinet.
 - Touch controls provide the same actions.
 

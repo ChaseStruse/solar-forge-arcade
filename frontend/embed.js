@@ -6,7 +6,7 @@ const blitz = document.querySelector("#blitz-game");
 const panel = document.querySelector(".control-panel");
 const help = document.createElement("p");
 help.className = "cabinet-help";
-help.textContent = neon ? "Move with A/D. W jumps. J/K/L fight. Hold Shift for bullet time. P pauses; Escape exits."
+help.textContent = neon ? "Move with A/D. W jumps. J punches; L shoots. Hold Shift for bullet time; release when empty. P pauses; Escape exits."
   : blitz ? "Arrows move. X/C pass. Space dashes. Z switches defenders. Attack right! Four downs; first to 3 touchdowns."
   : basketball ? "Move with ← →. Double jump with Space. Press X at the top of your jump for your most accurate shot! Aim right. First to five!"
   : breaker
