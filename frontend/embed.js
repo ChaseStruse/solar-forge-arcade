@@ -4,7 +4,7 @@ const basketball = document.querySelector("#basketball-game");
 const panel = document.querySelector(".control-panel");
 const help = document.createElement("p");
 help.className = "cabinet-help";
-help.textContent = basketball ? "Move with ← →. Double jump with Space. Press X to shoot at the right hoop. First to five!"
+help.textContent = basketball ? "Move with ← →. Double jump with Space. Press X at the top of your jump for your most accurate shot! Aim right. First to five!"
   : breaker
   ? "Move with ← → or the buttons below. Keep the ball bouncing!"
   : volley
