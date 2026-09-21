@@ -5,7 +5,7 @@ export function createGame() {
   return { player: { x: 200, y: FLOOR, vy: 0, facing: 1, hp: 100, focus: 100, ammo: 6,
     jumps: 0, invulnerable: 0, dodge: 0, dodgeCooldown: 0, cooldown: 0, pose: '', poseTime: 0 },
     enemies: [], bullets: [], effects: [], events: [], wave: 0, remaining: 0, spawnTime: 0,
-    intermission: 1.5, score: 0, combo: 0, comboTime: 0, time: 0, slow: false, status: 'playing', nextId: 0 };
+    intermission: 1.5, score: 0, combo: 0, comboTime: 0, time: 0, slow: false, slowNeedsRelease: false, status: 'playing', nextId: 0 };
 }
 function effect(game, x, y, color, text = '') {
   game.effects.push({ x, y, color, text, life: .5, maxLife: .5 });
@@ -48,13 +48,12 @@ export function action(game, name) {
     p.dodge = .32; p.dodgeCooldown = 1.2; game.events.push('dodge'); return true;
   }
   if (p.cooldown > 0 || p.dodge > 0) return false;
-  if (name === 'punch' || name === 'kick') {
-    const kick = name === 'kick';
-    p.cooldown = kick ? .48 : .25; p.poseTime = kick ? .25 : .15; p.pose = name;
-    const reach = kick ? 43 : 29;
+  if (name === 'punch') {
+    p.cooldown = .25; p.poseTime = .15; p.pose = name;
+    const reach = 29;
     for (const enemy of game.enemies) {
       const dx = (enemy.x - p.x) * p.facing;
-      if (dx >= -6 && dx <= reach && Math.abs(enemy.y - p.y) < 27) damageEnemy(game, enemy, kick ? 30 : 18, p.facing);
+      if (dx >= -6 && dx <= reach && Math.abs(enemy.y - p.y) < 27) damageEnemy(game, enemy, 18, p.facing);
     }
     game.events.push('swing'); return true;
   }
@@ -82,9 +81,15 @@ export function step(game, elapsed, input = {}) {
   if (game.status !== 'playing') return;
   const dt = clamp(elapsed, 0, .04), p = game.player;
   game.time += dt;
-  game.slow = !!input.slow && p.focus > 1 && game.intermission <= 0;
-  const worldDt = dt * (game.slow ? .23 : 1), playerDt = dt * (game.slow ? .8 : 1);
+  // Exhaustion latches off until the player releases the control. Recharging
+  // while held must never flip slow motion on and off every few frames.
+  if (!input.slow) game.slowNeedsRelease = false;
+  if (game.slow && p.focus <= 0 && input.slow) game.slowNeedsRelease = true;
+  game.slow = !!input.slow && !game.slowNeedsRelease && game.intermission <= 0
+    && p.focus >= (game.slow ? Number.EPSILON : 20);
   p.focus = clamp(p.focus + (game.slow ? -30 : 13) * dt, 0, 100);
+  if (game.slow && p.focus <= 0) { game.slow = false; game.slowNeedsRelease = true; }
+  const worldDt = dt * (game.slow ? .23 : 1), playerDt = dt * (game.slow ? .8 : 1);
   p.ammo = Math.min(6, p.ammo + dt * .65);
   for (const key of ['invulnerable', 'dodge', 'dodgeCooldown', 'cooldown', 'poseTime']) p[key] = Math.max(0, p[key] - playerDt);
   game.comboTime -= dt;

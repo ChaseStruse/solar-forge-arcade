@@ -7,7 +7,7 @@ test('melee respects facing, reach, height, and cooldown', () => {
   const g = ready(); g.enemies = [enemy(220), enemy(180), enemy(260), enemy(220, { y: 180 })];
   assert.equal(action(g, 'punch'), true);
   assert.deepEqual(g.enemies.map(e => e.hp), [32, 50, 50, 50]);
-  assert.equal(action(g, 'kick'), false);
+  assert.equal(action(g, 'punch'), false);
 });
 test('double jump is limited and restored on landing', () => {
   const g = ready(); assert.ok(action(g, 'jump')); step(g, .02);
@@ -37,7 +37,7 @@ test('dodge avoids bullets; taking damage gives a recovery window', () => {
 });
 test('kills reward combos and final wave ends with a health bonus', () => {
   const g = ready(); g.wave = 5; g.remaining = 0; g.enemies = [enemy(220, { hp: 1 })];
-  g.player.focus = 20; action(g, 'kick'); assert.equal(g.score, 100); assert.equal(g.player.focus, 38);
+  g.player.focus = 20; action(g, 'punch'); assert.equal(g.score, 100); assert.equal(g.player.focus, 38);
   step(g, .02); assert.equal(g.status, 'won'); assert.equal(g.score, 1100);
 });
 test('empty ammo cannot fire and recharges; death stops simulation', () => {
@@ -63,7 +63,7 @@ test('a complete run can clear all five waves using normal combat actions', () =
     const target = g.enemies.filter(e => e.hp > 0).sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
     const dx = target ? target.x - p.x : 0;
     if (target) {
-      if (Math.abs(dx) < 42) action(g, 'kick');
+      if (Math.abs(dx) < 29) action(g, 'punch');
       else if (Math.abs(dx) > 60 && p.ammo >= 2) action(g, 'shoot');
       if (target.windup > 0 && Math.abs(dx) < 35) action(g, 'jump');
     }
@@ -74,4 +74,31 @@ test('a complete run can clear all five waves using normal combat actions', () =
   assert.equal(g.status, 'won');
   assert.equal(g.wave, 5);
   assert.ok(g.score > 2500);
+});
+
+
+test('exhausted bullet time stays off while held, even after focus recharges', () => {
+  const g = ready();
+  step(g, .04, { slow: true });
+  assert.equal(g.slow, true);
+  g.player.focus = .5;
+  step(g, .04, { slow: true });
+  assert.equal(g.player.focus, 0);
+  assert.equal(g.slow, false);
+  assert.equal(g.slowNeedsRelease, true);
+  for (let frame = 0; frame < 250; frame++) {
+    step(g, .04, { slow: true });
+    assert.equal(g.slow, false);
+  }
+  assert.equal(g.player.focus, 100);
+  step(g, .04, { slow: false });
+  step(g, .04, { slow: true });
+  assert.equal(g.slow, true);
+});
+
+test('bullet time needs 20 focus to start and kicking is no longer an action', () => {
+  const g = ready(); g.player.focus = 5;
+  step(g, .04, { slow: true }); assert.equal(g.slow, false);
+  assert.equal(action(g, 'kick'), false);
+  assert.equal(g.player.cooldown, 0);
 });
