@@ -16,3 +16,5 @@ body.play-mode .showroom{height:calc(100dvh - 65px);width:100%;margin:0;align-se
 .brand-symbol,.title-spark,.pixel-sun{font-variant-emoji:text}
 #scene>canvas{z-index:2;pointer-events:none}#scene>.css-scene{z-index:1}
 .view-controls{z-index:3}
+
+.neon-art{font:700 46px monospace;color:#7fffea;background:repeating-linear-gradient(0deg,#162738 0 4px,#1d3045 4px 5px);border-color:#5aacac;text-shadow:4px 3px #b33e81}

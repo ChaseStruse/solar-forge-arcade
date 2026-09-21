@@ -1,3 +1,4 @@
+const neon = document.querySelector("#neon-game");
 const breaker = document.querySelector("#breaker-game");
 const volley = document.querySelector("#volley-game");
 const basketball = document.querySelector("#basketball-game");
@@ -5,7 +6,8 @@ const blitz = document.querySelector("#blitz-game");
 const panel = document.querySelector(".control-panel");
 const help = document.createElement("p");
 help.className = "cabinet-help";
-help.textContent = blitz ? "Arrows move. X/C pass. Space dashes. Z switches defenders. Attack right! Four downs; first to 3 touchdowns."
+help.textContent = neon ? "Move with A/D. W jumps. J/K/L fight. Hold Shift for bullet time. P pauses; Escape exits."
+  : blitz ? "Arrows move. X/C pass. Space dashes. Z switches defenders. Attack right! Four downs; first to 3 touchdowns."
   : basketball ? "Move with ← →. Double jump with Space. Press X at the top of your jump for your most accurate shot! Aim right. First to five!"
   : breaker
   ? "Move with ← → or the buttons below. Keep the ball bouncing!"

@@ -1,0 +1,14 @@
+.neon-bullet .screen::after{background:repeating-linear-gradient(transparent 0 3px,#02051918 3px 4px);box-shadow:inset 0 0 25px #05051260}
+.neon-bullet .screen-overlay{background:#080d29bf}
+.neon-bullet .screen-overlay h2{color:#83ffe3;font-size:clamp(32px,5vw,66px);text-shadow:4px 4px #ad386e;letter-spacing:-3px}
+.neon-bullet .control-panel{gap:16px}
+.neon-score{display:flex;flex-direction:column;gap:8px;background:#080e22;padding:16px;border-left:3px solid #7fffea}
+.neon-score>strong{font:700 38px monospace;color:#7fffea;letter-spacing:3px}.neon-score b{color:#ffce8b;float:right}
+.neon-status{font:700 12px/1.6 monospace;color:#ffce8b;margin:0;min-height:20px}
+.neon-instructions{padding:0!important;margin:0!important}.neon-instructions h2{font-size:19px!important;color:#f9e3be!important}
+.neon-instructions dl{display:grid;grid-template-columns:1fr 1fr;font:11px/1.8 monospace;gap:5px}.neon-instructions dt{color:#7fffea}.neon-instructions dd{margin:0;color:#c4d8ec}.neon-instructions>p:last-child{font-size:12px;line-height:1.6;color:#b8c4d7}
+.neon-actions{display:flex;gap:8px}.neon-actions button,.neon-touch button{border:1px solid #527082;background:#1a2941;color:#bff9e8;font:700 10px/1.4 monospace;padding:10px 5px;border-radius:3px}
+.neon-actions button{flex:1}.neon-actions button:disabled{opacity:.45;cursor:default}.neon-actions button[aria-pressed=true]{border-color:#7fffea}
+.neon-touch{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.neon-touch button{touch-action:none;user-select:none;min-height:42px}.neon-touch button:active,.neon-touch button.held{background:#7fffea;color:#10152a}
+.neon-bullet .cabinet-help{display:none}
+@media(max-width:600px){.neon-bullet .screen-overlay{padding:12px}.neon-bullet .screen-overlay h2{font-size:32px;margin:6px}.neon-bullet .screen-overlay .eyebrow{font-size:8px}.neon-bullet .screen-overlay p:not(.eyebrow){font-size:11px;margin-bottom:12px}.neon-bullet .primary-button{font-size:11px;padding:10px}.neon-touch button{min-height:48px}}

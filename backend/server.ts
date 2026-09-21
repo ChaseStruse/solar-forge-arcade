@@ -2,6 +2,12 @@ const port = Number(Bun.env.PORT ?? 3000);
 const root = new URL("../frontend/", import.meta.url);
 
 const files: Record<string, { path: string; type: string; embedded?: boolean }> = {
+  "/neon-bullet": { path: "neon-bullet.html", type: "text/html; charset=utf-8" },
+  "/neon-bullet/": { path: "neon-bullet.html", type: "text/html; charset=utf-8" },
+  "/games/neon-bullet": { path: "neon-bullet.html", type: "text/html; charset=utf-8", embedded: true },
+  "/assets/neon-bullet.js": { path: "neon-bullet.js", type: "text/javascript; charset=utf-8" },
+  "/assets/neon-combat.js": { path: "neon-combat.js", type: "text/javascript; charset=utf-8" },
+  "/assets/neon-bullet.css": { path: "neon-bullet.css", type: "text/css; charset=utf-8" },
   "/solar-blitz": { path: "solar-blitz.html", type: "text/html; charset=utf-8" },
   "/games/solar-blitz": { path: "solar-blitz.html", type: "text/html; charset=utf-8", embedded: true },
   "/assets/solar-blitz.js": { path: "solar-blitz.js", type: "text/javascript; charset=utf-8" },
