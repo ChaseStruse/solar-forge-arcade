@@ -4,9 +4,11 @@ import fs from "node:fs";
 import vm from "node:vm";
 import * as rules from "../frontend/blitz-rules.js";
 
-function game() {
+function game(seed = 42) {
+  const randomMath = Object.create(Math);
+  randomMath.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   const context = new Proxy({}, { get: () => () => {}, set: () => true });
-  const scope = { ...rules, Math,
+  const scope = { ...rules, Math: randomMath,
     document: { querySelector: () => ({ getContext: () => context, addEventListener() {} }), addEventListener() {} },
     window: { addEventListener() {} }, requestAnimationFrame() {},
   };
@@ -136,4 +138,47 @@ test("Nova avoids a passing lane already occupied by an idle defender", () => {
   assert.equal(run("passingLaneClear(players[4])"), false);
   run("players[0].y = 450");
   assert.equal(run("passingLaneClear(players[4])"), true);
+});
+
+test("player cover defenders keep their man through scrambles, throws, and another receiver's catch", () => {
+  const run = game();
+  run("setup(1, 640, true); delay = 0; aiPass = -100; carrier.x = 300; players[1].x = 520; players[1].y = 280; players[4].x = 600; players[4].y = 150; update(.025)");
+  assert.ok(run("players[1].vx") > 0, 'move toward the assigned receiver, away from the scrambling QB');
+  assert.ok(run("players[1].vy") < 0);
+  run("pass(2); update(.025)");
+  assert.ok(run("players[1].vx") > 0, 'do not chase the pass to the other receiver');
+  assert.ok(run("players[1].vy") < 0);
+  run("carrier = players[5]; flight = null; reactionTime = 0; carrier.x = 300; carrier.y = 280; update(.025)");
+  assert.ok(run("players[1].vx") > 0, 'stay with the same man after the other receiver catches');
+  assert.equal(run("coverageTarget(players[2]).x"), run("carrier.x"), 'the carrier\'s own marker may tackle him');
+});
+
+test("manual control can leave coverage and the same assignment resumes after switching away", () => {
+  const run = game();
+  run("setup(1, 640, true); delay = 0; aiPass = -100; controlled = players[1]; players[1].x = 520; players[4].x = 600; keys.add('ArrowLeft'); update(.025)");
+  assert.ok(run("players[1].vx") < 0);
+  run("keys.clear(); controlled = players[0]; update(.025)");
+  assert.ok(run("players[1].vx") > 0);
+});
+
+test("each play assigns two distinct randomized routes, and routes survive the throw", () => {
+  const run = game();
+  const seen = new Set();
+  for (let i = 0; i < 24; i++) {
+    run("setup(1, 640, true)");
+    const pair = run("players.filter(p => p.team === offense && p !== carrier).map(p => p.route.name)");
+    assert.notEqual(pair[0], pair[1]);
+    pair.forEach(name => seen.add(name));
+  }
+  assert.equal(seen.size, rules.ROUTE_NAMES.length);
+  run("delay = 0; const originalRoute = players[4].route; pass(1); update(.025)");
+  assert.equal(run("players[4].route === originalRoute"), true);
+});
+
+test("pass leading follows a receiver's cut instead of always throwing straight ahead", () => {
+  const run = game();
+  run("players[1].x = 260; players[1].y = 150; players[1].route = createRoute('CROSS', 220, 150, 1); const predicted = passDestination(players[1]); pass(1)");
+  assert.ok(run("flight.targetY") > 150);
+  assert.equal(run("flight.targetY"), run("predicted.y"));
+  assert.equal(run("players[1].route.index"), 0, 'prediction must not advance the real receiver');
 });

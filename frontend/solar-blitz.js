@@ -1,4 +1,4 @@
-import { touchdown, nextDown, winner } from "./blitz-rules.js";
+import { touchdown, nextDown, winner, ROUTE_NAMES, createRoute, advanceRoute } from "./blitz-rules.js";
 
 const canvas = document.querySelector("#blitz-game");
 const ctx = canvas.getContext("2d");
@@ -24,7 +24,15 @@ function setup(team, x, newPossession = false) {
       y: [280, 150, 410][i], cooldown: 0, dash: 0, vx: 0, vy: 0 });
   }
   carrier = players[team * 3]; flight = null; controlled = team === 0 ? carrier : players[0];
+  assignRoutes();
   delay = 1.1; clock = 0; aiPass = 0; reactionTime = 0;
+}
+function assignRoutes() {
+  const choices = [...ROUTE_NAMES];
+  for (const p of players.filter(p => p.team === offense && p !== carrier)) {
+    const name = choices.splice(Math.floor(Math.random() * choices.length), 1)[0];
+    p.route = createRoute(name, p.x, p.y, offense === 0 ? 1 : -1);
+  }
 }
 function begin() {
   scores = [0, 0]; running = true; message = "SOL BALL / ATTACK RIGHT";
@@ -38,7 +46,13 @@ function endPlay(incomplete = false) {
   message = result.turnover ? "TURNOVER ON DOWNS!" : incomplete ? "INCOMPLETE" : "TACKLED!";
 }
 function passDestination(target) {
-  return { x: clamp(target.x + (offense === 0 ? 1 : -1) * distance(carrier, target) / 440 * 130, 30, 770), y: target.y };
+  let aim = { x: target.x, y: target.y };
+  for (let i = 0; i < 4; i++) {
+    const seconds = distance(carrier, aim) / 440;
+    aim = target.route ? advanceRoute(target.route, target.x, target.y, 130 * seconds)
+      : { x: clamp(target.x + target.vx * seconds, 30, 770), y: clamp(target.y + target.vy * seconds, 105, 455) };
+  }
+  return aim;
 }
 function passingLaneClear(target) {
   const aim = passDestination(target), dx = aim.x - carrier.x, dy = aim.y - carrier.y;
@@ -52,10 +66,10 @@ function pass(number) {
   if (!running || delay > 0 || flight || !carrier) return;
   const target = players.find(p => p.team === offense && p.number === number && p !== carrier);
   if (!target) return;
-  const targetX = passDestination(target).x;
-  const length = Math.hypot(targetX - carrier.x, target.y - carrier.y);
+  const { x: targetX, y: targetY } = passDestination(target);
+  const length = Math.hypot(targetX - carrier.x, targetY - carrier.y);
   flight = { x: carrier.x, y: carrier.y, vx: (targetX - carrier.x) / Math.max(.1, length) * 440,
-    vy: (target.y - carrier.y) / Math.max(.1, length) * 440, age: 0, thrower: carrier, targetX, targetY: target.y };
+    vy: (targetY - carrier.y) / Math.max(.1, length) * 440, age: 0, thrower: carrier, targetX, targetY };
   carrier = null;
   if (offense === 0) controlled = target;
   else reactionTime = REACTION_SECONDS;
@@ -91,6 +105,18 @@ function move(p, dx, dy, dt) {
   p.vx = dt > 0 ? (p.x - oldX) / dt : 0;
   p.vy = dt > 0 ? (p.y - oldY) / dt : 0;
 }
+function moveReceiver(p, dt) {
+  const next = advanceRoute(p.route, p.x, p.y, 130 * dt);
+  p.vx = dt > 0 ? (next.x - p.x) / dt : 0;
+  p.vy = dt > 0 ? (next.y - p.y) / dt : 0;
+  p.x = next.x; p.y = next.y; p.route.index = next.index;
+}
+function coverageTarget(p) {
+  const assigned = players.find(q => q.team === offense && q.number === p.number);
+  // Assignments never change with the ball: a defender only pursues the carrier
+  // if their own man has it. Manual control can intentionally leave coverage.
+  return { x: clamp(assigned.x + (assigned === carrier ? 0 : offense === 0 ? 22 : -22), 30, 770), y: assigned.y };
+}
 function update(dt) {
   if (delay > 0) { delay -= dt; return; }
   // The reaction window uses real seconds; the play clock and world use game time.
@@ -102,7 +128,6 @@ function update(dt) {
   reactionTime = Math.max(0, reactionTime - dt);
   clock += worldDt; aiPass += worldDt;
   const ball = carrier ?? flight;
-  const pursuit = defensiveTarget();
   for (const p of players) {
     const moveDt = p === controlled ? playerDt : worldDt;
     p.cooldown = Math.max(0, p.cooldown - moveDt); p.dash = Math.max(0, p.dash - moveDt);
@@ -116,20 +141,17 @@ function update(dt) {
       if (p === carrier) {
         const closest = players.filter(q => q.team !== offense).sort((a,b) => distance(p,a)-distance(p,b))[0];
         move(p, dir, distance(p,closest) < 95 ? (p.y < closest.y ? -.8 : .8) : Math.sin(clock * 2) * .3, moveDt);
+      } else if (p.route) {
+        moveReceiver(p, moveDt);
       } else {
-        const y = p.number === 1 ? 155 : 405;
-        move(p, dir * 100, (y - p.y) * 2, moveDt);
+        p.vx = 0; p.vy = 0;
       }
     } else {
-      // One rusher; two defenders stay with their assigned receivers until
-      // the ball is thrown or a runner crosses the line of scrimmage.
       const covering = p.number > 0 && carrier?.number === 0
         && (offense === 0 ? carrier.x <= startSpot + 35 : carrier.x >= startSpot - 35);
-      const receiver = players.find(q => q.team === offense && q.number === p.number);
-      const target = covering
-        ? { x: receiver.x + (offense === 0 ? 22 : -22), y: receiver.y }
-        : p.team === 0 ? pursuit : ball;
+      const target = p.team === 0 || covering ? coverageTarget(p) : ball;
       if (distance(p, target) > 5) move(p, target.x - p.x, target.y - p.y, moveDt);
+      else { p.vx = 0; p.vy = 0; }
     }
   }
   if (offense === 1 && carrier && aiPass > .25 && carrier.number === 0) {
@@ -147,7 +169,7 @@ function update(dt) {
     if (caught) {
       const interception = caught.team !== offense;
       carrier = caught; flight = null; reactionTime = 0;
-      if (interception) { offense = caught.team; down = 1; startSpot = caught.x; message = "INTERCEPTION!"; }
+      if (interception) { offense = caught.team; down = 1; startSpot = caught.x; message = "INTERCEPTION!"; assignRoutes(); }
       if (offense === 0) controlled = carrier;
     } else if (flight.age > 1.8 || flight.x < 25 || flight.x > 775 || flight.y < 100 || flight.y > 460) { endPlay(true); return; }
   }
@@ -177,6 +199,15 @@ function draw() {
   }
   box(25,95,750,3,"#82f7e3"); box(25,463,750,3,"#ff81b9");
   box(startSpot,95,2,370,"#eac67b");
+  if (delay > 0 && offense === 0) {
+    ctx.strokeStyle="#75ffe260"; ctx.lineWidth=2; ctx.setLineDash([5,6]);
+    for (const p of players.filter(p => p.team === offense && p !== carrier)) {
+      ctx.beginPath(); ctx.moveTo(p.x,p.y);
+      for (const point of p.route.points) ctx.lineTo(point.x,point.y);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+  }
   const reacting = offense === 1 && flight && reactionTime > 0;
   const suggested = reacting ? bestDefender() : null;
   if (reacting) {
@@ -191,7 +222,7 @@ function draw() {
     box(p.x-12,p.y,24,15,colors[p.team]); box(p.x-10,p.y+15,7,5,"#d9edee");box(p.x+3,p.y+15,7,5,"#d9edee");
     ctx.font="bold 10px monospace";ctx.textAlign="center";ctx.fillStyle="#10152b";ctx.fillText(p.number+1,p.x,p.y+11);
     if (p === suggested) { ctx.font="bold 10px monospace";ctx.fillStyle="#75ffe2";ctx.fillText("Z",p.x,p.y-27); }
-    if(p.team===0 && p!==carrier && offense===0 && p.number) {ctx.fillStyle="#fff4b5";ctx.fillText(p.number===1?"X":"C",p.x,p.y-23);}
+    if(p.team===0 && p!==carrier && offense===0 && p.number) {ctx.fillStyle="#fff4b5";ctx.fillText((p.number===1?"X":"C")+(delay>0?" / "+p.route.name:""),p.x,p.y-23);}
   }
   const b=carrier?{x:carrier.x+12,y:carrier.y}:flight;
   if(b) {box(b.x-7,b.y-4,14,8,"#c88950");box(b.x-4,b.y-1,8,2,"#fff4d0");}
