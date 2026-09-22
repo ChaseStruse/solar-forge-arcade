@@ -41,3 +41,14 @@ test('a complete AI match progresses without deadlocking', () => {
   }
   assert.equal(g.phase,'over'); assert.ok(g.scores.some(n=>n===7));
 });
+
+test('tracking returns and timing power shots can win a complete match', () => {
+  const g = createTennis(() => .6);
+  for (let i = 0; i < 20000 && g.phase !== 'over'; i++) {
+    if (g.phase === 'serve' && g.server === 0) tennisAction(g);
+    if (g.ball?.last === 1 && Math.abs(g.ball.y - g.players[0].y) < 50) tennisAction(g);
+    stepTennis(g, 1 / 60, { target: { x: g.ball?.last === 1 ? g.ball.targetX : 200, y: 222 } });
+  }
+  assert.equal(g.winner, 0);
+  assert.ok(g.bestRally >= 3);
+});
