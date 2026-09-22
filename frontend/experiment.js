@@ -28,6 +28,7 @@ const choices = [...document.querySelectorAll(".game-choice")];
 const pageSize = 4;
 const pageCount = Math.ceil(choices.length / pageSize);
 let ready = false;
+let resizeFallback = () => {};
 
 function createCabinet(renderer) {
   const cabinet = new THREE.Group();
@@ -278,7 +279,7 @@ function showMenu(){
   document.querySelector("#game-menu").hidden=false;
   gameFrame.hidden=true;gameFrame.src="about:blank";
   page=Math.floor(choices.findIndex(button=>button.dataset.game===selected)/pageSize);
-  renderMenu(true);
+  renderMenu(true);resizeFallback();
 }
 function launch(key){
   if(!ready||mode!=="menu"||!games[key])return;
@@ -297,7 +298,7 @@ function stepBack(){
   document.querySelector("#attract-screen").hidden=false;
   document.querySelector("#game-menu").hidden=true;
   gameFrame.hidden=true;gameFrame.src="about:blank";
-  document.querySelector("#play-button").focus({preventScroll:true});
+  document.querySelector("#play-button").focus({preventScroll:true});resizeFallback();
 }
 function exit(){
   if(mode==="game")showMenu();
@@ -341,10 +342,10 @@ init().catch(error=>{
   document.body.classList.add("fallback-mode");
   monitorElement.hidden=false;monitorElement.removeAttribute("style");
   mount.replaceChildren(monitorElement);
-  const resize=()=>{
+  resizeFallback=()=>{
     const reserve=mode==="attract"?130:24;
     const scale=Math.max(.15,Math.min((mount.clientWidth-24)/960,(mount.clientHeight-reserve)/720,1));
     document.body.style.setProperty("--fallback-scale",String(scale));
   };
-  new ResizeObserver(resize).observe(mount);resize();powerOn();
+  new ResizeObserver(resizeFallback).observe(mount);resizeFallback();powerOn();
 });

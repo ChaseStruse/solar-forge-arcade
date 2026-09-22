@@ -42,3 +42,7 @@ The reward picker uses a native modal dialog to keep keyboard focus within the c
 ## Tennis and Pool
 
 `tennis-physics.js` and `pool-physics.js` implement isolated browser-local simulations. The corresponding `solar-tennis.js` and `solar-pool.js` modules render 400 × 280 pixel playfields and collect input. `retro-sports.js` shares pause/resume, touch buttons, optional audio, and cabinet UI behavior. Both standalone and `/games/` routes use the same HTML, with embedded control relocation. No new dependencies or external artwork are required.
+
+## Cabinet navigation
+
+The home page has three UI states in `frontend/experiment.js`: attract view, in-screen game menu, and active game. Menu and gameplay share the close-up camera; returning from a game unloads the iframe and restores the selected card and page. The menu pages four games at a time and supports native buttons, arrow-key navigation, and Enter. Escape from an embedded game is accepted only from the current same-origin iframe. Dynamic Three.js imports allow renderer failures to fall back to the same menu without WebGL.

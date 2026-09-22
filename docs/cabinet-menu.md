@@ -5,3 +5,5 @@ The home page focuses on the arcade cabinet. Step Up opens a game menu on its sc
 Escape or Game Select returns an active game to the cabinet menu. Escape from the menu, or Step Back, returns to the full cabinet view. The last selected game and page remain highlighted. Leaving a game unloads its iframe.
 
 The menu remains usable as a flat screen if the 3D renderer or its remote dependencies cannot load. All game routes remain directly available.
+
+Verified in headless Chromium: all eight games launch, Escape unloads the game and restores selection, Step Back restores cabinet focus, arrow keys cross menu pages, and desktop/phone layouts have no page overflow. The same keyboard flow passes with the 3D dependency blocked to exercise the flat-screen fallback.
