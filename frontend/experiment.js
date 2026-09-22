@@ -181,6 +181,22 @@ async function init() {
   mountOnScreen(monitor);
   monitor.scale.setScalar(2.58/960);
   cssScene.add(monitor);
+  // Render menu typography at viewport resolution, outside the scaled CSS3D tree.
+  const menu = document.querySelector("#game-menu");
+  mount.append(menu);
+  menu.classList.add("sharp-menu");
+  const menuCorner = new THREE.Vector3();
+  function placeMenu(){
+    monitor.updateWorldMatrix(true, false);
+    const project = (x,y) => {
+      menuCorner.set(x,y,0).applyMatrix4(monitor.matrixWorld).project(camera);
+      return {x:(menuCorner.x+1)*width/2,y:(1-menuCorner.y)*height/2};
+    };
+    const a=project(-480,360), b=project(480,-360);
+    Object.assign(menu.style,{left:Math.round(a.x)+"px",top:Math.round(a.y)+"px",
+      width:Math.round(b.x-a.x)+"px",height:Math.round(b.y-a.y)+"px",
+      visibility:progress>.995?"visible":"hidden"});
+  }
   scene.add(createCabinet(renderer));
   // Cut a transparent window through WebGL at the monitor plane. Keeping the
   // canvas above CSS3D lets physical objects (like the joystick) occlude the
@@ -244,6 +260,7 @@ async function init() {
     camera.position.copy(position);camera.lookAt(target);
     renderer.render(scene,camera);
     cssRenderer.render(cssScene,camera);
+    if(mode==="menu")placeMenu();
     requestAnimationFrame(frame);
   }
   frame();
@@ -341,11 +358,16 @@ init().catch(error=>{
   // Keep the same cabinet menu available when WebGL or the CDN is unavailable.
   document.body.classList.add("fallback-mode");
   monitorElement.hidden=false;monitorElement.removeAttribute("style");
-  mount.replaceChildren(monitorElement);
+  const menu=document.querySelector("#game-menu");
+  menu.classList.add("sharp-menu");
+  mount.replaceChildren(monitorElement,menu);
   resizeFallback=()=>{
     const reserve=mode==="attract"?130:24;
     const scale=Math.max(.15,Math.min((mount.clientWidth-24)/960,(mount.clientHeight-reserve)/720,1));
     document.body.style.setProperty("--fallback-scale",String(scale));
+    Object.assign(menu.style,{left:Math.round((mount.clientWidth-960*scale)/2)+"px",
+      top:Math.round((mount.clientHeight-720*scale)/2)+"px",width:Math.round(960*scale)+"px",
+      height:Math.round(720*scale)+"px",visibility:"visible"});
   };
   new ResizeObserver(resizeFallback).observe(mount);resizeFallback();powerOn();
 });

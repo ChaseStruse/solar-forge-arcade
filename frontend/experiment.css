@@ -13,3 +13,28 @@ body.fallback-mode #scene .monitor{position:absolute!important;left:50%!importan
 @media(max-width:720px){.topbar{height:60px;margin:0 5%}.brand{font-size:12px;gap:8px}.brand-symbol{font-size:29px}.brand small{font-size:6px;letter-spacing:1px}.header-note{display:none}.open-sign{font-size:8px;padding:8px 10px}main{height:calc(100dvh - 60px)}.room-label{font-size:6px;top:20px}.view-controls{bottom:115px;font-size:6px}.approach-controls{bottom:27px}.play-toolbar{padding:0 10px;gap:8px;font-size:8px}.play-toolbar button{padding:10px 8px}.play-toolbar>span{font-size:8px;text-align:center}.menu-topline{font-size:15px;letter-spacing:1px}.game-copy strong{font-size:34px}.game-copy small{font-size:14px}.game-copy>span{display:none}.menu-hint{font-size:16px;letter-spacing:0}.menu-navigation button{min-height:86px;font-size:22px}.menu-heading h2{font-size:70px}#menu-page{font-size:24px}}
 @media(max-height:550px){.topbar{height:50px}main{height:calc(100dvh - 50px)}.approach-controls{bottom:15px}.approach-controls p{display:none}.primary-action{padding:11px 20px}.view-controls{bottom:17px}.room-label{top:12px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* Keep operational text crisp: no scanline overlays or scaled menu glyphs. */
+#attract-screen:after,#game-menu:after{display:none}
+.brand small,.header-note,.open-sign,.room-label,.approach-controls p,.view-controls{font-size:11px;color:#d0c6da}
+.room-label b,.view-controls button{color:#ded5e5}
+.play-toolbar,.play-toolbar>span,.play-toolbar #step-back{font-size:12px;color:#f5ebd4}
+#game-menu.sharp-menu{position:absolute;z-index:3;container-type:inline-size;padding:clamp(10px,2vw,24px);gap:12px;border:2px solid #607286;border-radius:18px;background:#111b2d;color:#fff0d3;overflow:hidden}
+.sharp-menu .menu-topline{font-size:clamp(10px,1.7cqw,13px);letter-spacing:.5px;color:#c5dee3;gap:8px}
+.sharp-menu .menu-heading h2{font-size:clamp(24px,6.8cqw,52px);line-height:1}
+.sharp-menu .menu-star{font-size:32px}
+.sharp-menu .menu-games{gap:12px}
+.sharp-menu .game-choice{padding:12px;gap:12px;border-color:#6f839a;background:#202e45}
+.sharp-menu .game-choice.active,.sharp-menu .game-choice:hover{background:#294448;border-color:#d8f68a}
+.sharp-menu .game-copy{gap:7px}
+.sharp-menu .game-copy strong{font-size:clamp(16px,3cqw,25px);color:#fff5df}
+.sharp-menu .game-copy small{font-size:clamp(10px,1.5cqw,12px);color:#d5cee4;letter-spacing:0}
+.sharp-menu .game-copy>span{font-size:clamp(12px,1.8cqw,15px);color:#d6e5e8}
+.sharp-menu .game-art{width:clamp(32px,7cqw,64px);height:64px;font-size:36px}
+.sharp-menu .choice-mark{font-size:16px;right:7px;bottom:4px;color:#e0efb9}
+.sharp-menu .menu-navigation{gap:8px;margin:0}
+.sharp-menu .menu-navigation button{min-width:0;min-height:44px;padding:10px;font-size:clamp(11px,1.8cqw,15px);color:#f0ffd2;background:#2b4348;border-color:#a8c4b4}
+.sharp-menu #menu-page{font-size:clamp(12px,2cqw,16px);letter-spacing:1px;color:#deedf0;white-space:nowrap}
+.sharp-menu .menu-hint{font-size:clamp(10px,1.5cqw,12px);letter-spacing:0;color:#d2deed}
+@container(max-width:480px){.sharp-menu .game-art,.sharp-menu .game-copy>span,.sharp-menu .menu-topline>span:last-child{display:none}.sharp-menu .game-choice{padding:10px}.sharp-menu .menu-games{gap:8px}.sharp-menu .game-copy small{font-size:10px}.sharp-menu .menu-hint{display:none}}
+@media(max-width:720px){.brand small{font-size:9px}.room-label{display:none}.view-controls{font-size:10px}.play-toolbar,.play-toolbar>span{font-size:11px}.approach-controls p{font-size:10px}#game-menu.sharp-menu{padding:10px;gap:8px;border-radius:10px}}
