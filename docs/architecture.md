@@ -3,7 +3,7 @@
 The prototype has three small parts:
 
 - `backend/server.ts` is a Bun HTTP server. It serves explicit static routes, a health endpoint, and the HTML help fragment.
-- `frontend/index.html`, `frontend/experiment.css`, and `frontend/experiment.js` render the 3D arcade cabinet and game picker. The three game HTML files and `frontend/style.css` render standalone and embedded play views. htmx 4 loads the tower defense help fragment on demand.
+- `frontend/index.html`, `frontend/experiment.css`, and `frontend/experiment.js` render the 3D arcade cabinet and game picker. The game HTML files and `frontend/style.css` render standalone and embedded play views. htmx 4 loads the tower defense help fragment on demand.
 - `frontend/game.js` owns one local game session. Canvas renders the playfield and `requestAnimationFrame` advances simulation. `frontend/combat.js` supplies projectile movement and firing limits; `frontend/targeting.js` supplies range and line-of-sight rules; `frontend/progression.js` supplies boss and reward rules. No game update makes a network request.
 - `frontend/brick-breaker.js` owns the Brick Breaker session, keyboard input, collisions, scoring, and level progression.
 - `frontend/solar-volley.js` owns the Solar Volley canvas, input, match flow, effects, and AI opponent. `frontend/volley-physics.js` keeps its collisions, net rebounds, scoring, and AI positioning rules testable without the DOM.
@@ -34,3 +34,15 @@ The artwork is drawn with Canvas and CSS, with no image downloads. htmx 4 is ven
 | `/health` | Container health check |
 
 The reward picker uses a native modal dialog to keep keyboard focus within the choices while the game is paused. The Docker base image is pinned by digest; update it deliberately when upgrading Bun.
+
+## Neon Bullet
+
+`frontend/neon-combat.js` owns browser-local combat, swept projectile collisions, focus, combos, and five-wave progression. `frontend/neon-bullet.js` renders the 400 × 280 Canvas, handles keyboard and touch input, pause/resume, optional synthesized audio, and local best scores. `/neon-bullet` serves the standalone game; `/games/neon-bullet` serves the cabinet view. Its CSS and both JavaScript modules are served under `/assets/`.
+
+## Tennis and Pool
+
+`tennis-physics.js` and `pool-physics.js` implement isolated browser-local simulations. The corresponding `solar-tennis.js` and `solar-pool.js` modules render 400 × 280 pixel playfields and collect input. `retro-sports.js` shares pause/resume, touch buttons, optional audio, and cabinet UI behavior. Both standalone and `/games/` routes use the same HTML, with embedded control relocation. No new dependencies or external artwork are required.
+
+## Cabinet navigation
+
+The home page has three UI states in `frontend/experiment.js`: attract view, in-screen game menu, and active game. Menu and gameplay share the close-up camera; returning from a game unloads the iframe and restores the selected card and page. The menu pages four games at a time and supports native buttons, arrow-key navigation, and Enter. Escape from an embedded game is accepted only from the current same-origin iframe. Dynamic Three.js imports allow renderer failures to fall back to the same menu without WebGL.

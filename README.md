@@ -1,6 +1,6 @@
 # Solar Forge Arcade
 
-A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, and **Solar Volley**, and **Solar Basketball**, and **Solar Blitz**, quick 3v3 football. A Bun server serves the cabinet, games, and small HTML fragments. The games run in the browser with Canvas, while Three.js renders the cabinet.
+A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, **Solar Volley**, **Solar Basketball**, **Solar Blitz**, **Neon Bullet**, **Solar Tennis**, and **Solar Pool**. A Bun server serves the cabinet, games, and small HTML fragments. The games run in the browser with Canvas, while Three.js renders the cabinet.
 
 ## Run with Docker
 
@@ -8,7 +8,7 @@ A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, and **
 docker compose -f docker/compose.yml up --build -d
 ```
 
-Open <http://localhost:3000> to choose a game and play it in the 3D cabinet. Each game is also available directly at `/protect-the-forge`, `/brick-breaker`, `/solar-volley`, `/solar-basketball`, or `/solar-blitz`. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
+Open <http://localhost:3000>, press **Step Up & Play**, and choose a game on the cabinet screen. Use the page buttons for more games, or arrow keys and Enter. Escape returns a game to selection; **Step Back** returns to the full cabinet view. Each game is also available directly at `/protect-the-forge`, `/brick-breaker`, `/solar-volley`, `/solar-basketball`, `/solar-blitz`, `/neon-bullet`, `/solar-tennis`, or `/solar-pool`. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
 
 ## Run with Bun
 
@@ -16,7 +16,7 @@ Open <http://localhost:3000> to choose a game and play it in the 3D cabinet. Eac
 bun run backend/server.ts
 ```
 
-Open <http://localhost:3000> to play. Set `PORT` to use another port. The cabinet currently needs an internet connection to load Three.js and display fonts from their CDNs.
+Open <http://localhost:3000> to play. Set `PORT` to use another port. The 3D cabinet loads Three.js and fonts from CDNs. If the renderer cannot load, a flat cabinet menu keeps the games available.
 
 The game uses no package dependencies. A local copy of htmx 4 powers the **How to Play** panel.
 
@@ -25,3 +25,7 @@ See [docs/architecture.md](docs/architecture.md) and [docs/gameplay.md](docs/gam
 ## Focused checks
 
 Run `node --test tests/*.test.js` to check targeting, projectile movement, upgrade limits, and boss rewards. These tests use the built-in Node test runner and require no packages.
+
+See [Neon Bullet controls and rules](docs/neon-bullet.md) for the rooftop brawler.
+
+See [Tennis and Pool controls](docs/tennis-and-pool.md) for quick matches and the eight-ball challenge.

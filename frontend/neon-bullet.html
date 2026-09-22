@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#11172e" />
+  <meta name="description" content="Neon Bullet: an 8-bit rooftop brawler. Dodge bullets, bend time, and fight through five waves at Solar Forge Arcade." />
+  <title>Neon Bullet · Solar Forge Arcade</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+  <link rel="stylesheet" href="/assets/neon-bullet.css" />
+  <script type="module" src="/assets/neon-bullet.js"></script>
+</head>
+<body class="solar-volley neon-bullet">
+  <div class="page-glow" aria-hidden="true"></div>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-icon" aria-hidden="true">✳</span><span>SOLAR<span class="brand-accent">FORGE</span><small>ARCADE</small></span></a>
+      <nav class="arcade-nav" aria-label="Games"><a href="/">GAME SELECT</a><a href="/neon-bullet" aria-current="page">NEON BULLET</a></nav>
+    </header>
+    <main>
+      <section class="intro" aria-labelledby="game-title"><div><p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 006</p><h1 id="game-title">NEON<br /><em>BULLET!</em></h1><p class="intro-copy">Own the rooftop. Bend the seconds. Make every hit count.</p></div><div class="intro-sticker volley-sticker" aria-hidden="true"><span>8</span><small>BIT STYLE.<br />FULL POWER.</small></div></section>
+      <section class="game-layout" aria-label="Neon Bullet game">
+        <div class="cabinet">
+          <div class="cabinet-top"><span class="cabinet-light"></span><span>FORGE-VISION <b>9000</b></span><span class="cabinet-channel">CH 06 / LIVE</span></div>
+          <div class="screen-frame"><div class="screen">
+            <canvas id="neon-game" width="400" height="280" tabindex="0" aria-label="Neon Bullet rooftop arena. Controls listed beside the game.">Your browser needs Canvas support to play.</canvas>
+            <div class="screen-overlay" id="neon-overlay">
+              <p class="eyebrow">ROOFTOP 06 / MIDNIGHT</p><h2 id="neon-title">NEON<br />BULLET</h2>
+              <p id="neon-copy">Five waves. One rooftop. Move, jump, and fight. Hold Shift to slow the world.</p>
+              <button class="primary-button" id="neon-start" type="button">ENTER THE ROOFTOP ↗</button>
+            </div>
+          </div></div>
+          <div class="neon-touch" aria-label="Touch game controls">
+            <button data-key="a" aria-label="Move left">◀</button><button data-key="d" aria-label="Move right">▶</button><button data-key="w">JUMP</button><button data-key="s">ROLL</button>
+            <button data-key="j">PUNCH</button><button data-key="l">SHOOT</button><button data-key="Shift">SLOW</button>
+          </div>
+          <div class="cabinet-bottom"><span>◉ &nbsp; J — PUNCH / L — SHOOT</span><span>SHIFT — BEND TIME</span></div>
+        </div>
+        <aside class="control-panel" aria-label="Score and controls">
+          <div class="panel-header"><span>◈ NIGHT SHIFT</span><span class="panel-number">06—06</span></div>
+          <div class="neon-score"><span class="card-label">SCORE</span><strong id="neon-score">000000</strong><span class="card-label">PERSONAL BEST <b id="neon-best">0</b></span></div>
+          <p class="neon-status" id="neon-status" role="status">READY TO DROP IN</p>
+          <div class="breaker-instructions neon-instructions"><p class="eyebrow">FIELD MANUAL</p><h2>HIT. DODGE. REPEAT.</h2><dl><dt>← → / A D</dt><dd>Move / face target</dd><dt>↑ / W / SPACE</dt><dd>Double jump</dd><dt>J / L</dt><dd>Punch / shoot</dd><dt>↓ / S</dt><dd>Dodge roll</dd><dt>HOLD SHIFT</dt><dd>Bullet time</dd></dl><p>Watch for yellow attack tells. Kills refill focus. Release Shift after focus runs out; 20 focus lets you activate again. Ammo recharges. Clear a wave to recover health.</p></div>
+          <div class="neon-actions"><button id="neon-pause" type="button" disabled>PAUSE [P]</button><button id="neon-sound" type="button" aria-pressed="false">SOUND OFF [M]</button></div>
+          <div class="panel-footer"><span>✦ TIME IS ON YOUR SIDE.</span><span class="footer-spark">✳</span></div>
+        </aside>
+      </section>
+      <p class="below-note">✦ FIVE WAVES. NO COINS. ONE MORE RUN. ✦</p>
+    </main>
+    <footer class="site-footer"><span>© SOLAR FORGE ARCADE</span><span>SHORT GAMES. BIG MOMENTS.</span></footer>
+  </div>
+</body>
+</html>

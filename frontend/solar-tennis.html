@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#11172e" /><meta name="description" content="Solar Tennis at Solar Forge Arcade. Fast feet. Clean hits. One more rally." />
+  <title>Solar Tennis · Solar Forge Arcade</title>
+  <link rel="stylesheet" href="/assets/style.css" /><link rel="stylesheet" href="/assets/retro-sports.css" />
+  <script type="module" src="/assets/solar-tennis.js"></script>
+</head>
+<body class="solar-volley retro-sports">
+  <div class="page-glow" aria-hidden="true"></div><div class="site-shell">
+    <header class="site-header"><a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-icon" aria-hidden="true">✳</span><span>SOLAR<span class="brand-accent">FORGE</span><small>ARCADE</small></span></a><nav class="arcade-nav" aria-label="Games"><a href="/">GAME SELECT</a><a href="/solar-tennis" aria-current="page">SOLAR TENNIS</a></nav></header>
+    <main>
+      <section class="intro" aria-labelledby="game-title"><div><p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 007</p><h1 id="game-title">SOLAR<br /><em>TENNIS!</em></h1><p class="intro-copy">Fast feet. Clean hits. One more rally.</p></div><div class="intro-sticker volley-sticker" aria-hidden="true"><span>7</span><small>POINTS<br />TO WIN</small></div></section>
+      <section class="game-layout" aria-label="Solar Tennis game">
+        <div class="cabinet"><div class="cabinet-top"><span class="cabinet-light"></span><span>FORGE-VISION <b>9000</b></span><span class="cabinet-channel">CH 07 / LIVE</span></div>
+          <div class="screen-frame"><div class="screen"><canvas id="tennis-game" width="400" height="280" tabindex="0" aria-label="Solar Tennis playfield. Controls listed beside the game.">Canvas support is required to play.</canvas><div class="screen-overlay" id="sports-overlay"><p class="eyebrow">FREE PLAY / PIXEL CLASSICS</p><h2 id="sports-title">SERVE UP<br />SOME HEAT</h2><p id="sports-copy">Move with arrows or drag on the court. Return automatically when close. Space serves or readies a power shot. First to seven wins.</p><button class="primary-button" id="sports-start" type="button">START MATCH ↗</button></div></div></div>
+          <div class="sports-controls" aria-label="Game controls"><button type="button" data-control="ArrowLeft" aria-label="Move left">◀</button><button type="button" data-control="ArrowRight" aria-label="Move right">▶</button><button type="button" data-control="ArrowUp" aria-label="Move forward">↑</button><button type="button" data-control="ArrowDown" aria-label="Move back">↓</button><button type="button" data-control=" " aria-label="Serve or ready power shot">SERVE / POWER</button></div><div class="cabinet-bottom"><span>◉ &nbsp; ARROWS / SPACE / TOUCH</span><span>FIRST TO SEVEN</span></div>
+        </div>
+        <aside class="control-panel volley-panel" aria-label="Score and controls"><div class="panel-header"><span>◈ MATCH BOARD</span><span class="panel-number">07—07</span></div><div class="volley-scoreboard"><div class="team-score player-score"><span class="card-label">YOU / SOL</span><strong id="sports-left">0</strong></div><span class="versus-mark">—</span><div class="team-score rival-score"><span class="card-label">AI / NOVA</span><strong id="sports-right">0</strong></div></div>
+          <div class="serve-status"><span class="card-label">COURT CALL</span><strong id="sports-status" role="status">READY TO PLAY</strong></div>
+          <div class="sports-actions"><button id="sports-pause" type="button" disabled>PAUSE [P]</button><button id="sports-sound" type="button" aria-pressed="false">SOUND OFF [M]</button></div>
+          <div class="breaker-instructions volley-instructions sports-instructions"><p class="eyebrow">HOW TO PLAY</p><h2>MOVE. RALLY. REPEAT.</h2><p>Arrows or WASD move. Or drag on the court to move. Your racket returns nearby balls automatically.</p><p><strong>Space serves.</strong> During a rally, tap it just before contact for a power shot. Hold left/right as you return to aim across the court.</p><p>Make Nova miss. A second bounce, net fault, or out ball awards a point. Serves alternate; first to seven wins.</p></div>
+          <div class="panel-footer"><span>✦ FAST FEET. BIG RALLIES.</span><span class="footer-spark">✳</span></div>
+        </aside>
+      </section><p class="below-note">✦ FAST FEET. BIG RALLIES. ✦</p>
+    </main><footer class="site-footer"><span>© SOLAR FORGE ARCADE</span><span>SHORT GAMES. BIG MOMENTS.</span></footer>
+  </div>
+</body>
+</html>

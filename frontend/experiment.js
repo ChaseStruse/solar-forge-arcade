@@ -1,22 +1,20 @@
-import * as THREE from "three";
-import { CSS3DRenderer, CSS3DObject } from "three/addons/renderers/CSS3DRenderer.js";
-import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+let THREE, CSS3DRenderer, CSS3DObject, RoundedBoxGeometry;
+let screenCenter, screenRotation, screenNormal;
 
 const mount = document.querySelector("#scene");
 const status = document.querySelector("#load-status");
 const monitorElement = document.querySelector("#monitor");
 const gameFrame = document.querySelector("#game-screen");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-const screenTilt = -THREE.MathUtils.degToRad(20);
-const screenCenter = new THREE.Vector3(0, 4.20, .93);
-const screenRotation = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), screenTilt);
-const screenNormal = new THREE.Vector3(0, 0, 1).applyQuaternion(screenRotation);
 
 function mountOnScreen(object, depth = 0) {
   object.position.set(0, 0, depth).applyQuaternion(screenRotation).add(screenCenter);
   object.quaternion.copy(screenRotation);
 }
 const games = {
+  tennis: { name: "Solar Tennis", title: "SOLAR<br />TENNIS", description: "FAST FEET. CLEAN HITS. ONE MORE RALLY.", channel: "07", url: "/games/solar-tennis" },
+  pool: { name: "Solar Pool", title: "SOLAR<br />POOL", description: "FIND YOUR ANGLE. CLEAR THE TABLE.", channel: "08", url: "/games/solar-pool" },
+  neon: { name: "Neon Bullet", title: "NEON<br />BULLET", description: "OWN THE ROOFTOP. BEND THE SECONDS.", channel: "06", url: "/games/neon-bullet" },
   blitz: { name: "Solar Blitz", title: "SOLAR<br />BLITZ", description: "THREE A SIDE. FOUR DOWNS. ALL ACTION.", channel: "05", url: "/games/solar-blitz" },
   basketball: { name: "Solar Basketball", title: "SOLAR<br />BASKETBALL", description: "OWN THE COURT. SHOOT FOR THE SUN.", channel: "04", url: "/games/solar-basketball" },
   forge: { name: "Protect the Forge", title: "PROTECT<br />THE FORGE", description: "KEEP THE HEART OF THE ARCADE BURNING.", channel: "01", url: "/games/protect-the-forge" },
@@ -24,8 +22,13 @@ const games = {
   volley: { name: "Solar Volley", title: "SOLAR<br />VOLLEY", description: "JUMP HIGH. GUARD THE NET. SERVE UP THE SUN.", channel: "03", url: "/games/solar-volley" },
 };
 let selected = "forge";
-let playing = false;
+let mode = "attract";
+let page = 0;
+const choices = [...document.querySelectorAll(".game-choice")];
+const pageSize = 4;
+const pageCount = Math.ceil(choices.length / pageSize);
 let ready = false;
+let resizeFallback = () => {};
 
 function createCabinet(renderer) {
   const cabinet = new THREE.Group();
@@ -150,6 +153,13 @@ function createCabinet(renderer) {
 }
 
 async function init() {
+  [THREE, { CSS3DRenderer, CSS3DObject }, { RoundedBoxGeometry }] = await Promise.all([
+    import('three'), import('three/addons/renderers/CSS3DRenderer.js'), import('three/addons/geometries/RoundedBoxGeometry.js'),
+  ]);
+  const screenTilt = -THREE.MathUtils.degToRad(20);
+  screenCenter = new THREE.Vector3(0, 4.20, .93);
+  screenRotation = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), screenTilt);
+  screenNormal = new THREE.Vector3(0, 0, 1).applyQuaternion(screenRotation);
   // Wait for display fonts before baking the cabinet's printed artwork.
   await Promise.race([document.fonts.ready,new Promise(resolve=>setTimeout(resolve,2500))]);
   const scene = new THREE.Scene();
@@ -171,6 +181,24 @@ async function init() {
   mountOnScreen(monitor);
   monitor.scale.setScalar(2.58/960);
   cssScene.add(monitor);
+  // Render menu typography at viewport resolution, outside the scaled CSS3D tree.
+  const menu = document.querySelector("#game-menu");
+  mount.append(menu);
+  menu.classList.add("sharp-menu");
+  const menuCorner = new THREE.Vector3();
+  function placeMenu(){
+    monitor.updateWorldMatrix(true, false);
+    const project = (x,y) => {
+      menuCorner.set(x,y,0).applyMatrix4(monitor.matrixWorld).project(camera);
+      return {x:(menuCorner.x+1)*width/2,y:(1-menuCorner.y)*height/2};
+    };
+    const a=project(-480,360), b=project(480,-360);
+    const newlyVisible=progress>.995 && menu.style.visibility!=="visible";
+    Object.assign(menu.style,{left:Math.round(a.x)+"px",top:Math.round(a.y)+"px",
+      width:Math.round(b.x-a.x)+"px",height:Math.round(b.y-a.y)+"px",
+      visibility:progress>.995?"visible":"hidden"});
+    if(newlyVisible)renderMenu(true);
+  }
   scene.add(createCabinet(renderer));
   // Cut a transparent window through WebGL at the monitor plane. Keeping the
   // canvas above CSS3D lets physical objects (like the joystick) occlude the
@@ -209,7 +237,7 @@ async function init() {
   new ResizeObserver(resize).observe(mount);
   resize();
   mount.addEventListener("pointerdown",event=>{
-    if(playing||event.target.closest("button"))return;
+    if(mode!=="attract"||event.target.closest("button"))return;
     drag={x:event.clientX,angle:targetAngle};mount.setPointerCapture(event.pointerId);
   });
   mount.addEventListener("pointermove",event=>{
@@ -223,7 +251,7 @@ async function init() {
   function frame(){
     const dt=Math.min(clock.getDelta(),.05);
     const blend=reducedMotion.matches?1:1-Math.exp(-dt*7);
-    progress=THREE.MathUtils.lerp(progress,playing?1:0,blend);
+    progress=THREE.MathUtils.lerp(progress,mode!=="attract"?1:0,blend);
     angle=THREE.MathUtils.lerp(angle,targetAngle,blend);
     const aspect=width/height;
     const distance=Math.max(13.1,8.7/aspect);
@@ -234,58 +262,114 @@ async function init() {
     camera.position.copy(position);camera.lookAt(target);
     renderer.render(scene,camera);
     cssRenderer.render(cssScene,camera);
+    if(mode==="menu")placeMenu();
     requestAnimationFrame(frame);
   }
   frame();
+  powerOn();
+}
+
+function powerOn(){
   ready=true;
   document.querySelector("#play-button").disabled=false;
   document.querySelector("#play-button").innerHTML='STEP UP & PLAY <span>↗</span>';
+  document.querySelector("#screen-play").disabled=false;
   status.hidden=true;
 }
-
-function chooseGame(key){
-  selected=key;
-  const game=games[key];
-  document.querySelector("#loaded-title").innerHTML=game.title;
-  document.querySelector(".screen-kicker").textContent="NOW LOADED / "+game.channel;
-  document.querySelector(".screen-description").textContent=game.description;
-  document.querySelectorAll(".game-choice").forEach(button=>{
-    const active=button.dataset.game===key;
-    button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active));
+function renderMenu(focus=false){
+  choices.forEach((button,index)=>{
+    button.hidden=Math.floor(index/pageSize)!==page;
+    const active=button.dataset.game===selected;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+    button.setAttribute("aria-label","Play "+games[button.dataset.game].name);
   });
+  document.querySelector("#menu-page").textContent=String(page+1).padStart(2,"0")+" / "+String(pageCount).padStart(2,"0");
+  if(focus) choices.find(button=>button.dataset.game===selected)?.focus({preventScroll:true});
 }
-function launch(){
-  if(!ready||playing)return;
-  playing=true;
+function showMenu(){
+  if(!ready)return;
+  mode="menu";
   document.body.classList.add("play-mode");
   document.querySelector(".play-toolbar").hidden=false;
-  document.querySelector("#playing-title").textContent=games[selected].name.toUpperCase();
+  document.querySelector("#exit-game").hidden=true;
+  document.querySelector("#playing-title").textContent="CHOOSE YOUR GAME";
   document.querySelector("#attract-screen").hidden=true;
-  gameFrame.hidden=false;
-  gameFrame.src=games[selected].url;
+  document.querySelector("#game-menu").hidden=false;
+  gameFrame.hidden=true;gameFrame.src="about:blank";
+  page=Math.floor(choices.findIndex(button=>button.dataset.game===selected)/pageSize);
+  renderMenu(true);resizeFallback();
 }
-function exit(){
-  if(!playing)return;
-  playing=false;
+function launch(key){
+  if(!ready||mode!=="menu"||!games[key])return;
+  selected=key;mode="game";
+  document.querySelector("#game-menu").hidden=true;
+  document.querySelector("#exit-game").hidden=false;
+  document.querySelector("#playing-title").textContent=games[key].name.toUpperCase();
+  gameFrame.title=games[key].name+" — playable arcade game";
+  gameFrame.hidden=false;gameFrame.src=games[key].url;
+}
+function stepBack(){
+  if(mode==="attract")return;
+  mode="attract";
   document.body.classList.remove("play-mode");
   document.querySelector(".play-toolbar").hidden=true;
   document.querySelector("#attract-screen").hidden=false;
+  document.querySelector("#game-menu").hidden=true;
   gameFrame.hidden=true;gameFrame.src="about:blank";
-  document.querySelector("#play-button").focus({preventScroll:true});
+  document.querySelector("#play-button").focus({preventScroll:true});resizeFallback();
 }
-gameFrame.addEventListener("load",()=>{if(playing)gameFrame.contentWindow.focus();});
-document.querySelectorAll(".game-choice").forEach(button=>button.addEventListener("click",()=>chooseGame(button.dataset.game)));
-document.querySelector("#play-button").addEventListener("click",launch);
-document.querySelector("#screen-play").addEventListener("click",launch);
-document.querySelector("#exit-game").addEventListener("click",exit);
+function exit(){
+  if(mode==="game")showMenu();
+  else if(mode==="menu")stepBack();
+}
+function turnPage(direction){
+  page=(page+direction+pageCount)%pageCount;
+  selected=choices[page*pageSize].dataset.game;
+  renderMenu(true);
+}
+gameFrame.addEventListener("load",()=>{if(mode==="game")gameFrame.contentWindow.focus();});
+choices.forEach(button=>button.addEventListener("click",()=>launch(button.dataset.game)));
+document.querySelector("#play-button").addEventListener("click",showMenu);
+document.querySelector("#screen-play").addEventListener("click",showMenu);
+document.querySelector("#exit-game").addEventListener("click",showMenu);
+document.querySelector("#step-back").addEventListener("click",stepBack);
+document.querySelector("#previous-page").addEventListener("click",()=>turnPage(-1));
+document.querySelector("#next-page").addEventListener("click",()=>turnPage(1));
 addEventListener("keydown",event=>{
-  if(event.key==="Escape")exit();
-  if(event.key==="Enter"&&event.target===document.body)launch();
+  if(event.altKey||event.ctrlKey||event.metaKey)return;
+  if(event.key==="Escape"){event.preventDefault();exit();return;}
+  if(mode==="menu" && ["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key)){
+    event.preventDefault();
+    const delta={ArrowLeft:-1,ArrowRight:1,ArrowUp:-2,ArrowDown:2}[event.key];
+    const focused=choices.indexOf(document.activeElement);
+    const index=focused>=0?focused:choices.findIndex(button=>button.dataset.game===selected);
+    const next=(index+delta+choices.length)%choices.length;
+    selected=choices[next].dataset.game;page=Math.floor(next/pageSize);renderMenu(true);
+  }
+  if(event.key==="Enter"&&event.target===document.body){
+    event.preventDefault();if(mode==="attract")showMenu();else if(mode==="menu")launch(selected);
+  }
 });
 addEventListener("message",event=>{
-  if(event.origin===location.origin&&event.source===gameFrame.contentWindow&&event.data?.type==="arcade-exit")exit();
+  if(event.origin===location.origin&&event.source===gameFrame.contentWindow&&event.data?.type==="arcade-exit"&&mode==="game")showMenu();
 });
+renderMenu();
 init().catch(error=>{
   console.error(error);
-  status.textContent="The cabinet could not power on. Check your connection and WebGL, then refresh.";
+  // Keep the same cabinet menu available when WebGL or the CDN is unavailable.
+  document.body.classList.add("fallback-mode");
+  monitorElement.hidden=false;monitorElement.removeAttribute("style");
+  const menu=document.querySelector("#game-menu");
+  menu.classList.add("sharp-menu");
+  mount.replaceChildren(monitorElement,menu);
+  resizeFallback=()=>{
+    const reserve=mode==="attract"?130:24;
+    const scale=Math.max(.15,Math.min((mount.clientWidth-24)/960,(mount.clientHeight-reserve)/720,1));
+    document.body.style.setProperty("--fallback-scale",String(scale));
+    Object.assign(menu.style,{left:Math.round((mount.clientWidth-960*scale)/2)+"px",
+      top:Math.round((mount.clientHeight-720*scale)/2)+"px",width:Math.round(960*scale)+"px",
+      height:Math.round(720*scale)+"px",visibility:"visible"});
+  };
+  new ResizeObserver(resizeFallback).observe(mount);resizeFallback();powerOn();
 });
