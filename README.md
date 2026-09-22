@@ -1,6 +1,6 @@
 # Solar Forge Arcade
 
-A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, **Solar Volley**, **Solar Basketball**, **Solar Blitz**, and **Neon Bullet**, an 8-bit rooftop brawler with bullet time. A Bun server serves the cabinet, games, and small HTML fragments. The games run in the browser with Canvas, while Three.js renders the cabinet.
+A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, **Solar Volley**, **Solar Basketball**, **Solar Blitz**, **Neon Bullet**, **Solar Tennis**, and **Solar Pool**. A Bun server serves the cabinet, games, and small HTML fragments. The games run in the browser with Canvas, while Three.js renders the cabinet.
 
 ## Run with Docker
 
@@ -8,7 +8,7 @@ A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, **Sola
 docker compose -f docker/compose.yml up --build -d
 ```
 
-Open <http://localhost:3000> to choose a game and play it in the 3D cabinet. Each game is also available directly at `/protect-the-forge`, `/brick-breaker`, `/solar-volley`, `/solar-basketball`, `/solar-blitz`, or `/neon-bullet`. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
+Open <http://localhost:3000> to choose a game and play it in the 3D cabinet. Each game is also available directly at `/protect-the-forge`, `/brick-breaker`, `/solar-volley`, `/solar-basketball`, `/solar-blitz`, `/neon-bullet`, `/solar-tennis`, or `/solar-pool`. When files change, run the `up --build -d` command again so Compose rebuilds and replaces the container. Check the container with `docker compose -f docker/compose.yml ps`, and stop it with `docker compose -f docker/compose.yml down`.
 
 ## Run with Bun
 
@@ -27,3 +27,5 @@ See [docs/architecture.md](docs/architecture.md) and [docs/gameplay.md](docs/gam
 Run `node --test tests/*.test.js` to check targeting, projectile movement, upgrade limits, and boss rewards. These tests use the built-in Node test runner and require no packages.
 
 See [Neon Bullet controls and rules](docs/neon-bullet.md) for the rooftop brawler.
+
+See [Tennis and Pool controls](docs/tennis-and-pool.md) for quick matches and the eight-ball challenge.

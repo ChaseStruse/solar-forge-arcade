@@ -1,0 +1,10 @@
+.retro-sports canvas{image-rendering:pixelated;touch-action:none;outline-offset:-3px}
+.retro-sports .screen::after{box-shadow:inset 0 0 25px #05051255;background:repeating-linear-gradient(transparent 0 3px,#02051912 3px 4px)}
+.retro-sports .screen-overlay{background:#080d29cf;backdrop-filter:none}
+.retro-sports .screen-overlay h2{font-family:monospace;color:#7fffea;text-shadow:3px 3px #994075;letter-spacing:-2px;font-size:clamp(28px,4vw,52px)}
+.retro-sports .control-panel{gap:14px}.retro-sports .serve-status{margin:0}.retro-sports .serve-status strong{font-size:13px;line-height:1.6}
+.sports-actions{display:flex;gap:6px}.sports-actions button{flex:1;border:1px solid #63748d;background:#202a43;color:#c4f5e4;padding:10px 4px;font:700 10px monospace;border-radius:3px}.sports-actions button:disabled{opacity:.4}
+.sports-controls{display:flex;gap:6px;margin:12px 8px 3px}.sports-controls button{flex:1;min-height:46px;padding:10px 5px;border:1px solid #59878e;background:#203d4a;color:#a7ffdf;font:700 12px monospace;border-radius:3px;touch-action:none;user-select:none}.sports-controls button:last-child{flex:2;color:#ffda91}.sports-controls button:active,.sports-controls button.held{background:#548783;color:#fff0ca}
+.retro-sports .sports-instructions h2{font-size:21px}.retro-sports .sports-instructions p{font-size:12px;line-height:1.7}.retro-sports .cabinet-help{font-size:11px;line-height:1.7}
+.retro-sports .control-panel>.sports-controls{display:grid;grid-template-columns:repeat(2,1fr);margin:0}.retro-sports .control-panel>.sports-controls button:last-child{grid-column:1/-1}
+@media(max-width:600px){.retro-sports .screen-overlay{padding:10px}.retro-sports .screen-overlay h2{font-size:28px;margin:7px}.retro-sports .screen-overlay .eyebrow{font-size:8px}.retro-sports .screen-overlay p:not(.eyebrow){font-size:11px;margin-bottom:12px}.retro-sports .primary-button{font-size:11px;padding:10px}.sports-controls{flex-wrap:wrap}.sports-controls button{min-width:40px;font-size:10px}.retro-sports .cabinet-bottom{font-size:8px}}

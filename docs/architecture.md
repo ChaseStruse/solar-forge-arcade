@@ -38,3 +38,7 @@ The reward picker uses a native modal dialog to keep keyboard focus within the c
 ## Neon Bullet
 
 `frontend/neon-combat.js` owns browser-local combat, swept projectile collisions, focus, combos, and five-wave progression. `frontend/neon-bullet.js` renders the 400 × 280 Canvas, handles keyboard and touch input, pause/resume, optional synthesized audio, and local best scores. `/neon-bullet` serves the standalone game; `/games/neon-bullet` serves the cabinet view. Its CSS and both JavaScript modules are served under `/assets/`.
+
+## Tennis and Pool
+
+`tennis-physics.js` and `pool-physics.js` implement isolated browser-local simulations. The corresponding `solar-tennis.js` and `solar-pool.js` modules render 400 × 280 pixel playfields and collect input. `retro-sports.js` shares pause/resume, touch buttons, optional audio, and cabinet UI behavior. Both standalone and `/games/` routes use the same HTML, with embedded control relocation. No new dependencies or external artwork are required.
