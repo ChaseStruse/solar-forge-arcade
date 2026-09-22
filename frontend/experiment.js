@@ -193,9 +193,11 @@ async function init() {
       return {x:(menuCorner.x+1)*width/2,y:(1-menuCorner.y)*height/2};
     };
     const a=project(-480,360), b=project(480,-360);
+    const newlyVisible=progress>.995 && menu.style.visibility!=="visible";
     Object.assign(menu.style,{left:Math.round(a.x)+"px",top:Math.round(a.y)+"px",
       width:Math.round(b.x-a.x)+"px",height:Math.round(b.y-a.y)+"px",
       visibility:progress>.995?"visible":"hidden"});
+    if(newlyVisible)renderMenu(true);
   }
   scene.add(createCabinet(renderer));
   // Cut a transparent window through WebGL at the monitor plane. Keeping the

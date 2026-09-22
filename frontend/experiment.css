@@ -36,5 +36,5 @@ body.fallback-mode #scene .monitor{position:absolute!important;left:50%!importan
 .sharp-menu .menu-navigation button{min-width:0;min-height:44px;padding:10px;font-size:clamp(11px,1.8cqw,15px);color:#f0ffd2;background:#2b4348;border-color:#a8c4b4}
 .sharp-menu #menu-page{font-size:clamp(12px,2cqw,16px);letter-spacing:1px;color:#deedf0;white-space:nowrap}
 .sharp-menu .menu-hint{font-size:clamp(10px,1.5cqw,12px);letter-spacing:0;color:#d2deed}
-@container(max-width:480px){.sharp-menu .game-art,.sharp-menu .game-copy>span,.sharp-menu .menu-topline>span:last-child{display:none}.sharp-menu .game-choice{padding:10px}.sharp-menu .menu-games{gap:8px}.sharp-menu .game-copy small{font-size:10px}.sharp-menu .menu-hint{display:none}}
+@container(max-width:480px){.sharp-menu .game-copy small,.sharp-menu .game-art,.sharp-menu .game-copy>span,.sharp-menu .menu-topline>span:last-child{display:none}.sharp-menu .game-choice{padding:10px}.sharp-menu .menu-games{gap:8px}.sharp-menu .game-copy small{font-size:10px}.sharp-menu .menu-hint{display:none}}
 @media(max-width:720px){.brand small{font-size:9px}.room-label{display:none}.view-controls{font-size:10px}.play-toolbar,.play-toolbar>span{font-size:11px}.approach-controls p{font-size:10px}#game-menu.sharp-menu{padding:10px;gap:8px;border-radius:10px}}
