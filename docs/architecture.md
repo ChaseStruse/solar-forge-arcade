@@ -1,14 +1,15 @@
 # Architecture
 
-The prototype has three small parts:
+The application has these parts:
 
+- `scripts/build.mjs` generates standalone and embedded HTML for Cloudflare Static Assets using `backend/routes.js`. Production needs no application server; the Bun server remains available for local development.
 - `backend/server.ts` is a Bun HTTP server. It serves explicit static routes, and a health endpoint.
 - `frontend/index.html`, `frontend/experiment.css`, and `frontend/experiment.js` render the 3D arcade cabinet and game picker. The game HTML files and `frontend/style.css` render standalone and embedded play views. A native HTML dialog displays tower defense instructions without a network request.
 - `frontend/game.js` owns one local game session. Canvas renders the playfield and `requestAnimationFrame` advances simulation. `frontend/combat.js` supplies projectile movement and firing limits; `frontend/targeting.js` supplies range and line-of-sight rules; `frontend/progression.js` supplies boss and reward rules. No game update makes a network request.
 - `frontend/brick-breaker.js` owns the Brick Breaker session, keyboard input, collisions, scoring, and level progression.
 - `frontend/solar-volley.js` owns the Solar Volley canvas, input, match flow, effects, and AI opponent. `frontend/volley-physics.js` keeps its collisions, net rebounds, scoring, and AI positioning rules testable without the DOM.
 
-The game runs entirely in memory. Reloading resets it, and Sparks are not shared between players. This keeps the first prototype fast and deployable as one container. A future leaderboard would need persistent storage and server side score validation.
+The game runs entirely in memory. Reloading resets it, and Sparks are not shared between players. This allows production deployment as static files. A future leaderboard would need persistent storage and server side score validation.
 
 The artwork is drawn with Canvas and CSS, with no image downloads. The cabinet loads Three.js and fonts from CDNs.
 
