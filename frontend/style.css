@@ -504,15 +504,14 @@ canvas{
   font-size:10px;
   letter-spacing:.12em
 }
-#help-panel:not(:empty){
-  position:fixed;
-  inset:0;
-  z-index:10;
-  background:#0b0916ad;
-  display:grid;
-  place-items:center;
-  padding:20px
+#help-panel{
+  padding:0;
+  border:0;
+  border-radius:14px;
+  max-width:calc(100% - 40px);
+  background:transparent
 }
+#help-panel::backdrop{background:#0b0916ad}
 .help-content{
   position:relative;
   max-width:460px;
