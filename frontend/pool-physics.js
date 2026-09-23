@@ -46,10 +46,11 @@ function finishShot(g) {
     g.events.push(g.winner ? 'win' : 'miss'); return;
   }
   if (g.scratch) { g.shots = Math.max(0, g.shots - 1); respotCue(g); }
+  if (g.shotPots > 0 && !g.scratch) g.shots = Math.min(20, g.shots + 1);
   if (g.shots === 0) { g.phase = 'over'; g.message = 'OUT OF SHOTS'; return; }
   g.phase = 'aim';
   const colors = g.balls.filter(b => b.id !== 0 && b.id !== 8).length;
-  g.message = g.scratch ? 'SCRATCH / EXTRA SHOT LOST' : colors === 0 ? 'FINISH IT / SINK THE 8' : g.shotPots ? `${g.shotPots} POCKETED / KEEP IT GOING` : 'LINE UP YOUR NEXT SHOT';
+  g.message = g.scratch ? 'SCRATCH / EXTRA SHOT LOST' : colors === 0 ? 'FINISH IT / SINK THE 8' : g.shotPots ? `${g.shotPots} POCKETED / +1 SHOT` : 'LINE UP YOUR NEXT SHOT';
 }
 export function stepPool(g, elapsed) {
   if (g.phase !== 'rolling') return;

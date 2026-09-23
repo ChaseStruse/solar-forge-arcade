@@ -112,7 +112,7 @@ export function step(game, elapsed, input = {}) {
   game.spawnTime -= worldDt;
   if (game.remaining > 0 && game.spawnTime <= 0 && game.enemies.length < 4) {
     const id = game.nextId++;
-    game.enemies.push({ id, x: id % 2 ? 384 : 16, y: FLOOR, hp: 48 + game.wave * 5,
+    game.enemies.push({ id, x: p.x < 100 ? 384 : p.x > 300 ? 16 : id % 2 ? 384 : 16, y: FLOOR, hp: 48 + game.wave * 5,
       maxHp: 48 + game.wave * 5, kind: id % 3 === 2 ? 'gunner' : 'brawler', facing: 1,
       cooldown: .9, windup: 0, stun: 0, attack: '' });
     game.remaining--; game.spawnTime = 1.5;
@@ -120,21 +120,22 @@ export function step(game, elapsed, input = {}) {
   for (const e of game.enemies) {
     if (e.hp <= 0) continue;
     e.stun = Math.max(0, e.stun - worldDt); e.cooldown -= worldDt;
-    e.facing = p.x < e.x ? -1 : 1;
+    if (e.windup <= 0) e.facing = p.x < e.x ? -1 : 1;
     if (e.stun > 0) { e.windup = 0; continue; }
     const dx = Math.abs(p.x - e.x);
     if (e.windup > 0) {
       e.windup -= worldDt;
       if (e.windup <= 0) {
         if (e.attack === 'shoot') {
-          const deltaX = p.x - e.x, deltaY = p.y - e.y, length = Math.hypot(deltaX, deltaY) || 1;
+          const deltaX = (e.aimX ?? p.x) - e.x, deltaY = (e.aimY ?? p.y) - e.y, length = Math.hypot(deltaX, deltaY) || 1;
           game.bullets.push({ x: e.x + e.facing * 12, y: e.y - 17,
             vx: deltaX / length * 135, vy: deltaY / length * 135, friendly: false });
           game.events.push('enemyShot');
-        } else if (dx < 31 && Math.abs(p.y - e.y) < 26) damagePlayer(game, 10, e.facing);
+        } else if ((p.x - e.x) * e.facing >= -6 && dx < 31 && Math.abs(p.y - e.y) < 26) damagePlayer(game, 10, e.facing);
         e.cooldown = e.kind === 'gunner' ? 1.7 : .8;
       }
     } else if (e.cooldown <= 0 && (e.kind === 'gunner' || dx < 25)) {
+      e.aimX = p.x; e.aimY = p.y;
       e.attack = e.kind === 'gunner' ? 'shoot' : 'punch'; e.windup = e.kind === 'gunner' ? .7 : .38;
     } else {
       const direction = e.kind === 'gunner' ? (dx < 90 ? -e.facing : dx > 150 ? e.facing : 0) : dx > 22 ? e.facing : 0;

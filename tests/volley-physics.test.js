@@ -48,3 +48,10 @@ test("the rival tracks balls on its side and jumps to meet them", () => {
   assert.deepEqual(controls, { direction: 1, jump: true });
   assert.equal(rivalControls({ x: 650, y: 450, onGround: true }, { x: 200, y: 200, vx: -40 }).direction, -1);
 });
+
+test('Nova anticipates a back-wall rebound and avoids jumping at distant balls', () => {
+  const ai = { x: 680, y: 450, onGround: true };
+  const controls = rivalControls(ai, { x: 760, y: 150, vx: 500, vy: 100 });
+  assert.equal(controls.direction, -1);
+  assert.equal(rivalControls(ai, { x: 450, y: 330, vx: 10, vy: 100 }).jump, false);
+});

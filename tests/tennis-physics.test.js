@@ -52,3 +52,15 @@ test('tracking returns and timing power shots can win a complete match', () => {
   assert.equal(g.winner, 0);
   assert.ok(g.bestRally >= 3);
 });
+
+test('Nova places returns into the open court without changing a shot in flight', () => {
+  const g = ready(); g.players[0].x = 90;
+  hitTennis(g, 1);
+  assert.ok(g.ball.targetX > 270);
+  const vx = g.ball.vx;
+  g.players[0].x = 310;
+  stepTennis(g, .01);
+  assert.equal(g.ball.vx, vx);
+  hitTennis(g, 1);
+  assert.ok(g.ball.targetX < 130);
+});

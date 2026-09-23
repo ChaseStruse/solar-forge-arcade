@@ -1,6 +1,6 @@
 /** A deliberately small Canvas game. All distances use canvas pixels. */
 import { advanceShot, fireInterval, MAX_ATTACK_SPEED_LEVEL } from "./combat.js";
-import { canTarget, segmentHitsCircle } from "./targeting.js";
+import { selectThreat, segmentHitsCircle } from "./targeting.js";
 import { applyBossReward, createBoss, createTower } from "./progression.js";
 
 const canvas = document.querySelector("#game");
@@ -36,7 +36,7 @@ function createGame() {
     wave: 1,
     shield: 5,
     maxShield: 5,
-    sparks: 0,
+    sparks: 10,
     bossSpawned: false,
     bossDefeated: false,
     choosingReward: false,
@@ -69,12 +69,16 @@ function updateHud() {
 function spawnEnemy() {
   const angle = Math.random() * TAU;
   const radius = 430;
-  const maxHealth = 2 + Math.floor((game.wave - 1) / 2);
+  const roll = Math.random();
+  const kind = game.wave >= 4 && roll < .18 ? "armored" : game.wave >= 2 && roll > .72 ? "runner" : "scout";
+  const baseHealth = 2 + Math.floor((game.wave - 1) / 2);
+  const maxHealth = kind === "armored" ? baseHealth * 2 : kind === "runner" ? Math.max(1, baseHealth - 1) : baseHealth;
   game.enemies.push({
     x: center.x + Math.cos(angle) * radius,
     y: center.y + Math.sin(angle) * radius,
-    radius: 12 + Math.random() * 4,
-    speed: 33 + game.wave * 5 + Math.random() * 9,
+    kind,
+    radius: kind === "armored" ? 19 : kind === "runner" ? 10 : 14,
+    speed: (33 + game.wave * 5 + Math.random() * 9) * (kind === "runner" ? 1.25 : kind === "armored" ? .7 : 1),
     health: maxHealth,
     maxHealth,
   });
@@ -85,16 +89,7 @@ function firingRange() {
 }
 
 function fireShot(tower) {
-  let target = null;
-  let closest = Infinity;
-
-  for (const enemy of game.enemies) {
-    const distance = Math.hypot(enemy.x - tower.x, enemy.y - tower.y);
-    if (distance < closest && canTarget(tower, enemy, center, FORGE_RADIUS, firingRange())) {
-      closest = distance;
-      target = enemy;
-    }
-  }
+  const target = selectThreat(game.enemies, tower, center, FORGE_RADIUS, firingRange());
 
   if (!target) return false;
   tower.aim = Math.atan2(target.y - tower.y, target.x - tower.x);
@@ -185,7 +180,7 @@ function update(dt) {
         enemy.health -= game.levels.power;
         burst(shot.x, shot.y, "#8bf7e5", 4);
         if (enemy.health <= 0) {
-          game.sparks += enemy.boss ? 30 : 3 + Math.floor(game.wave / 3);
+          game.sparks += enemy.boss ? 30 : (enemy.kind === "armored" ? 6 : 3) + Math.floor(game.wave / 3);
           bossKilled ||= Boolean(enemy.boss);
           burst(enemy.x, enemy.y, "#ffe075", enemy.boss ? 36 : 10);
           updateHud();
@@ -281,7 +276,8 @@ function draw(time) {
       context.fillRect(0, -9, 9, 5);
       context.fillRect(0, 4, 9, 5);
     } else {
-      context.fillStyle = "#fd6a91";
+      context.fillStyle = enemy.kind === "runner" ? "#80e8dc" : enemy.kind === "armored" ? "#bc93ff" : "#fd6a91";
+      if (enemy.kind === "armored") context.fillRect(-15, -15, 30, 30);
       context.beginPath(); context.moveTo(16, 0); context.lineTo(-9, -12); context.lineTo(-5, 0); context.lineTo(-9, 12); context.closePath(); context.fill();
       context.fillStyle = "#ffcf92";
       context.fillRect(-6, -3, 6, 6);
@@ -350,7 +346,7 @@ function endGame() {
 function frame(time) {
   const dt = previousTime ? Math.min((time - previousTime) / 1000, 0.05) : 0;
   previousTime = time;
-  if (game.running && !game.choosingReward && !document.hidden) update(dt);
+  if (game.running && !game.choosingReward && !document.hidden && document.documentElement.dataset.paused !== "true") update(dt);
   draw(time);
   requestAnimationFrame(frame);
 }

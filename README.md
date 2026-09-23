@@ -1,6 +1,21 @@
 # Solar Forge Arcade
 
-A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, **Solar Volley**, **Solar Basketball**, **Solar Blitz**, **Neon Bullet**, **Solar Tennis**, and **Solar Pool**. A Bun server serves the cabinet, games, and small HTML fragments. The games run in the browser with Canvas, while Three.js renders the cabinet.
+A retro 3D arcade cabinet with **Protect the Forge!**, **Brick Breaker**, **Solar Volley**, **Solar Basketball**, **Solar Blitz**, **Neon Bullet**, **Solar Tennis**, and **Solar Pool**. A Bun server serves the cabinet, games, and game pages. The games run in the browser with Canvas, while Three.js renders the cabinet.
+
+## Deploy to Cloudflare
+
+Production is a static site: no Bun process, container, or Worker runtime code is required.
+
+```sh
+node scripts/build.mjs
+npx wrangler@4.136.3 dev
+# When ready to publish:
+npx wrangler@4.136.3 deploy
+```
+
+`wrangler.jsonc` builds and deploys `dist/` using Workers Static Assets. For Cloudflare Pages, use `node scripts/build.mjs` as the build command and `dist` as the output directory. Only published routes and assets enter the build; experiments, tests, and server sources stay out. Clean game URLs and embedded cabinet views are generated from the same route manifest used locally. Unknown URLs return a 404 page.
+
+Cloudflare serves and caches static files with ETags. Browser caches revalidate on reuse so edits to unversioned modules cannot leave players with stale game code. See [Cloudflare asset headers](https://developers.cloudflare.com/workers/static-assets/headers/). Three.js and fonts still require their external CDNs.
 
 ## Run with Docker
 
@@ -18,7 +33,7 @@ bun run backend/server.ts
 
 Open <http://localhost:3000> to play. Set `PORT` to use another port. The 3D cabinet loads Three.js and fonts from CDNs. If the renderer cannot load, a flat cabinet menu keeps the games available.
 
-The game uses no package dependencies. A local copy of htmx 4 powers the **How to Play** panel.
+The game uses no package dependencies. The **How to Play** panel uses a native HTML dialog.
 
 See [docs/architecture.md](docs/architecture.md) and [docs/gameplay.md](docs/gameplay.md) for the structure and game rules.
 

@@ -38,3 +38,11 @@ Player AI defenders keep permanent man assignments: #2 guards #2 and #3 guards #
 Both teams draw two distinct routes per play from **go, slant, out, curl, post, and cross**. Receivers follow their assigned route through its cuts and settle at the endpoint; routes reroll on a new play. Your offense shows dashed route previews and route names before the snap. Passes lead the receiver along the actual route, including upcoming cuts, and routes mirror with the direction of attack while staying inside the field.
 
 Man coverage has a human reaction lag: player AI markers update their read every 0.28–0.34 game seconds and cover at 126 pixels per second, just below a receiver's 130. They keep their assigned man but can lose a step on a cut. Manual movement remains immediate. Nova lets routes develop for at least 0.65 seconds, then considers receivers with more than 34 pixels of separation and a clear passing lane. It can still run if no suitable throw opens up.
+
+## Playability improvements
+
+Each shift starts with 10 Sparks for an immediate power/range choice. Towers prioritize time to impact among living, visible enemies. Mint runners arrive from wave 2 (faster, fragile); purple armored invaders arrive from wave 4 (slower, tougher, worth extra Sparks). Boss rules remain the same.
+
+Brick Breaker awards 10–50 points per brick for consecutive hits between paddle returns. Clearing a level restores one life, capped at five. Center paddle contacts retain sideways movement so the ball cannot get stuck in a vertical loop. Dragging directly on the playfield positions the paddle.
+
+The original five games now have P/touch pause and automatically pause on focus loss. Touch controls work in standalone and embedded views; released or canceled touches clear held inputs. On small screens and touch devices, cabinet games fill the viewport below the navigation toolbar.

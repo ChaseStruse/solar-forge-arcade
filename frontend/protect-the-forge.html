@@ -7,8 +7,8 @@
     <meta name="description" content="Protect the Forge! A tiny, playful idle tower defense game at Solar Forge Arcade." />
     <title>Protect the Forge! · Solar Forge Arcade</title>
     <link rel="stylesheet" href="/assets/style.css" />
-    <script defer src="/assets/htmx.min.js"></script>
     <script type="module" src="/assets/game.js"></script>
+    <script type="module" src="/assets/game-controls.js"></script>
   </head>
   <body>
     <div class="page-glow" aria-hidden="true"></div>
@@ -41,7 +41,7 @@
                   <span class="overlay-star">✳</span>
                   <p class="eyebrow">READY, PLAYER?</p>
                   <h2 id="overlay-title">YOUR SHIFT<br />STARTS HERE</h2>
-                  <p id="overlay-copy">Two towers are armed. Your forge is warm. Let's make some Sparks.</p>
+                  <p id="overlay-copy">Start with 10 Sparks: choose power or range, then defend the glow.</p>
                   <button class="primary-button" id="start-button" type="button">START SHIFT <span aria-hidden="true">↗</span></button>
                 </div>
               </div>
@@ -59,7 +59,7 @@
               <button class="upgrade" type="button" data-upgrade="rate"><span class="upgrade-icon">❯❯</span><span class="upgrade-info"><strong>ATTACK SPEED</strong><small>More pew per second <span class="level" id="rate-level">LV 1</span></small></span><span class="cost" id="rate-cost">✦ 12</span></button>
               <button class="upgrade" type="button" data-upgrade="range"><span class="upgrade-icon">◎</span><span class="upgrade-info"><strong>FIRING RANGE</strong><small>Reach farther out <span class="level" id="range-level">LV 1</span></small></span><span class="cost" id="range-cost">✦ 8</span></button>
             </div>
-            <div class="panel-footer"><button class="text-button" type="button" hx-get="/fragments/guide" hx-target="#help-panel" hx-swap="innerHTML">HOW TO PLAY <span aria-hidden="true">↗</span></button><span class="footer-spark">✳</span></div>
+            <div class="panel-footer"><button class="text-button" type="button" onclick="document.querySelector('#help-panel').showModal()">HOW TO PLAY <span aria-hidden="true">↗</span></button><span class="footer-spark">✳</span></div>
           </aside>
         </section>
         <dialog class="reward-panel" id="reward-panel" aria-labelledby="reward-title">
@@ -74,7 +74,15 @@
             </div>
           </div>
         </dialog>
-        <div id="help-panel" aria-live="polite"></div>
+        <dialog id="help-panel" aria-labelledby="help-title"><div class="help-content">
+    <button class="help-close" type="button" aria-label="Close instructions" onclick="this.closest('dialog').close()">×</button>
+    <p class="eyebrow">FIELD MANUAL / 001</p>
+    <h2 id="help-title">Keep the forge glowing.</h2>
+    <p>Two towers guard the forge from opposite sides, prioritizing the most urgent threat. They fire automatically at invaders in range, but the forge blocks their shots. Each enemy you melt drops <strong>Sparks</strong>.</p>
+    <p>Spend Sparks on power, fire rate, and firing range for both towers. If an invader reaches the forge, the shield takes a hit. When it runs out, your shift is over.</p>
+    <p>Mint runners arrive from wave 2; purple armored invaders arrive from wave 4. Wave 10 brings the Cinder Titan. Defeat it to choose a permanent power-up for this shift.</p>
+    <p class="help-tip">Tip: the game begins when you press <strong>Start shift</strong>. It pauses when this tab is hidden.</p>
+  </div></dialog>
         <p class="below-note">✦ BUILT FOR A LITTLE JOY, ONE WAVE AT A TIME. ✦</p>
       </main>
       <footer class="site-footer"><span>© SOLAR FORGE ARCADE</span><span>ENDLESS WAVES. ZERO PRESSURE.</span></footer>

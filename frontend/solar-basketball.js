@@ -1,4 +1,4 @@
-import { BALL_RADIUS, COURT_HEIGHT, COURT_WIDTH, FLOOR_Y, NET_TOP, NET_X, PLAYER_RADIUS, hitNet, hitPlayer, matchWinner, pointWinner, rivalControls, tryJump } from "./volley-physics.js";
+import { BALL_RADIUS, COURT_WIDTH, FLOOR_Y, PLAYER_RADIUS, matchWinner, tryJump } from "./volley-physics.js";
 import { shotAccuracy, shotOffset } from "./basketball-shooting.js";
 
 const canvas = document.querySelector("#basketball-game");
@@ -123,14 +123,15 @@ function update(dt) {
     if (state.serveDelay <= 0) state.status = "BALL LIVE";
   }
   pickupDelay = Math.max(0, pickupDelay - dt);
-  const target = owner === "rival" ? 230 : owner === "player" ? state.player.x - 35 : state.ball.x;
+  const target = owner === "rival" ? 230 : owner === "player" ? Math.min(695, state.player.x + 65) : Math.max(38, Math.min(762, state.ball.x + state.ball.vx * .25));
   const direction = Math.abs(target - state.rival.x) > 12 ? Math.sign(target - state.rival.x) : 0;
   updatePlayer(state.player, Number(keys.right) - Number(keys.left), 38, 762, dt);
   updatePlayer(state.rival, direction, 38, 762, dt);
   if (owner === "rival" && state.serveDelay <= 0) {
     aiShotClock += dt;
     if (state.rival.x < 340 || aiShotClock > 2.5) {
-      jump(state.rival); shoot("rival"); aiShotClock = 0;
+      if (state.rival.onGround) jump(state.rival);
+      else if (Math.abs(state.rival.vy) < 65) { shoot("rival"); aiShotClock = 0; }
     }
   } else if (owner === null && state.ball.x < 400 && Math.abs(state.ball.x - state.rival.x) < 60 && state.ball.y < state.rival.y - 50 && state.rival.onGround) jump(state.rival);
   if (owner) {
@@ -242,6 +243,9 @@ function drawPlayer(player, label) {
   ctx.textAlign = "center";
   ctx.fillText(label, player.x, y - 10);
   if (player === state.player) {
+    if (owner === "player" && state.running && state.serveDelay <= 0 && shotAccuracy(player) > .75) {
+      ctx.fillStyle = "#dafa78"; ctx.fillText("SHOOT!", player.x, y - 32);
+    }
     for (let i = 0; i < 2; i++) rect(player.x - 11 + i * 13, y - 22, 9, 4, i < 2 - player.jumpsUsed ? "#7ffff0" : "#444064");
   }
 }
@@ -273,7 +277,7 @@ function draw() {
   ctx.fillStyle = "#f9e2bd";
   ctx.font = "700 13px ui-monospace, monospace";
   ctx.textAlign = "center";
-  ctx.fillText("S O L A R   V O L L E Y", COURT_WIDTH / 2, 26);
+  ctx.fillText("S O L A R   B A S K E T B A L L", COURT_WIDTH / 2, 26);
   ctx.font = "bold 28px monospace";
   ctx.fillStyle = "#76ffee"; ctx.fillText(String(state.score.player).padStart(2, "0"), 65, 42);
   ctx.fillStyle = "#ff82bb"; ctx.fillText(String(state.score.rival).padStart(2, "0"), 735, 42);
@@ -282,7 +286,7 @@ function draw() {
 function frame(time) {
   const dt = previousTime ? Math.min((time - previousTime) / 1000, .025) : 0;
   previousTime = time;
-  if (state.running && !document.hidden) update(dt);
+  if (state.running && !document.hidden && document.documentElement.dataset.paused !== "true") update(dt);
   else state.time += dt;
   draw();
   requestAnimationFrame(frame);

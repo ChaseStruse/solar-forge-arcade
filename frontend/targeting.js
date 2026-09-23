@@ -15,3 +15,14 @@ export function canTarget(tower, enemy, forge, forgeRadius, range) {
   return Math.hypot(enemy.x - tower.x, enemy.y - tower.y) <= range
     && !segmentHitsCircle(tower, enemy, forge, forgeRadius);
 }
+
+// Prefer the invader closest to reaching the forge, not merely the nearest tower.
+export function selectThreat(enemies, tower, forge, forgeRadius, range) {
+  let target = null, urgency = Infinity;
+  for (const enemy of enemies) {
+    if (enemy.health <= 0 || !canTarget(tower, enemy, forge, forgeRadius, range)) continue;
+    const time = Math.max(0, Math.hypot(enemy.x - forge.x, enemy.y - forge.y) - forgeRadius) / Math.max(1, enemy.speed);
+    if (time < urgency) { target = enemy; urgency = time; }
+  }
+  return target;
+}
