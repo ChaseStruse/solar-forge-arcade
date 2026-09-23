@@ -229,8 +229,16 @@ async function init() {
   let width=1,height=1;
   const target=new THREE.Vector3();
   const position=new THREE.Vector3();
+  const home=new THREE.Vector3();
+  const playPosition=new THREE.Vector3();
+  let dirty=true;
+  let renderedMode;
+  // Cabinet geometry and lights never move; only the camera does.
+  renderer.shadowMap.autoUpdate=false;
+  renderer.shadowMap.needsUpdate=true;
   function resize(){
-    width=mount.clientWidth;height=mount.clientHeight;
+    dirty=true;
+    width=Math.max(1,mount.clientWidth);height=Math.max(1,mount.clientHeight);
     renderer.setSize(width,height);cssRenderer.setSize(width,height);
     camera.aspect=width/height;camera.updateProjectionMatrix();
   }
@@ -250,20 +258,26 @@ async function init() {
   const clock=new THREE.Clock();
   function frame(){
     const dt=Math.min(clock.getDelta(),.05);
+    requestAnimationFrame(frame);
+    if(document.hidden)return;
+    const goal=mode!=="attract"?1:0;
+    if(!dirty && renderedMode===mode && progress===goal && angle===targetAngle)return;
     const blend=reducedMotion.matches?1:1-Math.exp(-dt*7);
-    progress=THREE.MathUtils.lerp(progress,mode!=="attract"?1:0,blend);
+    progress=THREE.MathUtils.lerp(progress,goal,blend);
     angle=THREE.MathUtils.lerp(angle,targetAngle,blend);
+    if(Math.abs(progress-goal)<.0001)progress=goal;
+    if(Math.abs(angle-targetAngle)<.0001)angle=targetAngle;
     const aspect=width/height;
     const distance=Math.max(13.1,8.7/aspect);
-    const home=new THREE.Vector3(Math.sin(angle)*distance,6.15,Math.cos(angle)*distance);
+    home.set(Math.sin(angle)*distance,6.15,Math.cos(angle)*distance);
     const playDistance=Math.max(1.24/Math.tan(THREE.MathUtils.degToRad(17.5)),1.48/(Math.tan(THREE.MathUtils.degToRad(17.5))*aspect));
-    position.copy(home).lerp(screenCenter.clone().addScaledVector(screenNormal,playDistance),progress);
+    position.copy(home).lerp(playPosition.copy(screenCenter).addScaledVector(screenNormal,playDistance),progress);
     target.set(0,3.05,0).lerp(screenCenter,progress);
     camera.position.copy(position);camera.lookAt(target);
     renderer.render(scene,camera);
     cssRenderer.render(cssScene,camera);
     if(mode==="menu")placeMenu();
-    requestAnimationFrame(frame);
+    dirty=false;renderedMode=mode;
   }
   frame();
   powerOn();

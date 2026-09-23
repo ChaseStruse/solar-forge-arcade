@@ -44,3 +44,5 @@ The reward picker uses a native modal dialog to keep keyboard focus within the c
 ## Cabinet navigation
 
 The home page has three UI states in `frontend/experiment.js`: attract view, in-screen game menu, and active game. Menu and gameplay share the close-up camera; returning from a game unloads the iframe and restores the selected card and page. The menu pages four games at a time and supports native buttons, arrow-key navigation, and Enter. Escape from an embedded game is accepted only from the current same-origin iframe. Dynamic Three.js imports allow renderer failures to fall back to the same menu without WebGL.
+
+The cabinet reuses its static shadow map and skips WebGL/CSS3D renders once the camera settles. Camera movement, view changes, and resizing trigger fresh renders; embedded game animation remains independent.

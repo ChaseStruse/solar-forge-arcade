@@ -8,9 +8,9 @@ Production is a static site: no Bun process, container, or Worker runtime code i
 
 ```sh
 node scripts/build.mjs
-npx wrangler dev
+npx wrangler@4.136.3 dev
 # When ready to publish:
-npx wrangler deploy
+npx wrangler@4.136.3 deploy
 ```
 
 `wrangler.jsonc` builds and deploys `dist/` using Workers Static Assets. For Cloudflare Pages, use `node scripts/build.mjs` as the build command and `dist` as the output directory. Only published routes and assets enter the build; experiments, tests, and server sources stay out. Clean game URLs and embedded cabinet views are generated from the same route manifest used locally. Unknown URLs return a 404 page.
