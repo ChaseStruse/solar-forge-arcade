@@ -5,6 +5,8 @@ const mount = document.querySelector("#scene");
 const status = document.querySelector("#load-status");
 const monitorElement = document.querySelector("#monitor");
 const gameFrame = document.querySelector("#game-screen");
+const frameHome = gameFrame.parentElement;
+const mobilePlay = matchMedia("(max-width: 720px), (pointer: coarse)");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
 function mountOnScreen(object, depth = 0) {
@@ -304,6 +306,7 @@ function renderMenu(focus=false){
 function showMenu(){
   if(!ready)return;
   mode="menu";
+  frameHome.append(gameFrame);gameFrame.classList.remove("mobile-game-frame");
   document.body.classList.add("play-mode");
   document.querySelector(".play-toolbar").hidden=false;
   document.querySelector("#exit-game").hidden=true;
@@ -321,11 +324,13 @@ function launch(key){
   document.querySelector("#exit-game").hidden=false;
   document.querySelector("#playing-title").textContent=games[key].name.toUpperCase();
   gameFrame.title=games[key].name+" — playable arcade game";
+  if(mobilePlay.matches){document.body.append(gameFrame);gameFrame.classList.add("mobile-game-frame");}
   gameFrame.hidden=false;gameFrame.src=games[key].url;
 }
 function stepBack(){
   if(mode==="attract")return;
   mode="attract";
+  frameHome.append(gameFrame);gameFrame.classList.remove("mobile-game-frame");
   document.body.classList.remove("play-mode");
   document.querySelector(".play-toolbar").hidden=true;
   document.querySelector("#attract-screen").hidden=false;

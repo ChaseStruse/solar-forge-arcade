@@ -148,7 +148,7 @@ function draw() {
 function frame(time) {
   const dt = previousTime ? Math.min((time - previousTime) / 1000, 0.025) : 0;
   previousTime = time;
-  if (state.running && !document.hidden) update(dt);
+  if (state.running && !document.hidden && document.documentElement.dataset.paused !== "true") update(dt);
   draw();
   requestAnimationFrame(frame);
 }
@@ -172,3 +172,9 @@ window.addEventListener("blur", () => { keys.left = keys.right = false; });
 document.addEventListener("visibilitychange", () => { previousTime = 0; keys.left = keys.right = false; });
 hud();
 requestAnimationFrame(frame);
+
+canvas.addEventListener("paddle-aim", event => {
+  if (state.running && document.documentElement.dataset.paused !== "true") {
+    state.paddleX = Math.max(0, Math.min(W - PADDLE_W, event.detail - PADDLE_W / 2));
+  }
+});

@@ -255,7 +255,7 @@ function draw() {
 }
 function frame(t) {
   const dt=previous?Math.min((t-previous)/1000,.025):0;previous=t;
-  if(running&&!document.hidden) update(dt);
+  if(running&&!document.hidden && document.documentElement.dataset.paused !== "true") update(dt);
   draw();requestAnimationFrame(frame);
 }
 start.addEventListener("click",begin);

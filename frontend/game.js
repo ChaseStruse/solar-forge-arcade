@@ -346,7 +346,7 @@ function endGame() {
 function frame(time) {
   const dt = previousTime ? Math.min((time - previousTime) / 1000, 0.05) : 0;
   previousTime = time;
-  if (game.running && !game.choosingReward && !document.hidden) update(dt);
+  if (game.running && !game.choosingReward && !document.hidden && document.documentElement.dataset.paused !== "true") update(dt);
   draw(time);
   requestAnimationFrame(frame);
 }

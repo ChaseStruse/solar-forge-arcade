@@ -243,6 +243,9 @@ function drawPlayer(player, label) {
   ctx.textAlign = "center";
   ctx.fillText(label, player.x, y - 10);
   if (player === state.player) {
+    if (owner === "player" && state.running && state.serveDelay <= 0 && shotAccuracy(player) > .75) {
+      ctx.fillStyle = "#dafa78"; ctx.fillText("SHOOT!", player.x, y - 32);
+    }
     for (let i = 0; i < 2; i++) rect(player.x - 11 + i * 13, y - 22, 9, 4, i < 2 - player.jumpsUsed ? "#7ffff0" : "#444064");
   }
 }
@@ -283,7 +286,7 @@ function draw() {
 function frame(time) {
   const dt = previousTime ? Math.min((time - previousTime) / 1000, .025) : 0;
   previousTime = time;
-  if (state.running && !document.hidden) update(dt);
+  if (state.running && !document.hidden && document.documentElement.dataset.paused !== "true") update(dt);
   else state.time += dt;
   draw();
   requestAnimationFrame(frame);

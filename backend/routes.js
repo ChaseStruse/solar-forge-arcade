@@ -1,4 +1,5 @@
 export const files = {
+  "/assets/game-controls.js": { path: "game-controls.js", type: "text/javascript; charset=utf-8" },
   "/solar-tennis": { path: "solar-tennis.html", type: "text/html; charset=utf-8" },
   "/solar-tennis/": { path: "solar-tennis.html", type: "text/html; charset=utf-8" },
   "/games/solar-tennis": { path: "solar-tennis.html", type: "text/html; charset=utf-8", embedded: true },

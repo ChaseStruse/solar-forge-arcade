@@ -38,6 +38,10 @@ function draw() {
   for(let x=50;x<350;x+=5)box(x,COURT.net-6,1,10,'#668696');
   box(49,COURT.net-7,302,2,palette.cream);box(49,COURT.net-2,302,1,'#668696');
   box(47,COURT.net-10,3,18,palette.gold);box(351,COURT.net-10,3,18,palette.gold);
+  if (game.ball?.last === 1 && game.ball.bounces === 0) {
+    ctx.strokeStyle = '#ffda9180'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.ellipse(game.ball.targetX, game.ball.targetY, 9, 4, 0, 0, Math.PI * 2); ctx.stroke();
+  }
   player(game.players[1],1);player(game.players[0],0);
   if(game.ball) {
     const b=game.ball;

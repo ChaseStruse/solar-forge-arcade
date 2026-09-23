@@ -731,3 +731,22 @@ button.reward-option:hover,.twin-choices button:hover{
     transition-duration:.01ms!important
   }
 }
+
+/* Keep touch targets usable in both standalone pages and the cabinet. */
+canvas{touch-action:none}
+.game-touch-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.game-touch-controls button,.game-pause{min-height:46px;padding:10px 8px;border:1px solid #638b87;border-radius:7px;background:#203d4a;color:#d5ffe6;font:700 12px monospace;touch-action:none;user-select:none}
+.game-touch-controls button.held{background:#527b6c;color:#fff}
+.game-pause{width:100%;touch-action:manipulation}.game-pause:disabled{opacity:.45}
+.game-pause-veil{position:absolute;inset:0;z-index:6;border:0;background:#0b1026dd;color:#d5ffe6;font:bold clamp(12px,3vw,24px) monospace;cursor:pointer}
+.game-pause-veil[hidden]{display:none}
+@media(max-width:600px){
+  .screen-overlay{padding:12px}.screen-overlay h2{font-size:clamp(20px,6vw,32px);margin:6px 0}
+  .screen-overlay .overlay-star{display:none}.screen-overlay .eyebrow{font-size:9px}
+  .screen-overlay p:not(.eyebrow){font-size:12px;margin:8px 0}
+  .screen-overlay .primary-button{font-size:13px;min-height:44px;padding:10px 16px}
+  .game-touch-controls{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .game-touch-controls button{font-size:10px}
+}
+
+.game-touch-controls.two-controls{grid-template-columns:repeat(2,minmax(0,1fr))}

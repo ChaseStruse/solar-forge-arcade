@@ -244,7 +244,7 @@ function draw() {
 function frame(time) {
   const dt = previousTime ? Math.min((time - previousTime) / 1000, .025) : 0;
   previousTime = time;
-  if (state.running && !document.hidden) update(dt);
+  if (state.running && !document.hidden && document.documentElement.dataset.paused !== "true") update(dt);
   else state.time += dt;
   draw();
   requestAnimationFrame(frame);

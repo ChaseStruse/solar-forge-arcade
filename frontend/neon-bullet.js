@@ -129,7 +129,13 @@ function fighter(p, isPlayer = false, ghost = false) {
   ctx.restore();
   if (!isPlayer && !ghost) {
     rect(x - 8, y - 34, 16, 2, '#35253e'); rect(x - 8, y - 34, Math.ceil(16 * p.hp / p.maxHp), 2, color);
-    if (p.windup > 0) text('!', x, y - 39, '#ffe58e', 12, 'center');
+    if (p.windup > 0) {
+      text('!', x, y - 39, '#ffe58e', 12, 'center');
+      if (p.attack === 'shoot' && Number.isFinite(p.aimX)) {
+        ctx.save(); ctx.strokeStyle = '#ffda9180'; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+        ctx.beginPath(); ctx.moveTo(x + p.facing * 12, y - 17); ctx.lineTo(p.aimX, p.aimY - 17); ctx.stroke(); ctx.restore();
+      }
+    }
   }
 }
 function bar(x, y, width, amount, color, label) {
