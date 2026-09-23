@@ -38,3 +38,13 @@ test('scratching on the final 8 loses; the last empty shot ends the rack',()=>{
  stepPool(g,.01);assert.equal(g.winner,false);assert.equal(g.phase,'over');
  const last=createPool();last.shots=1;shootPool(last,Math.PI,.1);settle(last);assert.equal(last.phase,'over');
 });
+
+test('a clean color pot earns a continuation shot, but a scratch does not', () => {
+  const g=createPool(); g.phase='rolling'; g.shots=0;
+  g.balls=[{id:0,x:100,y:147,vx:0,vy:0},{id:1,x:30,y:62,vx:0,vy:0},{id:8,x:260,y:147,vx:0,vy:0}];
+  stepPool(g,.01);
+  assert.equal(g.shots,1); assert.equal(g.phase,'aim');
+  const scratch=createPool();scratch.phase='rolling';scratch.shots=10;
+  scratch.balls=[{id:0,x:30,y:62,vx:0,vy:0},{id:1,x:370,y:62,vx:0,vy:0},{id:8,x:260,y:147,vx:0,vy:0}];
+  stepPool(scratch,.01);assert.equal(scratch.shots,9);
+});

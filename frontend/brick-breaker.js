@@ -33,10 +33,11 @@ function resetBall() {
   state.ball = { x: W / 2, y: PADDLE_Y - BALL_R - 3, vx: 190 * speedScale, vy: -300 * speedScale };
   state.paddleX = (W - PADDLE_W) / 2;
   state.serving = true;
+  state.combo = 0;
 }
 
 function newGame() {
-  const game = { running: false, score: 0, lives: 3, level: 1, paddleX: (W - PADDLE_W) / 2, bricks: bricksForLevel(), serving: true, serveTimer: 1 };
+  const game = { running: false, score: 0, combo: 0, lives: 3, level: 1, paddleX: (W - PADDLE_W) / 2, bricks: bricksForLevel(), serving: true, serveTimer: 1 };
   game.ball = { x: W / 2, y: PADDLE_Y - BALL_R - 3, vx: 190, vy: -300 };
   return game;
 }
@@ -80,14 +81,17 @@ function update(dt) {
     ball.y = PADDLE_Y - BALL_R;
     const hit = Math.max(-1, Math.min(1, (ball.x - state.paddleX - PADDLE_W / 2) / (PADDLE_W / 2)));
     const speed = Math.min(580, Math.hypot(ball.vx, ball.vy) + 7);
+    state.combo = 0;
     ball.vx = speed * hit * 0.85;
+    if (Math.abs(ball.vx) < 65) ball.vx = (Math.sign(ball.vx) || Math.sign(oldX - W / 2) || 1) * 65;
     ball.vy = -Math.sqrt(speed * speed - ball.vx * ball.vx);
   }
 
   for (const brick of state.bricks) {
     if (!brick.active || ball.x + BALL_R < brick.x || ball.x - BALL_R > brick.x + BRICK_W || ball.y + BALL_R < brick.y || ball.y - BALL_R > brick.y + BRICK_H) continue;
     brick.active = false;
-    state.score += 10;
+    state.combo++;
+    state.score += 10 * Math.min(5, state.combo);
     if (oldY + BALL_R <= brick.y || oldY - BALL_R >= brick.y + BRICK_H) ball.vy *= -1;
     else ball.vx *= -1;
     hud();
@@ -96,6 +100,7 @@ function update(dt) {
 
   if (state.bricks.every((brick) => !brick.active)) {
     state.level++;
+    state.lives = Math.min(5, state.lives + 1);
     state.bricks = bricksForLevel();
     resetBall();
     state.serveTimer = 1.2;
@@ -135,6 +140,9 @@ function draw() {
   ctx.arc(state.ball.x, state.ball.y, BALL_R, 0, Math.PI * 2);
   ctx.fill();
   ctx.shadowBlur = 0;
+  ctx.font = "bold 19px monospace"; ctx.textAlign = "center"; ctx.fillStyle = "#fff0ac";
+  if (state.serving && state.running) ctx.fillText("GET READY / " + Math.max(1, Math.ceil(state.serveTimer)), W / 2, 310);
+  else if (state.combo > 1) ctx.fillText("BRICK STREAK ×" + Math.min(5, state.combo), W / 2, 35);
 }
 
 function frame(time) {

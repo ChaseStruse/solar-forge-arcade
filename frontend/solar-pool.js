@@ -43,7 +43,7 @@ function draw(){
     ctx.strokeStyle=palette.cream;ctx.lineWidth=1;ctx.strokeRect(Math.round(guide.x-4),Math.round(guide.y-4),8,8);
     if(guide.hit){
       const dx=guide.hit.x-guide.x,dy=guide.hit.y-guide.y,n=Math.hypot(dx,dy)||1;
-      line(guide.hit.x,guide.hit.y,guide.hit.x+dx/n*22,guide.hit.y+dy/n*22,palette.gold,3);
+      line(guide.hit.x,guide.hit.y,guide.hit.x+dx/n*45,guide.hit.y+dy/n*45,guide.hit.id===8&&game.balls.some(b=>b.id!==0&&b.id!==8)?palette.pink:palette.gold,3);
     }
     const pull=charging?Math.min(1,charge/1.1)*14:0;
     line(cue.x-Math.cos(angle)*(14+pull),cue.y-Math.sin(angle)*(14+pull),cue.x-Math.cos(angle)*(48+pull),cue.y-Math.sin(angle)*(48+pull),palette.gold,1,2);
