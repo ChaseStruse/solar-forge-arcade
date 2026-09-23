@@ -64,9 +64,15 @@ export function hitNet(ball) {
 export function rivalControls(rival, ball) {
   const homeX = 610;
   const ballOnRivalSide = ball.x > NET_X;
-  const targetX = ballOnRivalSide ? Math.max(NET_X + 52, Math.min(COURT_WIDTH - 42, ball.x + ball.vx * .14)) : homeX;
+  // Predict a reachable descending contact, including a rebound off the back wall.
+  const vy = ball.vy || 0;
+  const contactY = rival.y - 100;
+  const time = Math.max(0, Math.min(.65, (-vy + Math.sqrt(Math.max(0, vy * vy + 1260 * (contactY - ball.y)))) / 630));
+  let landing = ball.x + ball.vx * time;
+  if (landing > COURT_WIDTH - BALL_RADIUS) landing = 2 * (COURT_WIDTH - BALL_RADIUS) - landing;
+  const targetX = ballOnRivalSide ? Math.max(NET_X + 52, Math.min(COURT_WIDTH - 42, landing + 12)) : homeX;
   const direction = Math.abs(targetX - rival.x) < 10 ? 0 : Math.sign(targetX - rival.x);
-  const ballApproaching = ballOnRivalSide && ball.y < rival.y + 45 && ball.y > rival.y - 175;
-  const blockAtNet = ball.x > NET_X - 30 && ball.x < NET_X + 95 && ball.y < NET_TOP + 80;
+  const ballApproaching = ballOnRivalSide && Math.abs(ball.x - rival.x) < 100 && vy > -120 && ball.y < rival.y + 45 && ball.y > rival.y - 175;
+  const blockAtNet = rival.x < NET_X + 115 && ball.x > NET_X - 30 && ball.x < NET_X + 95 && ball.y < NET_TOP + 80;
   return { direction, jump: rival.onGround && (ballApproaching || blockAtNet) };
 }

@@ -11,7 +11,7 @@ export function hitTennis(g, team, power = false) {
   const direction = team === 0 ? -1 : 1;
   const targetX = team === 0
     ? clamp(p.x + g.aim * (power ? 135 : 100), 76, 324)
-    : clamp(other.x + (g.random() < .5 ? -1 : 1) * (65 + g.random() * 55), 76, 324);
+    : clamp((other.x < 185 ? 300 : other.x > 215 ? 100 : g.random() < .5 ? 100 : 300) + (g.random() - .5) * 36, 76, 324);
   const targetY = team === 0 ? 64 + g.random() * 12 : 218 + g.random() * 14;
   const travelTime = power ? .55 : Math.max(.66, .86 - g.rally * .013);
   b.x = p.x; b.y = p.y + direction * 8; b.z = Math.max(9, b.z);

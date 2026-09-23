@@ -102,3 +102,20 @@ test('bullet time needs 20 focus to start and kicking is no longer an action', (
   assert.equal(action(g, 'kick'), false);
   assert.equal(g.player.cooldown, 0);
 });
+
+test('gunners commit their aim during the warning so a jump can evade the shot', () => {
+  const g = ready();
+  g.enemies = [enemy(80, { kind: 'gunner', cooldown: 0 })];
+  step(g, .02);
+  assert.equal(g.enemies[0].aimY, FLOOR);
+  g.enemies[0].windup = .01;
+  g.player.y = 160;
+  step(g, .02);
+  assert.equal(g.bullets[0].vy, 0);
+});
+
+test('new enemies spawn away from a player near a rooftop edge', () => {
+  const g = ready(); g.player.x = 16; g.spawnTime = 0;
+  step(g, .02);
+  assert.ok(g.enemies[0].x > 300);
+});

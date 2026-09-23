@@ -162,7 +162,7 @@ function update(dt) {
     } else {
       const covering = p.number > 0 && carrier?.number === 0
         && (offense === 0 ? carrier.x <= startSpot + 35 : carrier.x >= startSpot - 35);
-      const target = p.team === 0 ? trackedCoverageTarget(p, worldDt) : covering ? coverageTarget(p) : ball;
+      const target = p.team === 0 ? trackedCoverageTarget(p, worldDt) : covering ? trackedCoverageTarget(p, worldDt) : defensiveTarget();
       if (distance(p, target) > 5) move(p, target.x - p.x, target.y - p.y, moveDt);
       else { p.vx = 0; p.vy = 0; }
     }
