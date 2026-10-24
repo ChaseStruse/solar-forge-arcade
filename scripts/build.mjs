@@ -1,6 +1,11 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { files, embed } from '../backend/routes.js';
 
+// Serve from a subpath with `--base /arcade/` by prefixing root-absolute URLs.
+const baseArg = process.argv.indexOf('--base');
+const base = baseArg === -1 ? '/' : process.argv[baseArg + 1].replace(/\/?$/, '/');
+const rebase = text => base === '/' ? text : text.replace(/(["'(])\/(?=[a-z"'])/g, `$1${base}`);
+
 const source = new URL('../frontend/', import.meta.url);
 const output = new URL('../dist/', import.meta.url);
 await rm(output, { recursive: true, force: true });
@@ -11,10 +16,10 @@ for (const [route, asset] of Object.entries(files)) {
   const destination = new URL(path, output);
   await mkdir(new URL('./', destination), { recursive: true });
   const contents = await readFile(new URL(asset.path, source), 'utf8');
-  await writeFile(destination, asset.embedded ? embed(contents) : contents);
+  await writeFile(destination, rebase(asset.embedded ? embed(contents) : contents));
 }
 await writeFile(new URL('health', output), '{"status":"ok"}');
-await writeFile(new URL('404.html', output), '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Not found · Solar Forge Arcade</title><h1>Game not found</h1><p><a href="/">Back to the arcade</a></p></html>');
+await writeFile(new URL('404.html', output), `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Not found · Solar Forge Arcade</title><h1>Game not found</h1><p><a href="${base}">Back to the arcade</a></p></html>`);
 await writeFile(new URL('_headers', output), `/*
   Cache-Control: public, max-age=0, must-revalidate
   X-Content-Type-Options: nosniff

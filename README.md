@@ -13,7 +13,7 @@ npx wrangler@4.136.3 dev
 npx wrangler@4.136.3 deploy
 ```
 
-`wrangler.jsonc` builds and deploys `dist/` using Workers Static Assets. For Cloudflare Pages, use `node scripts/build.mjs` as the build command and `dist` as the output directory. Only published routes and assets enter the build; experiments, tests, and server sources stay out. Clean game URLs and embedded cabinet views are generated from the same route manifest used locally. Unknown URLs return a 404 page.
+`wrangler.jsonc` builds and deploys `dist/` using Workers Static Assets. For Cloudflare Pages, use `node scripts/build.mjs` as the build command and `dist` as the output directory. To host the arcade under a subpath, such as `/arcade/` on another site, build with `node scripts/build.mjs --base /arcade/`. Only published routes and assets enter the build; experiments, tests, and server sources stay out. Clean game URLs and embedded cabinet views are generated from the same route manifest used locally. Unknown URLs return a 404 page.
 
 Cloudflare serves and caches static files with ETags. Browser caches revalidate on reuse so edits to unversioned modules cannot leave players with stale game code. See [Cloudflare asset headers](https://developers.cloudflare.com/workers/static-assets/headers/). Three.js and fonts still require their external CDNs.
 
