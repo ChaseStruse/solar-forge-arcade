@@ -4,7 +4,7 @@ Two browser-local Canvas games using the arcade's pixel-art cabinet, mint/coral 
 
 ## Solar Tennis
 
-A quick singles match against Nova, first to seven points. Move with arrows/WASD or drag on the court; nearby balls return automatically. Space serves or readies a brief power-shot window. Direct shots left/right with movement. Touch controls offer movement and the same action. A second bounce, out ball, or net fault awards the point. Serves alternate. Nova aims for the open side of the court with bounded placement error; it does not redirect shots in flight.
+A quick singles match against Nova, first to seven points. Move with arrows/WASD or drag on the court; nearby balls return automatically. Space serves or readies a brief power-shot window. Direct shots left/right with movement. Touch controls offer movement and the same action. A second bounce, out ball, or net fault awards the point. Serves alternate. Nova aims for the open side, hits behind a sprinting player, lobs a net rusher, and angles short balls. It reads a readied power shot from Sol's stance, then recovers toward the middle of Sol's return angles. Its placement error and reaction time shrink when it trails. It does not redirect shots in flight.
 
 ## Solar Pool
 

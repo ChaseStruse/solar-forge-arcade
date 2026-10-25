@@ -1,5 +1,6 @@
 import { BALL_RADIUS, COURT_WIDTH, FLOOR_Y, PLAYER_RADIUS, matchWinner, tryJump } from "./volley-physics.js";
 import { shotAccuracy, shotOffset } from "./basketball-shooting.js";
+import { adaptSkill, axisToward, createBrain, extrapolate, perceive, reachablePoint, resetPerception, think } from "./npc-brain.js";
 
 const canvas = document.querySelector("#basketball-game");
 const ctx = canvas.getContext("2d");
@@ -15,6 +16,7 @@ let owner = null;
 let pickupDelay = 0;
 let aiShotClock = 0;
 let state = createMatch();
+const nova = createBrain({ skill: .6, reaction: [.08, .22] });
 
 function createPlayer(x, color, accent) {
   return { x, y: FLOOR_Y - PLAYER_RADIUS, vx: 0, vy: 0, color, accent, onGround: true, jumpsUsed: 0, squash: 0 };
@@ -43,6 +45,8 @@ function resetRally(server) {
   aiShotClock = 0;
   state.ball = { x: 400, y: 150, vx: 0, vy: 0 };
   state.serveDelay = 1;
+  resetPerception(nova);
+  adaptSkill(nova, state.score.rival, state.score.player);
   state.status = server === "player" ? "YOUR BALL / X TO SHOOT" : "NOVA'S BALL";
 }
 
@@ -56,6 +60,72 @@ function shoot(side) {
   owner = null;
   pickupDelay = .25;
   state.status = shotAccuracy(p) > .75 ? "APEX RELEASE!" : "SHOT UP / AIM FOR THE APEX";
+}
+
+// Nova never goaltends: a ball dropping toward either rim from above is off
+// limits until it falls below the rim or misses.
+function legalTouch(x, y, vy) {
+  return !(vy > 0 && y < 262 && (Math.abs(x - 86) < 70 || Math.abs(x - 714) < 70));
+}
+// Where a loose ball will pass through Nova's catch zone (standing or jumping).
+function catchPoint(ball, rival, maxTime = 1.2) {
+  return reachablePoint(rival, 270, t => {
+    const x = Math.max(14, Math.min(786, ball.x + ball.vx * t)), y = ball.y + ball.vy * t + 315 * t * t;
+    return legalTouch(x, y, ball.vy + 630 * t) ? { x, y } : { x: Infinity, y };
+  }, { maxTime, slack: 30 });
+}
+
+// Nova attacks the left hoop (86) and defends the right one (714).
+function rivalPlan(dt) {
+  const rival = state.rival, player = state.player;
+  const seen = perceive(nova, dt, () => ({ player: { ...player }, ball: { ...state.ball } }));
+  const ball = owner ? state.ball : extrapolate(seen.ball, nova.age, 630);
+  const plan = { direction: 0, jump: false, shoot: false };
+  if (state.serveDelay > 0 && owner !== "rival") {
+    plan.direction = axisToward(rival.x, owner === "player" ? 560 : 400, 12);
+    return plan;
+  }
+  if (owner === "rival") {
+    think(nova, "attack", dt);
+    aiShotClock += dt;
+    if (state.serveDelay > 0) return plan;
+    const gap = rival.x - seen.player.x; // positive: Sol stands between Nova and the hoop
+    const contested = gap > 0 && gap < 75;
+    const blocking = !seen.player.onGround && Math.abs(gap) < 80;
+    const open = Math.abs(gap) > 110 || gap < -20;
+    const inRange = rival.x < 340 || (open && rival.x < 470 + nova.skill * 60) || aiShotClock > 2.5;
+    if (!rival.onGround) {
+      // Hang for the apex of a shooting jump; wait out a jumping blocker.
+      if (nova.shotJump && Math.abs(rival.vy) < 65 && (!blocking || aiShotClock > 2.5)) { plan.shoot = true; nova.shotJump = false; }
+      return plan;
+    }
+    nova.shotJump = false;
+    if (inRange && !blocking) { plan.jump = nova.shotJump = true; return plan; }
+    // Drive at the hoop, sidestepping back for space when Sol crowds the lane.
+    plan.direction = contested && aiShotClock < 1.6 && rival.x > 360 ? 1 : -1;
+    return plan;
+  }
+  if (owner === "player") {
+    think(nova, "defend", dt);
+    const shooter = seen.player;
+    // Stay between Sol and the right hoop, giving a little cushion so Sol can
+    // still rise and shoot. Each jump shot gets one contest decision.
+    const targetX = Math.min(700, shooter.x + 78 + (1 - nova.skill) * 40);
+    plan.direction = axisToward(rival.x, targetX, 10);
+    if (shooter.onGround) nova.contest = undefined;
+    else if (nova.contest === undefined) nova.contest = nova.random() < .25 + nova.skill * .45;
+    plan.jump = nova.contest && shooter.vy > -200 && rival.onGround && Math.abs(rival.x - shooter.x) < 95;
+    return plan;
+  }
+  // Loose ball: shots in flight, rebounds, and blocks.
+  think(nova, ball.vx > 0 && ball.x < 714 ? "contest" : "rebound", dt);
+  // Otherwise wait for the rebound under the rim the shot is heading for.
+  const point = catchPoint(ball, rival) ?? { x: ball.vx > 0 ? 680 : 120 };
+  plan.direction = axisToward(rival.x, point.x, 8);
+  const above = ball.y < rival.y - 45 && ball.y > rival.y - 160 && Math.abs(ball.x + ball.vx * .2 - rival.x) < 55;
+  const legalJump = [0, .1, .2, .3].every(t => legalTouch(ball.x + ball.vx * t, ball.y + ball.vy * t + 315 * t * t, ball.vy + 630 * t));
+  plan.jump = above && legalJump && (rival.onGround || (rival.jumpsUsed === 1 && rival.vy > 0));
+  return plan;
 }
 
 function jump(player) {
@@ -123,17 +193,11 @@ function update(dt) {
     if (state.serveDelay <= 0) state.status = "BALL LIVE";
   }
   pickupDelay = Math.max(0, pickupDelay - dt);
-  const target = owner === "rival" ? 230 : owner === "player" ? Math.min(695, state.player.x + 65) : Math.max(38, Math.min(762, state.ball.x + state.ball.vx * .25));
-  const direction = Math.abs(target - state.rival.x) > 12 ? Math.sign(target - state.rival.x) : 0;
+  const ai = rivalPlan(dt);
   updatePlayer(state.player, Number(keys.right) - Number(keys.left), 38, 762, dt);
-  updatePlayer(state.rival, direction, 38, 762, dt);
-  if (owner === "rival" && state.serveDelay <= 0) {
-    aiShotClock += dt;
-    if (state.rival.x < 340 || aiShotClock > 2.5) {
-      if (state.rival.onGround) jump(state.rival);
-      else if (Math.abs(state.rival.vy) < 65) { shoot("rival"); aiShotClock = 0; }
-    }
-  } else if (owner === null && state.ball.x < 400 && Math.abs(state.ball.x - state.rival.x) < 60 && state.ball.y < state.rival.y - 50 && state.rival.onGround) jump(state.rival);
+  updatePlayer(state.rival, ai.direction, 38, 762, dt);
+  if (ai.jump) jump(state.rival);
+  if (ai.shoot) { shoot("rival"); aiShotClock = 0; }
   if (owner) {
     const p = state[owner];
     state.ball.x = p.x + (owner === "player" ? 28 : -28);

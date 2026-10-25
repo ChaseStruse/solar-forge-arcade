@@ -16,6 +16,7 @@ function mountOnScreen(object, depth = 0) {
 const games = {
   tennis: { name: "Solar Tennis", title: "SOLAR<br />TENNIS", description: "FAST FEET. CLEAN HITS. ONE MORE RALLY.", channel: "07", url: "/games/solar-tennis" },
   pool: { name: "Solar Pool", title: "SOLAR<br />POOL", description: "FIND YOUR ANGLE. CLEAR THE TABLE.", channel: "08", url: "/games/solar-pool" },
+  puck: { name: "Solar Puck", title: "SOLAR<br />PUCK", description: "READ THE BANK. BEAT THE BLOCK.", channel: "09", url: "/games/solar-puck" },
   neon: { name: "Neon Bullet", title: "NEON<br />BULLET", description: "OWN THE ROOFTOP. BEND THE SECONDS.", channel: "06", url: "/games/neon-bullet" },
   blitz: { name: "Solar Blitz", title: "SOLAR<br />BLITZ", description: "THREE A SIDE. FOUR DOWNS. ALL ACTION.", channel: "05", url: "/games/solar-blitz" },
   basketball: { name: "Solar Basketball", title: "SOLAR<br />BASKETBALL", description: "OWN THE COURT. SHOOT FOR THE SUN.", channel: "04", url: "/games/solar-basketball" },

@@ -41,7 +41,7 @@ Man coverage has a human reaction lag: player AI markers update their read every
 
 ## Playability improvements
 
-Each shift starts with 10 Sparks for an immediate power/range choice. Towers prioritize time to impact among living, visible enemies. Mint runners arrive from wave 2 (faster, fragile); purple armored invaders arrive from wave 4 (slower, tougher, worth extra Sparks). Boss rules remain the same.
+Each shift starts with 10 Sparks for an immediate power/range choice. Towers prioritize time to impact among living, visible enemies. Mint runners arrive from wave 2 (faster, fragile, and they skirt tower range to slip through the gaps); purple armored invaders arrive from wave 4 (slower, tougher, worth extra Sparks). Boss rules remain the same.
 
 Brick Breaker awards 10–50 points per brick for consecutive hits between paddle returns. Clearing a level restores one life, capped at five. Center paddle contacts retain sideways movement so the ball cannot get stuck in a vertical loop. Dragging directly on the playfield positions the paddle.
 

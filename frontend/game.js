@@ -2,6 +2,7 @@
 import { advanceShot, fireInterval, MAX_ATTACK_SPEED_LEVEL } from "./combat.js";
 import { selectThreat, segmentHitsCircle } from "./targeting.js";
 import { applyBossReward, createBoss, createTower } from "./progression.js";
+import { steerAround } from "./npc-brain.js";
 
 const canvas = document.querySelector("#game");
 const context = canvas.getContext("2d");
@@ -14,6 +15,7 @@ const FORGE_SCALE = 0.9;
 const FORGE_RADIUS = 44 * FORGE_SCALE;
 const RANGE_SCALE = 0.75;
 const TOWER_OFFSET = 150;
+const CAUTION = { runner: 1, scout: .35 };
 
 const upgrades = {
   power: { base: 10, step: 8 },
@@ -143,10 +145,15 @@ function update(dt) {
     if (tower.fireClock >= interval && fireShot(tower)) tower.fireClock = 0;
   }
 
+  // Runners (and, more timidly, scouts) skirt tower range through the gaps;
+  // the pull of the forge wins as they close in. Armor and bosses march straight.
+  const dangers = game.towers.map((tower) => ({ x: tower.x, y: tower.y, radius: firingRange(), margin: 30 }));
   for (const enemy of game.enemies) {
-    const direction = Math.atan2(center.y - enemy.y, center.x - enemy.x);
-    enemy.x += Math.cos(direction) * enemy.speed * dt;
-    enemy.y += Math.sin(direction) * enemy.speed * dt;
+    const caution = (CAUTION[enemy.kind] ?? 0) * Math.max(0, Math.min(1, (Math.hypot(enemy.x - center.x, enemy.y - center.y) - 90) / 140));
+    const heading = steerAround(enemy, center, dangers, caution);
+    enemy.heading = Math.atan2(heading.y, heading.x);
+    enemy.x += heading.x * enemy.speed * dt;
+    enemy.y += heading.y * enemy.speed * dt;
     if (Math.hypot(enemy.x - center.x, enemy.y - center.y) < 43 * FORGE_SCALE) {
       enemy.health = 0;
       game.shield = enemy.boss ? 0 : Math.max(0, game.shield - 1);
@@ -264,7 +271,7 @@ function draw(time) {
   for (const enemy of game.enemies) {
     context.save();
     context.translate(enemy.x, enemy.y);
-    context.rotate(Math.atan2(center.y - enemy.y, center.x - enemy.x));
+    context.rotate(enemy.heading ?? Math.atan2(center.y - enemy.y, center.x - enemy.x));
     if (enemy.boss) {
       context.fillStyle = "#ff9a5f33";
       context.beginPath(); context.arc(0, 0, 43, 0, TAU); context.fill();

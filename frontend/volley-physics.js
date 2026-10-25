@@ -1,3 +1,5 @@
+import { aimError, axisToward, predictBallistic } from "./npc-brain.js";
+
 export const COURT_WIDTH = 800;
 export const COURT_HEIGHT = 560;
 export const FLOOR_Y = 488;
@@ -61,18 +63,49 @@ export function hitNet(ball) {
   return true;
 }
 
-export function rivalControls(rival, ball) {
-  const homeX = 610;
+// Contact geometry decides the return: standing further behind the ball sends
+// it flatter. Simulate each candidate launch (mirroring hitPlayer) and keep the
+// one that clears the net and lands furthest from Sol.
+export function placementOffset(rival, opponent, brain = null) {
+  const contactY = rival.y - 40;
+  let best = 12, bestScore = -Infinity;
+  for (let offset = 4; offset <= 36; offset += 4) {
+    const nx = -offset / (BALL_RADIUS + PLAYER_RADIUS), ny = -Math.sqrt(1 - nx * nx), speed = 470;
+    const launch = { x: rival.x + nx * 45, y: contactY, vx: nx * speed, vy: Math.min(-235, ny * speed) };
+    const atNet = (launch.x - NET_X) / -launch.vx, netY = launch.y + launch.vy * atNet + 315 * atNet * atNet;
+    if (netY > NET_TOP - BALL_RADIUS - 6) continue;
+    const landing = predictBallistic(launch, { gravity: 630, contactY: FLOOR_Y - BALL_RADIUS, left: BALL_RADIUS, maxTime: 3 });
+    if (landing.x >= NET_X) continue;
+    // Distance Sol must cover per second of hang time; prefer quick, wide shots.
+    const score = Math.abs(landing.x - opponent.x) / Math.max(.35, landing.time) + (brain ? aimError(brain, 60) : 0);
+    if (score > bestScore) { bestScore = score; best = offset; }
+  }
+  return best;
+}
+
+// Nova reads the arc (including back-wall rebounds), stands behind the ball so
+// contact sends it toward Sol, and picks a flatter or loftier return based on
+// where Sol is standing. `seen` may be a delayed observation from a brain.
+export function rivalControls(rival, ball, opponent = null, brain = null) {
+  const homeX = opponent && opponent.x > NET_X - 120 ? 585 : 615;
   const ballOnRivalSide = ball.x > NET_X;
-  // Predict a reachable descending contact, including a rebound off the back wall.
   const vy = ball.vy || 0;
-  const contactY = rival.y - 100;
-  const time = Math.max(0, Math.min(.65, (-vy + Math.sqrt(Math.max(0, vy * vy + 1260 * (contactY - ball.y)))) / 630));
-  let landing = ball.x + ball.vx * time;
-  if (landing > COURT_WIDTH - BALL_RADIUS) landing = 2 * (COURT_WIDTH - BALL_RADIUS) - landing;
-  const targetX = ballOnRivalSide ? Math.max(NET_X + 52, Math.min(COURT_WIDTH - 42, landing + 12)) : homeX;
-  const direction = Math.abs(targetX - rival.x) < 10 ? 0 : Math.sign(targetX - rival.x);
+  const arc = predictBallistic({ x: ball.x, y: ball.y, vx: ball.vx, vy }, {
+    gravity: 630, contactY: rival.y - 60, right: COURT_WIDTH - BALL_RADIUS, maxTime: 1.6 });
+  const landing = arc.x + (ball.error || 0);
+  const offset = opponent ? placementOffset(rival, opponent, brain) : 12;
+  const incoming = !ballOnRivalSide && (ball.vx || 0) > 0 && landing > NET_X;
+  let targetX = homeX;
+  if (ballOnRivalSide || incoming) targetX = Math.max(NET_X + 52, Math.min(COURT_WIDTH - 42, landing + offset));
+  else if (opponent && opponent.x > NET_X - 110 && ball.x > NET_X - 150) targetX = NET_X + 58; // shadow a spike at the net
+  const direction = axisToward(rival.x, targetX, brain ? 6 : 10);
   const ballApproaching = ballOnRivalSide && Math.abs(ball.x - rival.x) < 100 && vy > -120 && ball.y < rival.y + 45 && ball.y > rival.y - 175;
   const blockAtNet = rival.x < NET_X + 115 && ball.x > NET_X - 30 && ball.x < NET_X + 95 && ball.y < NET_TOP + 80;
-  return { direction, jump: rival.onGround && (ballApproaching || blockAtNet) };
+  // A rising jump reaches the arc ~0.3 s later; leave early for high balls.
+  const highBall = arc.time < .42 && Math.abs(arc.x - rival.x) < 48 && ball.y < rival.y - 140;
+  const groundJump = rival.onGround && (ballApproaching || blockAtNet || highBall);
+  // Spend the second jump only while falling under a ball that is still above.
+  const airJump = !rival.onGround && rival.jumpsUsed === 1 && rival.vy > 60
+    && ball.y < rival.y - 50 && Math.abs(ball.x - rival.x) < 42;
+  return { direction, jump: groundJump || airJump };
 }

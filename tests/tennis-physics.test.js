@@ -43,8 +43,11 @@ test('a complete AI match progresses without deadlocking', () => {
 });
 
 test('tracking returns and timing power shots can win a complete match', () => {
-  const g = createTennis(() => .6);
-  for (let i = 0; i < 20000 && g.phase !== 'over'; i++) {
+  // A constant random source would make Nova read every power shot identically
+  // forever, so use a seeded sequence. Nova returns many power shots now.
+  let seed = 7;
+  const g = createTennis(() => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; });
+  for (let i = 0; i < 60 * 900 && g.phase !== 'over'; i++) {
     if (g.phase === 'serve' && g.server === 0) tennisAction(g);
     if (g.ball?.last === 1 && Math.abs(g.ball.y - g.players[0].y) < 50) tennisAction(g);
     stepTennis(g, 1 / 60, { target: { x: g.ball?.last === 1 ? g.ball.targetX : 200, y: 222 } });
