@@ -1,9 +1,11 @@
+import { crispCanvas } from "./crisp-canvas.js";
 import { BALL_RADIUS, COURT_WIDTH, FLOOR_Y, PLAYER_RADIUS, matchWinner, tryJump } from "./volley-physics.js";
 import { shotAccuracy, shotOffset } from "./basketball-shooting.js";
 import { adaptSkill, axisToward, createBrain, extrapolate, perceive, reachablePoint, resetPerception, think } from "./npc-brain.js";
 
 const canvas = document.querySelector("#basketball-game");
 const ctx = canvas.getContext("2d");
+crispCanvas(canvas);
 const overlay = document.querySelector("#basketball-overlay");
 const startButton = document.querySelector("#basketball-start");
 const playerScore = document.querySelector("#basketball-player-score");

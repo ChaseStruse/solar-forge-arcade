@@ -1,8 +1,10 @@
+import { crispCanvas } from "./crisp-canvas.js";
 import { touchdown, nextDown, winner, ROUTE_NAMES, createRoute, advanceRoute } from "./blitz-rules.js";
 import { intercept, reachablePoint } from "./npc-brain.js";
 
 const canvas = document.querySelector("#blitz-game");
 const ctx = canvas.getContext("2d");
+crispCanvas(canvas);
 const overlay = document.querySelector("#blitz-overlay");
 const start = document.querySelector("#blitz-start");
 const keys = new Set();

@@ -8,7 +8,7 @@
 .solar-volley .screen-overlay{background:#080d29b8;backdrop-filter:none}
 .solar-volley .screen-overlay h2{font-family:monospace;letter-spacing:-2px;text-shadow:3px 3px #b43287;color:#fff0bb}
 .solar-volley .screen-overlay .overlay-star{color:#ff80b9;text-shadow:4px 4px #652752}
-.solar-volley .control-panel{background:#11172e;color:#e9f9ff;border-color:#547488;box-shadow:5px 5px #281638}
+.solar-volley .control-panel{background:#11172e;color:#e9f9ff;border-color:#547488;box-shadow:5px 5px #281638}.solar-volley .panel-header{color:#b4c4d8}.solar-volley .panel-number{color:#a3b3c7}.solar-volley .footer-spark{color:#ff86b5}.solar-volley .breaker-instructions .eyebrow{color:#ff86bd}
 .solar-volley .volley-scoreboard{background:#080e22;border:2px solid #74eee1;box-shadow:4px 4px #572657}
 .solar-volley .team-score strong{font-family:monospace;text-shadow:3px 3px #25304b}
 .solar-volley .player-score strong{color:#7ffff0}
@@ -118,7 +118,7 @@ a{
 .serve-status{padding:18px 4px;border-bottom:1px solid #cbb9bd}.serve-status strong{display:block;margin-top:8px;color:#755e74;font:700 13px ui-monospace,monospace}.volley-instructions{padding-top:18px}
 .breaker-instructions{padding:25px 3px;color:#635768;font-size:14px;line-height:1.55}
 .breaker-instructions h2{margin:4px 0 13px;color:#392e45;font-size:24px;letter-spacing:-.06em}
-.breaker-instructions .eyebrow{color:#af5b72;font-size:9px}
+.breaker-instructions .eyebrow{color:#9c3e5c;font-size:9px}
 .breaker-instructions kbd{display:inline-block;min-width:25px;padding:0 4px;text-align:center;border:1px solid #b5a6ae;border-radius:4px;background:#fffaf0;color:#392e45}
 .intro{
   display:flex;
@@ -322,7 +322,7 @@ canvas{
   letter-spacing:.1em
 }
 .panel-number{
-  color:#958493
+  color:#6b5a69
 }
 .score-card{
   margin-top:22px;
@@ -335,7 +335,10 @@ canvas{
 .card-label{
   font-size:10px;
   letter-spacing:.11em;
-  color:#a99eaf
+  color:#c9bfd0
+}
+.stats-row .card-label{
+  color:#6b5f71
 }
 .score-card strong{
   display:block;
@@ -367,7 +370,7 @@ canvas{
 }
 .stats-row #shield{
   font-size:19px;
-  color:#ed7190;
+  color:#c0365c;
   letter-spacing:-.1em
 }
 .upgrade-heading{
@@ -378,7 +381,7 @@ canvas{
 }
 .upgrade-heading .eyebrow{
   font-size:9px;
-  color:#af5b72
+  color:#9c3e5c
 }
 .upgrade-heading h2{
   font-size:24px;
@@ -387,7 +390,7 @@ canvas{
 }
 .upgrade-heading>span{
   font-size:29px;
-  color:#ad7890
+  color:#8a5270
 }
 .upgrade-list{
   display:grid;
@@ -414,7 +417,7 @@ canvas{
 }
 .upgrade:disabled{
   cursor:not-allowed;
-  opacity:.62
+  opacity:.85
 }
 .upgrade-icon{
   width:38px;
@@ -424,18 +427,18 @@ canvas{
   place-items:center;
   border-radius:7px;
   background:#ffe2aa;
-  color:#895071;
+  color:#6d3254;
   font-size:20px;
   font-weight:700
 }
 .upgrade:nth-child(2) .upgrade-icon{
   background:#caeee7;
-  color:#287c82;
+  color:#0f4c51;
   font-size:15px
 }
 .upgrade:nth-child(3) .upgrade-icon{
   background:#e4dcf5;
-  color:#7960a8
+  color:#563c88
 }
 .upgrade-info{
   min-width:0;
@@ -449,19 +452,19 @@ canvas{
 .upgrade-info small{
   display:block;
   font-size:10px;
-  color:#786c78;
+  color:#554955;
   margin-top:4px;
   white-space:nowrap
 }
 .level{
   font-size:9px;
-  color:#a15f78
+  color:#753652
 }
 .cost{
   font-size:11px;
   font-weight:500;
   white-space:nowrap;
-  color:#9b6470
+  color:#713a45
 }
 .panel-footer{
   display:flex;
@@ -485,7 +488,7 @@ canvas{
   color:#d15e78
 }
 .footer-spark{
-  color:#d76983;
+  color:#b43e5c;
   font-size:21px
 }
 .below-note{
@@ -737,7 +740,7 @@ canvas{touch-action:none}
 .game-touch-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
 .game-touch-controls button,.game-pause{min-height:46px;padding:10px 8px;border:1px solid #638b87;border-radius:7px;background:#203d4a;color:#d5ffe6;font:700 12px monospace;touch-action:none;user-select:none}
 .game-touch-controls button.held{background:#527b6c;color:#fff}
-.game-pause{width:100%;touch-action:manipulation}.game-pause:disabled{opacity:.45}
+.game-pause{width:100%;touch-action:manipulation}.game-pause:disabled{opacity:.72}
 .game-pause-veil{position:absolute;inset:0;z-index:6;border:0;background:#0b1026dd;color:#d5ffe6;font:bold clamp(12px,3vw,24px) monospace;cursor:pointer}
 .game-pause-veil[hidden]{display:none}
 @media(max-width:600px){

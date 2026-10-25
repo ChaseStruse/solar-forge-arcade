@@ -1,3 +1,4 @@
+import { crispCanvas } from './crisp-canvas.js';
 import { createGame, action, step, FLOOR, clamp } from './neon-combat.js';
 
 const canvas = document.querySelector('#neon-game');
@@ -18,7 +19,7 @@ const bindings = { w: 'jump', ArrowUp: 'jump', ' ': 'jump', s: 'dodge', ArrowDow
 let game = createGame(), mode = 'ready', previous = 0, best = 0, sound = false, audio, shake = 0;
 try { best = Number(localStorage.getItem('neon-bullet-best')) || 0; } catch { /* Storage is optional. */ }
 bestLabel.textContent = best;
-ctx.imageSmoothingEnabled = false;
+crispCanvas(canvas);
 function tone(name) {
   if (!sound || !audio) return;
   const frequencies = { swing: 150, hit: 90, shot: 440, enemyShot: 220, hurt: 55, jump: 330, dodge: 190, kill: 660, wave: 880 };
@@ -91,7 +92,7 @@ function skyline() {
   rect(0, 226, 400, 6, '#41546b'); rect(0, 226, 400, 2, '#85adbd');
   rect(0, FLOOR, 400, 48, '#1a2138'); rect(0, FLOOR, 400, 2, '#e48c90');
   for (let i = 0; i < 20; i++) { rect(i * 23, 247, 17, 1, '#34314b'); rect(i * 23 + 10, 264, 17, 1, '#34314b'); }
-  text('SECTOR 06', 16, 269, '#6b6888', 7); text('SOLAR FORGE SYSTEMS', 385, 269, '#6b6888', 7, 'right');
+  text('SECTOR 06', 16, 269, '#9c99bc', 7); text('SOLAR FORGE SYSTEMS', 385, 269, '#9c99bc', 7, 'right');
 }
 function fighter(p, isPlayer = false, ghost = false) {
   const x = Math.round(p.x), y = Math.round(p.y);
@@ -139,7 +140,7 @@ function fighter(p, isPlayer = false, ghost = false) {
   }
 }
 function bar(x, y, width, amount, color, label) {
-  text(label, x, y - 4, color, 6); rect(x, y, width, 4, '#30334c'); rect(x, y, Math.round(width * clamp(amount, 0, 1)), 4, color);
+  text(label, x, y - 4, color, 7); rect(x, y, width, 4, '#30334c'); rect(x, y, Math.round(width * clamp(amount, 0, 1)), 4, color);
 }
 function draw() {
   ctx.save();
@@ -169,7 +170,7 @@ function draw() {
   rect(0, 0, 400, 34, '#090f23');
   bar(12, 22, 92, game.player.hp / 100, '#ff86a4', 'HEALTH');
   bar(119, 22, 92, game.player.focus / 100, '#7fffea', game.slowNeedsRelease ? 'RELEASE SHIFT / SLOW' : 'FOCUS / SHIFT');
-  text('AMMO', 228, 18, '#ffdc88', 6);
+  text('AMMO', 228, 18, '#ffdc88', 7);
   for (let i = 0; i < 6; i++) rect(228 + i * 7, 22, 4, 5, i < Math.floor(game.player.ammo) ? '#ffdc88' : '#34324b');
   text(`WAVE ${Math.max(1, game.wave)}/5`, 385, 23, '#f3e3ca', 9, 'right');
   if (game.combo > 1) text(`${game.combo} HIT CHAIN`, 385, 46, '#ffdc88', 8, 'right');

@@ -53,6 +53,7 @@ export const files = {
   "/assets/volley-physics.js": { path: "volley-physics.js", type: "text/javascript; charset=utf-8" },
   "/assets/targeting.js": { path: "targeting.js", type: "text/javascript; charset=utf-8" },
   "/assets/progression.js": { path: "progression.js", type: "text/javascript; charset=utf-8" },
+  "/assets/crisp-canvas.js": { path: "crisp-canvas.js", type: "text/javascript; charset=utf-8" },
   "/assets/npc-brain.js": { path: "npc-brain.js", type: "text/javascript; charset=utf-8" },
 };
 

@@ -55,8 +55,8 @@ function draw() {
   if (game.phase === 'serve' || game.phase === 'point') {
     box(98, 128, 204, 22, '#0b1026e8'); text(game.message, 200, 142, palette.gold, 8, 'center');
   }
-  text(`RALLY ${game.rally}  /  BEST ${game.bestRally}`, 14, 274, palette.mint, 7);
-  text(game.smashCooldown > 0 ? 'SMASH RECHARGING' : 'SPACE: SMASH', 386, 274, palette.gold, 7, 'right');
+  text(`RALLY ${game.rally}  /  BEST ${game.bestRally}`, 14, 274, palette.mint, 8);
+  text(game.smashCooldown > 0 ? 'SMASH RECHARGING' : 'SPACE: SMASH', 386, 274, palette.gold, 8, 'right');
 }
 ui.loop(dt => {
   if (ui.active) {

@@ -1,8 +1,10 @@
+import { crispCanvas } from "./crisp-canvas.js";
 import { BALL_RADIUS, COURT_HEIGHT, COURT_WIDTH, FLOOR_Y, NET_TOP, NET_X, PLAYER_RADIUS, hitNet, hitPlayer, matchWinner, pointWinner, rivalControls, tryJump } from "./volley-physics.js";
 import { adaptSkill, aimError, createBrain, extrapolate, perceive, resetPerception } from "./npc-brain.js";
 
 const canvas = document.querySelector("#volley-game");
 const ctx = canvas.getContext("2d");
+crispCanvas(canvas);
 const overlay = document.querySelector("#volley-overlay");
 const startButton = document.querySelector("#volley-start");
 const playerScore = document.querySelector("#volley-player-score");
