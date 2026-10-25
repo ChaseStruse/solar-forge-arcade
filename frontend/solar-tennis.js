@@ -55,8 +55,8 @@ function draw() {
   if(game.phase==='serve'||game.phase==='point') {
     box(73,112,254,22,'#0b1026e8');text(game.phase==='point'?game.message:game.server===0?'SPACE / TAP TO SERVE':'NOVA SERVING',200,126,palette.gold,8,'center');
   }
-  text(`RALLY ${game.rally}  /  BEST ${game.bestRally}`,14,274,palette.mint,7);
-  text(game.power>0?'POWER READY':game.powerCooldown>0?'POWER RECHARGING':'SPACE: POWER SHOT',386,274,palette.gold,7,'right');
+  text(`RALLY ${game.rally}  /  BEST ${game.bestRally}`,14,274,palette.mint,8);
+  text(game.power>0?'POWER READY':game.powerCooldown>0?'POWER RECHARGING':'SPACE: POWER SHOT',386,274,palette.gold,8,'right');
 }
 ui.loop(dt=>{
   if(ui.active) {

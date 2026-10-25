@@ -1,4 +1,5 @@
 // Shared cabinet controls for Tennis and Pool; the simulations stay independent.
+import { crispCanvas } from './crisp-canvas.js';
 export const palette = { ink: '#0b1026', mint: '#7fffea', pink: '#ff86b5', gold: '#ffda91', cream: '#fff0ca' };
 export function pixelRect(ctx, x, y, w, h, color) {
   ctx.fillStyle = color; ctx.fillRect(Math.round(x), Math.round(y), w, h);
@@ -7,7 +8,7 @@ export function pixelText(ctx, copy, x, y, color = palette.cream, size = 8, alig
   ctx.fillStyle = color; ctx.font = `bold ${size}px monospace`; ctx.textAlign = align; ctx.fillText(copy, Math.round(x), Math.round(y));
 }
 export function createSportsUI({ reset, press, release, clear }) {
-  const canvas = document.querySelector('canvas'), ctx = canvas.getContext('2d');
+  const canvas = document.querySelector('canvas'), ctx = crispCanvas(canvas);
   const overlay = document.querySelector('#sports-overlay'), start = document.querySelector('#sports-start');
   const pauseButton = document.querySelector('#sports-pause'), soundButton = document.querySelector('#sports-sound');
   const keys = new Set(), pointers = new Map();

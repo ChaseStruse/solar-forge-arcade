@@ -76,7 +76,7 @@ if (kind === 'breaker-game') {
   let pointer = null;
   const move = event => {
     const bounds = canvas.getBoundingClientRect();
-    canvas.dispatchEvent(new CustomEvent('paddle-aim', { detail: (event.clientX - bounds.left) * canvas.width / bounds.width }));
+    canvas.dispatchEvent(new CustomEvent('paddle-aim', { detail: (event.clientX - bounds.left) * (canvas.logicalWidth ?? canvas.width) / bounds.width }));
   };
   canvas.addEventListener('pointerdown', event => {
     event.preventDefault(); pointer = event.pointerId; canvas.setPointerCapture(pointer); move(event);

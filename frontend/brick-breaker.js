@@ -1,9 +1,11 @@
+import { crispCanvas } from "./crisp-canvas.js";
 const canvas = document.querySelector("#breaker-game");
 const ctx = canvas.getContext("2d");
 const overlay = document.querySelector("#breaker-overlay");
 const startButton = document.querySelector("#breaker-start");
 const W = canvas.width;
 const H = canvas.height;
+crispCanvas(canvas, W, H);
 const PADDLE_Y = 510;
 const PADDLE_W = 112;
 const PADDLE_H = 15;

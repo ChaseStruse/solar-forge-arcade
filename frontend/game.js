@@ -1,4 +1,5 @@
 /** A deliberately small Canvas game. All distances use canvas pixels. */
+import { crispCanvas } from "./crisp-canvas.js";
 import { advanceShot, fireInterval, MAX_ATTACK_SPEED_LEVEL } from "./combat.js";
 import { selectThreat, segmentHitsCircle } from "./targeting.js";
 import { applyBossReward, createBoss, createTower } from "./progression.js";
@@ -10,6 +11,7 @@ const overlay = document.querySelector("#screen-overlay");
 const startButton = document.querySelector("#start-button");
 const rewardPanel = document.querySelector("#reward-panel");
 const center = { x: canvas.width / 2, y: canvas.height / 2 };
+crispCanvas(canvas);
 const TAU = Math.PI * 2;
 const FORGE_SCALE = 0.9;
 const FORGE_RADIUS = 44 * FORGE_SCALE;

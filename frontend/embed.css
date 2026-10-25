@@ -10,13 +10,13 @@ main{height:100%;padding:18px}
 .control-panel{padding:16px 12px;border:1px solid #655573;border-radius:10px;background:#241d35;color:#f5e6d2;box-shadow:none;align-self:stretch;justify-content:center;gap:14px}
 .score-card{margin:0;padding:14px;background:#17162b;box-shadow:none}
 .score-card strong{font-size:36px;margin:7px 0}
-.card-label{font-size:9px;color:#bfaeca}
+.card-label{font-size:9px;color:#d4c6dd}.stats-row .card-label{color:#d4c6dd}.stats-row #shield{color:#ff8fac}
 .stats-row{margin:0;padding:12px 4px;border-color:#756282}
 .stats-row strong{font-size:22px;color:#f8e9cb}
 .upgrade-list{gap:9px}
 .upgrade{padding:12px 8px;gap:7px;background:#352741;color:#f7e5d4;border-color:#675173}
-.upgrade:disabled{opacity:.6}
-.upgrade-icon{display:none}.upgrade-info strong{font-size:11px}.upgrade-info small{font-size:8px;color:#bfadc8}
+.upgrade:disabled{opacity:.8}
+.upgrade-icon{display:none}.upgrade-info strong{font-size:11px}.upgrade-info small{font-size:9px;color:#d8c9e0}.upgrade .level{color:#ffb3c9}
 .level{display:block}.cost{font-size:10px;min-width:40px;color:#f7c88f}
 .screen-overlay h2{font-size:44px}.screen-overlay .eyebrow{font-size:11px}.screen-overlay p:not(.eyebrow){font-size:15px;max-width:350px}
 .primary-button{font-size:17px;padding:14px 22px}.overlay-star{font-size:55px}

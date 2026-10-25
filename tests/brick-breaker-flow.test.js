@@ -2,11 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import { crispCanvas } from '../frontend/crisp-canvas.js';
 function game() {
   const node={width:800,height:560,getContext:()=>({}),addEventListener(){}};
-  const scope={Math,document:{querySelector:()=>node,addEventListener(){}},window:{addEventListener(){}},requestAnimationFrame(){}};
+  const scope={Math,crispCanvas,document:{querySelector:()=>node,addEventListener(){}},window:{addEventListener(){}},requestAnimationFrame(){}};
   vm.createContext(scope);
-  vm.runInContext(readFileSync(new URL('../frontend/brick-breaker.js',import.meta.url),'utf8'),scope);
+  vm.runInContext(readFileSync(new URL('../frontend/brick-breaker.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,''),scope);
   return code=>vm.runInContext(code,scope);
 }
 test('center paddle hits cannot trap the ball in a vertical loop',()=>{

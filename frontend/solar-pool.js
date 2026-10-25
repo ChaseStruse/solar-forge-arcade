@@ -52,8 +52,8 @@ function draw(){
   for(const b of game.balls)ball(b);
   text(charging?'RELEASE TO SHOOT':game.phase==='rolling'?'ROLLING…':'AIM / HOLD / RELEASE',15,263,palette.mint,8);
   box(265,256,120,7,'#27314c');box(265,256,Math.round(120*(charging?Math.min(1,.12+charge/1.1):0)),7,palette.gold);
-  text(`${game.shots} SHOTS LEFT`,385,276,palette.gold,7,'right');
-  text('CLEAR COLORS. THEN THE 8.',15,276,'#a296b1',7);
+  text(`${game.shots} SHOTS LEFT`,385,276,palette.gold,8,'right');
+  text('CLEAR COLORS. THEN THE 8.',15,276,'#b8aecb',8);
 }
 ui.loop(dt=>{
   if(ui.active){

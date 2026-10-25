@@ -5,10 +5,11 @@ import vm from "node:vm";
 import * as physics from "../frontend/volley-physics.js";
 import * as shooting from "../frontend/basketball-shooting.js";
 import * as npc from "../frontend/npc-brain.js";
+import * as crisp from "../frontend/crisp-canvas.js";
 
 test("scoring resets jump allowance and accepts two jumps during the inbound delay", () => {
   const scope = {
-    ...physics, ...shooting, ...npc, Math,
+    ...physics, ...shooting, ...npc, ...crisp, Math,
     document: { querySelector: () => ({ getContext: () => ({}), addEventListener() {} }), addEventListener() {} },
     window: { addEventListener() {} },
     requestAnimationFrame() {},
@@ -25,7 +26,7 @@ test("scoring resets jump allowance and accepts two jumps during the inbound del
 
 test('Nova jumps before shooting and releases near the apex', () => {
   const scope = {
-    ...physics, ...shooting, ...npc, Math,
+    ...physics, ...shooting, ...npc, ...crisp, Math,
     document: { querySelector: () => ({ getContext: () => ({}), addEventListener() {} }), addEventListener() {} },
     window: { addEventListener() {} }, requestAnimationFrame() {},
   };
