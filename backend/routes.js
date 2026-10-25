@@ -10,6 +10,11 @@ export const files = {
   "/games/solar-pool": { path: "solar-pool.html", type: "text/html; charset=utf-8", embedded: true },
   "/assets/solar-pool.js": { path: "solar-pool.js", type: "text/javascript; charset=utf-8" },
   "/assets/pool-physics.js": { path: "pool-physics.js", type: "text/javascript; charset=utf-8" },
+  "/solar-puck": { path: "solar-puck.html", type: "text/html; charset=utf-8" },
+  "/solar-puck/": { path: "solar-puck.html", type: "text/html; charset=utf-8" },
+  "/games/solar-puck": { path: "solar-puck.html", type: "text/html; charset=utf-8", embedded: true },
+  "/assets/solar-puck.js": { path: "solar-puck.js", type: "text/javascript; charset=utf-8" },
+  "/assets/puck-physics.js": { path: "puck-physics.js", type: "text/javascript; charset=utf-8" },
   "/assets/retro-sports.js": { path: "retro-sports.js", type: "text/javascript; charset=utf-8" },
   "/assets/retro-sports.css": { path: "retro-sports.css", type: "text/css; charset=utf-8" },
   "/neon-bullet": { path: "neon-bullet.html", type: "text/html; charset=utf-8" },
@@ -48,6 +53,7 @@ export const files = {
   "/assets/volley-physics.js": { path: "volley-physics.js", type: "text/javascript; charset=utf-8" },
   "/assets/targeting.js": { path: "targeting.js", type: "text/javascript; charset=utf-8" },
   "/assets/progression.js": { path: "progression.js", type: "text/javascript; charset=utf-8" },
+  "/assets/npc-brain.js": { path: "npc-brain.js", type: "text/javascript; charset=utf-8" },
 };
 
 export function embed(html) {

@@ -3,17 +3,18 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
 import * as rules from "../frontend/blitz-rules.js";
+import * as npc from "../frontend/npc-brain.js";
 
 function game(seed = 42) {
   const randomMath = Object.create(Math);
   randomMath.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   const context = new Proxy({}, { get: () => () => {}, set: () => true });
-  const scope = { ...rules, Math: randomMath,
+  const scope = { ...rules, ...npc, Math: randomMath,
     document: { querySelector: () => ({ getContext: () => context, addEventListener() {} }), addEventListener() {} },
     window: { addEventListener() {} }, requestAnimationFrame() {},
   };
   vm.createContext(scope);
-  vm.runInContext(fs.readFileSync(new URL("../frontend/solar-blitz.js", import.meta.url), "utf8").replace(/^import .*;\n/, ""), scope);
+  vm.runInContext(fs.readFileSync(new URL("../frontend/solar-blitz.js", import.meta.url), "utf8").replace(/^import .*;\n/gm, ""), scope);
   vm.runInContext("begin(); delay = 0;", scope);
   return code => vm.runInContext(code, scope);
 }

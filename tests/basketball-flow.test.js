@@ -4,10 +4,11 @@ import fs from "node:fs";
 import vm from "node:vm";
 import * as physics from "../frontend/volley-physics.js";
 import * as shooting from "../frontend/basketball-shooting.js";
+import * as npc from "../frontend/npc-brain.js";
 
 test("scoring resets jump allowance and accepts two jumps during the inbound delay", () => {
   const scope = {
-    ...physics, ...shooting, Math,
+    ...physics, ...shooting, ...npc, Math,
     document: { querySelector: () => ({ getContext: () => ({}), addEventListener() {} }), addEventListener() {} },
     window: { addEventListener() {} },
     requestAnimationFrame() {},
@@ -24,7 +25,7 @@ test("scoring resets jump allowance and accepts two jumps during the inbound del
 
 test('Nova jumps before shooting and releases near the apex', () => {
   const scope = {
-    ...physics, ...shooting, Math,
+    ...physics, ...shooting, ...npc, Math,
     document: { querySelector: () => ({ getContext: () => ({}), addEventListener() {} }), addEventListener() {} },
     window: { addEventListener() {} }, requestAnimationFrame() {},
   };

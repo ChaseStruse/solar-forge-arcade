@@ -8,4 +8,4 @@ Press jump again in midair for a second upward boost to block high shots. A thir
 
 The net blocks low shots and rebounds balls that land on its top. A point is awarded when the ball touches the floor, and the player on the opposite side serves the next rally. The first player to five points wins the match.
 
-Nova tracks the ball's projected horizontal position when it crosses onto the AI court. It jumps to return reachable balls and challenges shots close to the net.
+Nova predicts the ball's arc, including back-wall rebounds, from a slightly delayed read. It positions behind the ball to choose a return that clears the net and lands far from Sol. It shadows net attacks and saves its second jump for a ball it is falling under.

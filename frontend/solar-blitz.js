@@ -1,4 +1,5 @@
 import { touchdown, nextDown, winner, ROUTE_NAMES, createRoute, advanceRoute } from "./blitz-rules.js";
+import { intercept, reachablePoint } from "./npc-brain.js";
 
 const canvas = document.querySelector("#blitz-game");
 const ctx = canvas.getContext("2d");
@@ -8,7 +9,7 @@ const keys = new Set();
 const colors = ["#75ffe2", "#ff7eb5"];
 let scores, offense, down, spot, startSpot, players, carrier, flight, controlled;
 const REACTION_SECONDS = 1.2;
-let reactionTime = 0;
+let reactionTime = 0, lastDt = 0;
 let running = false, delay = 0, clock = 0, aiPass = 0, previous = 0, message = "FIRST TO 3 TOUCHDOWNS";
 const clamp = (v, low, high) => Math.max(low, Math.min(high, v));
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
@@ -28,7 +29,7 @@ function setup(team, x, newPossession = false) {
   delay = 1.1; clock = 0; aiPass = 0; reactionTime = 0;
 }
 function assignRoutes() {
-  for (const p of players) { p.coverageAim = null; p.coverageTimer = 0; }
+  for (const p of players) { p.coverageAim = null; p.coverageTimer = 0; p.pursuitAim = null; p.pursuitTimer = 0; }
   const choices = [...ROUTE_NAMES];
   for (const p of players.filter(p => p.team === offense && p !== carrier)) {
     const name = choices.splice(Math.floor(Math.random() * choices.length), 1)[0];
@@ -81,6 +82,47 @@ function defensiveTarget() {
   const lead = flight ? .12 : .2;
   return { x: clamp(ball.x + clamp((ball.vx || 0) * lead, -40, 40), 30, 770),
     y: clamp(ball.y + clamp((ball.vy || 0) * lead, -40, 40), 105, 455) };
+}
+const POCKET_SECONDS = 1.5;
+// AI ball carriers: a quarterback holds the pocket while routes develop and
+// slides away from pressure; runners pick the lane defenders reach last.
+function carrierHeading(p, dir) {
+  const defenders = players.filter(q => q.team !== offense);
+  const nearest = defenders.reduce((a, b) => distance(p, a) <= distance(p, b) ? a : b);
+  const behindLine = dir > 0 ? p.x <= startSpot + 10 : p.x >= startSpot - 10;
+  if (p.number === 0 && behindLine && aiPass < POCKET_SECONDS) {
+    const gap = distance(p, nearest) || 1;
+    if (gap > 85) return { x: 0, y: 0 };
+    return { x: (p.x - nearest.x) / gap * .6 - dir * .2, y: (p.y - nearest.y) / gap || 1 };
+  }
+  let best = { x: dir, y: 0 }, bestScore = -Infinity;
+  for (let i = -3; i <= 3; i++) {
+    const angle = i * Math.PI / 9, hx = Math.cos(angle) * dir, hy = Math.sin(angle);
+    const ahead = { x: clamp(p.x + hx * 70, 30, 770), y: clamp(p.y + hy * 70, 105, 455) };
+    const runnerTime = distance(p, ahead) / 165;
+    const margin = Math.min(...defenders.map(q => distance(q, ahead) / (q === controlled ? 175 : 140))) - runnerTime;
+    const pinned = ahead.y <= 112 || ahead.y >= 448 ? .25 : 0;
+    const score = Math.min(margin, .6) * 2 + hx * dir * .5 - pinned;
+    if (score > bestScore) { bestScore = score; best = { x: hx, y: hy }; }
+  }
+  return best;
+}
+// Nova defenders take pursuit angles on the carrier and break on thrown balls.
+function pursuitTarget(p) {
+  if (flight) {
+    const remaining = Math.hypot(flight.targetX - flight.x, flight.targetY - flight.y) / 440 + .1;
+    const spot = reachablePoint(p, 100, t => ({ x: flight.x + flight.vx * t, y: flight.y + flight.vy * t }), { maxTime: remaining, slack: 14 });
+    return spot ?? { x: flight.targetX, y: flight.targetY };
+  }
+  // Pursuit angles refresh on the same human reaction lag as coverage, so a
+  // sharp cut buys the runner a step.
+  p.pursuitTimer = (p.pursuitTimer ?? 0) - lastDt;
+  if (!p.pursuitAim || p.pursuitTimer <= 0) {
+    const aim = intercept(p, 100, carrier, 1.2);
+    p.pursuitAim = { x: clamp(aim.x, 30, 770), y: clamp(aim.y, 105, 455) };
+    p.pursuitTimer = .2 + p.number * .04;
+  }
+  return p.pursuitAim;
 }
 function bestDefender() {
   const target = flight ? { x: flight.targetX, y: flight.targetY } : defensiveTarget();
@@ -140,6 +182,7 @@ function update(dt) {
   reactionTime = Math.max(0, reactionTime - dt);
   clock += worldDt; aiPass += worldDt;
   const ball = carrier ?? flight;
+  lastDt = worldDt;
   for (const p of players) {
     const moveDt = p === controlled ? playerDt : worldDt;
     p.cooldown = Math.max(0, p.cooldown - moveDt); p.dash = Math.max(0, p.dash - moveDt);
@@ -152,8 +195,9 @@ function update(dt) {
     } else if (p.team === offense) {
       const dir = offense === 0 ? 1 : -1;
       if (p === carrier) {
-        const closest = players.filter(q => q.team !== offense).sort((a,b) => distance(p,a)-distance(p,b))[0];
-        move(p, dir, distance(p,closest) < 95 ? (p.y < closest.y ? -.8 : .8) : Math.sin(clock * 2) * .3, moveDt);
+        const heading = carrierHeading(p, dir);
+        if (heading.x || heading.y) move(p, heading.x, heading.y, moveDt);
+        else { p.vx = 0; p.vy = 0; }
       } else if (p.route) {
         moveReceiver(p, moveDt);
       } else {
@@ -162,16 +206,27 @@ function update(dt) {
     } else {
       const covering = p.number > 0 && carrier?.number === 0
         && (offense === 0 ? carrier.x <= startSpot + 35 : carrier.x >= startSpot - 35);
-      const target = p.team === 0 ? trackedCoverageTarget(p, worldDt) : covering ? trackedCoverageTarget(p, worldDt) : defensiveTarget();
+      const target = p.team === 0 || covering ? trackedCoverageTarget(p, worldDt) : pursuitTarget(p);
       if (distance(p, target) > 5) move(p, target.x - p.x, target.y - p.y, moveDt);
       else { p.vx = 0; p.vy = 0; }
     }
   }
   if (offense === 1 && carrier && aiPass > .65 && carrier.number === 0) {
     const receivers = players.filter(p => p.team === 1 && p !== carrier);
-    const openness = p => Math.min(...players.filter(q => q.team === 0).map(q => distance(p,q)));
-    receivers.sort((a,b) => openness(b)-openness(a));
-    const target = receivers.find(p => openness(p) > 34 && passingLaneClear(p));
+    const separation = p => Math.min(...players.filter(q => q.team === 0).map(q => distance(p,q)));
+    // Rank by predicted separation where the receiver will be when the ball
+    // arrives: Sol can switch (Z) to the defender nearest the catch and chase
+    // in slow motion after a reaction, while AI markers close at route speed.
+    const predicted = p => {
+      const aim = passDestination(p), path = distance(carrier, aim);
+      const defenders = players.filter(q => q.team === 0).sort((a, b) => distance(a, aim) - distance(b, aim));
+      const slowPath = Math.min(path, 440 * .25 * REACTION_SECONDS);
+      const human = slowPath * .69 + (path - slowPath) * .4;
+      return Math.min(...defenders.map((q, i) => distance(q, aim) - (i === 0 ? human : path * 130 / 440)));
+    };
+    receivers.sort((a,b) => predicted(b)-predicted(a));
+    // Hold a throw that is likely picked while the pocket still has time.
+    const target = receivers.find(p => separation(p) > 34 && passingLaneClear(p) && (predicted(p) > -60 || aiPass > POCKET_SECONDS + .6));
     if (target) { pass(target.number); aiPass = 0; }
   }
   if (flight) {
@@ -182,7 +237,7 @@ function update(dt) {
     if (caught) {
       const interception = caught.team !== offense;
       carrier = caught; flight = null; reactionTime = 0;
-      if (interception) { offense = caught.team; down = 1; startSpot = caught.x; message = "INTERCEPTION!"; assignRoutes(); }
+      if (interception) { offense = caught.team; down = 1; startSpot = caught.x; aiPass = POCKET_SECONDS; message = "INTERCEPTION!"; assignRoutes(); }
       if (offense === 0) controlled = carrier;
     } else if (flight.age > 1.8 || flight.x < 25 || flight.x > 775 || flight.y < 100 || flight.y > 460) { endPlay(true); return; }
   }

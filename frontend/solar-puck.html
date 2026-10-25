@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#11172e" /><meta name="description" content="Solar Puck at Solar Forge Arcade. Neon air hockey against Nova. Read the bank. Beat the block." />
+  <title>Solar Puck · Solar Forge Arcade</title>
+  <link rel="stylesheet" href="/assets/style.css" /><link rel="stylesheet" href="/assets/retro-sports.css" />
+  <script type="module" src="/assets/solar-puck.js"></script>
+</head>
+<body class="solar-volley retro-sports">
+  <div class="page-glow" aria-hidden="true"></div><div class="site-shell">
+    <header class="site-header"><a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-icon" aria-hidden="true">✳</span><span>SOLAR<span class="brand-accent">FORGE</span><small>ARCADE</small></span></a><nav class="arcade-nav" aria-label="Games"><a href="/">GAME SELECT</a><a href="/solar-puck" aria-current="page">SOLAR PUCK</a></nav></header>
+    <main>
+      <section class="intro" aria-labelledby="game-title"><div><p class="eyebrow">NOW PLAYING <span class="eyebrow-line"></span> GAME 009</p><h1 id="game-title">SOLAR<br /><em>PUCK!</em></h1><p class="intro-copy">Read the bank. Beat the block. Light the lamp.</p></div><div class="intro-sticker volley-sticker" aria-hidden="true"><span>7</span><small>GOALS<br />TO WIN</small></div></section>
+      <section class="game-layout" aria-label="Solar Puck game">
+        <div class="cabinet"><div class="cabinet-top"><span class="cabinet-light"></span><span>FORGE-VISION <b>9000</b></span><span class="cabinet-channel">CH 09 / LIVE</span></div>
+          <div class="screen-frame"><div class="screen"><canvas id="puck-game" width="400" height="280" tabindex="0" aria-label="Solar Puck air hockey rink. Controls listed beside the game.">Canvas support is required to play.</canvas><div class="screen-overlay" id="sports-overlay"><p class="eyebrow">FREE PLAY / PIXEL CLASSICS</p><h2 id="sports-title">FACE OFF<br />WITH NOVA</h2><p id="sports-copy">Move your mallet with arrows, the mouse, or a finger. Space readies a smash. Bank it past Nova; first to seven goals wins.</p><button class="primary-button" id="sports-start" type="button">START MATCH ↗</button></div></div></div>
+          <div class="sports-controls" aria-label="Game controls"><button type="button" data-control="ArrowLeft" aria-label="Move left">◀</button><button type="button" data-control="ArrowRight" aria-label="Move right">▶</button><button type="button" data-control="ArrowUp" aria-label="Move up">↑</button><button type="button" data-control="ArrowDown" aria-label="Move down">↓</button><button type="button" data-control=" " aria-label="Ready a smash">SMASH</button></div><div class="cabinet-bottom"><span>◉ &nbsp; ARROWS / MOUSE / TOUCH</span><span>FIRST TO SEVEN</span></div>
+        </div>
+        <aside class="control-panel volley-panel" aria-label="Score and controls"><div class="panel-header"><span>◈ MATCH BOARD</span><span class="panel-number">09—07</span></div><div class="volley-scoreboard"><div class="team-score player-score"><span class="card-label">YOU / SOL</span><strong id="sports-left">0</strong></div><span class="versus-mark">—</span><div class="team-score rival-score"><span class="card-label">AI / NOVA</span><strong id="sports-right">0</strong></div></div>
+          <div class="serve-status"><span class="card-label">COURT CALL</span><strong id="sports-status" role="status">READY TO FACE OFF</strong></div>
+          <div class="sports-actions"><button id="sports-pause" type="button" disabled>PAUSE [P]</button><button id="sports-sound" type="button" aria-pressed="false">SOUND OFF [M]</button></div>
+          <div class="breaker-instructions volley-instructions sports-instructions"><p class="eyebrow">HOW TO PLAY</p><h2>BANK IT. BLOCK IT.</h2><p>Arrows or WASD move your mallet on the left half. Or move the mouse, or drag on the rink.</p><p><strong>Space readies a smash:</strong> your next hit within a moment moves faster and hits harder.</p><p>Nova reads rail banks, blocks at an angle, and shoots where you are not. Hold the puck on your half for seven seconds and it goes to Nova. First to seven goals wins.</p></div>
+          <div class="panel-footer"><span>✦ QUICK HANDS. BIG BANKS.</span><span class="footer-spark">✳</span></div>
+        </aside>
+      </section><p class="below-note">✦ QUICK HANDS. BIG BANKS. ✦</p>
+    </main><footer class="site-footer"><span>© SOLAR FORGE ARCADE</span><span>SHORT GAMES. BIG MOMENTS.</span></footer>
+  </div>
+</body>
+</html>

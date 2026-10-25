@@ -1,8 +1,9 @@
 // Browser-local combat simulation. Coordinates use the 400 × 280 pixel playfield.
+import { separation } from './npc-brain.js';
 export const FLOOR = 232;
 export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 export function createGame() {
-  return { player: { x: 200, y: FLOOR, vy: 0, facing: 1, hp: 100, focus: 100, ammo: 6,
+  return { player: { x: 200, y: FLOOR, vx: 0, vy: 0, facing: 1, hp: 100, focus: 100, ammo: 6,
     jumps: 0, invulnerable: 0, dodge: 0, dodgeCooldown: 0, cooldown: 0, pose: '', poseTime: 0 },
     enemies: [], bullets: [], effects: [], events: [], wave: 0, remaining: 0, spawnTime: 0,
     intermission: 1.5, score: 0, combo: 0, comboTime: 0, time: 0, slow: false, slowNeedsRelease: false, status: 'playing', nextId: 0 };
@@ -77,6 +78,34 @@ export function segmentHits(x0, y0, x1, y1, target) {
   }
   return true;
 }
+function cornered(e, p) {
+  const away = Math.sign(e.x - p.x) || 1;
+  return away < 0 ? e.x < 40 : e.x > 360;
+}
+function gunnerStep(e, p, dx) {
+  if (dx < 90) return cornered(e, p) ? 0 : -e.facing;
+  return dx > 150 ? e.facing : 0;
+}
+// Brawlers split to both sides of the player, and patient ones wait just
+// outside punch reach until the player commits, then step in on the whiff.
+function brawlerStep(game, e, p, living, dt) {
+  const brawlers = living.filter(o => o.kind === 'brawler').sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x));
+  let side = Math.sign(e.x - p.x) || 1;
+  const rank = brawlers.indexOf(e);
+  if (rank > 0) {
+    const leader = Math.sign(brawlers[0].x - p.x) || 1, flank = p.x - leader * 24;
+    if (flank > 16 && flank < 384) side = -leader;
+  }
+  const waiting = patient(game, e, p);
+  if (waiting) e.patience = (e.patience ?? 1.1) - dt;
+  const slot = p.x + side * (waiting ? 36 : 20);
+  return Math.abs(slot - e.x) > 3 ? Math.sign(slot - e.x) : 0;
+}
+function patient(game, e, p) {
+  if (game.wave < 2 || e.id % 2 || (e.patience ?? 1.1) <= 0) return false;
+  const facingMe = Math.sign(e.x - p.x) === p.facing;
+  return facingMe && p.cooldown <= 0 && p.dodge <= 0;
+}
 export function step(game, elapsed, input = {}) {
   if (game.status !== 'playing') return;
   const dt = clamp(elapsed, 0, .04), p = game.player;
@@ -106,7 +135,9 @@ export function step(game, elapsed, input = {}) {
   }
   const movement = clamp(input.move || 0, -1, 1);
   if (p.dodge <= 0 && movement) p.facing = Math.sign(movement);
+  const oldX = p.x;
   p.x = clamp(p.x + (p.dodge > 0 ? p.facing * 235 : movement * 105) * playerDt, 14, 386);
+  p.vx = playerDt > 0 ? (p.x - oldX) / playerDt : 0;
   p.vy += 580 * playerDt; p.y += p.vy * playerDt;
   if (p.y >= FLOOR) { p.y = FLOOR; p.vy = 0; p.jumps = 0; }
   game.spawnTime -= worldDt;
@@ -117,8 +148,8 @@ export function step(game, elapsed, input = {}) {
       cooldown: .9, windup: 0, stun: 0, attack: '' });
     game.remaining--; game.spawnTime = 1.5;
   }
-  for (const e of game.enemies) {
-    if (e.hp <= 0) continue;
+  const living = game.enemies.filter(e => e.hp > 0);
+  for (const e of living) {
     e.stun = Math.max(0, e.stun - worldDt); e.cooldown -= worldDt;
     if (e.windup <= 0) e.facing = p.x < e.x ? -1 : 1;
     if (e.stun > 0) { e.windup = 0; continue; }
@@ -132,14 +163,20 @@ export function step(game, elapsed, input = {}) {
             vx: deltaX / length * 135, vy: deltaY / length * 135, friendly: false });
           game.events.push('enemyShot');
         } else if ((p.x - e.x) * e.facing >= -6 && dx < 31 && Math.abs(p.y - e.y) < 26) damagePlayer(game, 10, e.facing);
-        e.cooldown = e.kind === 'gunner' ? 1.7 : .8;
+        // A cornered gunner fires faster instead of backing into the wall.
+        e.cooldown = e.kind === 'gunner' ? (cornered(e, p) ? 1 : 1.7) : .8;
       }
     } else if (e.cooldown <= 0 && (e.kind === 'gunner' || dx < 25)) {
-      e.aimX = p.x; e.aimY = p.y;
+      // Gunners lead a moving target; later waves read movement better.
+      const lead = clamp(.3 + game.wave * .09, 0, .75) * (.7 + dx / 135);
+      e.aimX = clamp(p.x + p.vx * lead, 14, 386); e.aimY = p.y;
       e.attack = e.kind === 'gunner' ? 'shoot' : 'punch'; e.windup = e.kind === 'gunner' ? .7 : .38;
+      e.patience = 1.1;
     } else {
-      const direction = e.kind === 'gunner' ? (dx < 90 ? -e.facing : dx > 150 ? e.facing : 0) : dx > 22 ? e.facing : 0;
-      e.x = clamp(e.x + direction * (28 + game.wave * 3) * worldDt, 14, 386);
+      const speed = 28 + game.wave * 3;
+      const direction = e.kind === 'gunner' ? gunnerStep(e, p, dx) : brawlerStep(game, e, p, living, worldDt);
+      const spread = separation(e, living.filter(o => o.kind === e.kind), 20).x;
+      e.x = clamp(e.x + clamp(direction + spread, -1, 1) * speed * worldDt, 14, 386);
     }
   }
   for (const b of game.bullets) {

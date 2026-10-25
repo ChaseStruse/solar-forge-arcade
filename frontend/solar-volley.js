@@ -1,4 +1,5 @@
 import { BALL_RADIUS, COURT_HEIGHT, COURT_WIDTH, FLOOR_Y, NET_TOP, NET_X, PLAYER_RADIUS, hitNet, hitPlayer, matchWinner, pointWinner, rivalControls, tryJump } from "./volley-physics.js";
+import { adaptSkill, aimError, createBrain, extrapolate, perceive, resetPerception } from "./npc-brain.js";
 
 const canvas = document.querySelector("#volley-game");
 const ctx = canvas.getContext("2d");
@@ -11,6 +12,7 @@ const keys = { left: false, right: false };
 const confettiColors = ["#dafa78", "#ff9a7f", "#82ead7", "#ffd487"];
 let previousTime = 0;
 let state = createMatch();
+const nova = createBrain({ skill: .62, reaction: [.07, .2] });
 
 function createPlayer(x, color, accent) {
   return { x, y: FLOOR_Y - PLAYER_RADIUS, vx: 0, vy: 0, color, accent, onGround: true, jumpsUsed: 0, squash: 0 };
@@ -42,6 +44,8 @@ function resetRally(server) {
     vy: -35,
   };
   state.serveDelay = 1.05;
+  resetPerception(nova);
+  adaptSkill(nova, state.score.rival, state.score.player);
   state.status = server === "player" ? "SOL SERVES" : "NOVA SERVES";
 }
 
@@ -109,7 +113,9 @@ function update(dt) {
     state.serveDelay -= dt;
     if (state.serveDelay <= 0) state.status = "BALL LIVE";
   }
-  const ai = rivalControls(state.rival, state.ball);
+  // Nova reacts to a delayed read of the ball, with a small skill-based misread.
+  const seen = perceive(nova, dt, () => ({ ...state.ball, error: aimError(nova, 34) }));
+  const ai = rivalControls(state.rival, extrapolate(seen, nova.age, 630), state.player, nova);
   if (ai.jump && state.serveDelay <= 0) jump(state.rival);
   updatePlayer(state.player, Number(keys.right) - Number(keys.left), 38, NET_X - PLAYER_RADIUS - 12, dt);
   updatePlayer(state.rival, ai.direction, NET_X + PLAYER_RADIUS + 12, COURT_WIDTH - 38, dt);

@@ -10,7 +10,7 @@
   <script type="module" src="/experiment.js?v=6"></script>
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-symbol">✳</span><span>SOLAR FORGE<small>THE GOOD-TIME MACHINE</small></span></a><span class="header-note">EIGHT GAMES. ONE COSMIC CABINET.</span><span class="open-sign"><i></i> FREE PLAY</span></header>
+  <header class="topbar"><a class="brand" href="/" aria-label="Solar Forge Arcade home"><span class="brand-symbol">✳</span><span>SOLAR FORGE<small>THE GOOD-TIME MACHINE</small></span></a><span class="header-note">NINE GAMES. ONE COSMIC CABINET.</span><span class="open-sign"><i></i> FREE PLAY</span></header>
   <main>
     <h1 class="sr-only">Solar Forge Arcade</h1>
     <section class="showroom" aria-label="Interactive arcade cabinet">
@@ -24,9 +24,9 @@
   </main>
   <div class="play-toolbar" hidden><button id="exit-game" type="button">← GAME SELECT</button><span id="playing-title">CHOOSE YOUR GAME</span><button id="step-back" type="button">STEP BACK ↙</button></div>
   <div id="monitor" class="monitor" hidden>
-    <div id="attract-screen"><div class="crt-grid" aria-hidden="true"></div><div class="screen-topline"><span>SOLAR FORGE SYSTEMS</span><span>● READY</span></div><div class="pixel-sun" aria-hidden="true">✳</div><p class="screen-kicker">EIGHT GAMES / ZERO COINS</p><h2>GOOD TIMES.<br /><em>ON REPEAT.</em></h2><p class="screen-description">YOUR NEXT GAME IS RIGHT HERE.</p><button id="screen-play" type="button" disabled>STEP UP & PLAY <span>▶</span></button><div class="screen-footer"><span>EST. IN ANOTHER DIMENSION</span><span>FREE PLAY ∞</span></div></div>
+    <div id="attract-screen"><div class="crt-grid" aria-hidden="true"></div><div class="screen-topline"><span>SOLAR FORGE SYSTEMS</span><span>● READY</span></div><div class="pixel-sun" aria-hidden="true">✳</div><p class="screen-kicker">NINE GAMES / ZERO COINS</p><h2>GOOD TIMES.<br /><em>ON REPEAT.</em></h2><p class="screen-description">YOUR NEXT GAME IS RIGHT HERE.</p><button id="screen-play" type="button" disabled>STEP UP & PLAY <span>▶</span></button><div class="screen-footer"><span>EST. IN ANOTHER DIMENSION</span><span>FREE PLAY ∞</span></div></div>
     <section id="game-menu" hidden aria-labelledby="menu-title">
-      <div class="menu-topline"><span>SOLAR FORGE / GAME SELECT</span><span>08 GAMES • FREE PLAY</span></div>
+      <div class="menu-topline"><span>SOLAR FORGE / GAME SELECT</span><span>09 GAMES • FREE PLAY</span></div>
       <div class="menu-heading"><h2 id="menu-title">PICK YOUR PLAY.</h2><span class="menu-star" aria-hidden="true">✳</span></div>
       <div class="menu-games" aria-label="Games">
       <button class="game-choice active" data-game="forge" aria-pressed="true" type="button"><span class="game-art forge-art" aria-hidden="true">✹</span><span class="game-copy"><small>01 / IDLE TOWER DEFENSE</small><strong>Protect the Forge</strong><span>Defend the glow. Grow your power.</span></span><span class="choice-mark">↗</span></button>
@@ -37,8 +37,9 @@
       <button class="game-choice" data-game="neon" aria-pressed="false" type="button"><span class="game-art neon-art" aria-hidden="true">⌁</span><span class="game-copy"><small>06 / BULLET-TIME BRAWLER</small><strong>Neon Bullet</strong><span>Own the rooftop. Bend the seconds.</span></span><span class="choice-mark">↗</span></button>
       <button class="game-choice" data-game="tennis" aria-pressed="false" type="button"><span class="game-art tennis-art" aria-hidden="true">◉</span><span class="game-copy"><small>07 / PIXEL TENNIS</small><strong>Solar Tennis</strong><span>Fast feet. One more rally.</span></span><span class="choice-mark">↗</span></button>
       <button class="game-choice" data-game="pool" aria-pressed="false" type="button"><span class="game-art pool-art" aria-hidden="true">❽</span><span class="game-copy"><small>08 / POCKET CLASSIC</small><strong>Solar Pool</strong><span>Find your angle. Clear the table.</span></span><span class="choice-mark">↗</span></button>
+      <button class="game-choice" data-game="puck" aria-pressed="false" type="button"><span class="game-art puck-art" aria-hidden="true"><i></i><b></b></span><span class="game-copy"><small>09 / NEON AIR HOCKEY</small><strong>Solar Puck</strong><span>Read the bank. Beat the block.</span></span><span class="choice-mark">↗</span></button>
       </div>
-      <div class="menu-navigation"><button id="previous-page" type="button" aria-label="Previous page of games">← PREVIOUS</button><span id="menu-page" role="status">01 / 02</span><button id="next-page" type="button" aria-label="Next page of games">MORE GAMES →</button></div>
+      <div class="menu-navigation"><button id="previous-page" type="button" aria-label="Previous page of games">← PREVIOUS</button><span id="menu-page" role="status">01 / 03</span><button id="next-page" type="button" aria-label="Next page of games">MORE GAMES →</button></div>
       <p class="menu-hint">TAP A GAME TO PLAY · ARROWS TO CHOOSE · ENTER TO START</p>
     </section>
     <iframe id="game-screen" title="Playable arcade game" hidden></iframe>
